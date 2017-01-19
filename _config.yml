@@ -70,8 +70,6 @@ tag: 1
 ## Plugins: http://hexo.io/plugins/
 ## Themes: http://hexo.io/themes/
 plugins:
-- hexo-generator-sitemap
-- hexo-generator-baidu-sitemap
 
 baidusitemap:
     path: baidusitemap.xml

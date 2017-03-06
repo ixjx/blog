@@ -79,6 +79,80 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/blog/2017/03/06/awk-sed-grep总结/" title="awk &amp; sed &amp; grep总结" itemprop="url">awk &amp; sed &amp; grep总结</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/blog/about" title="shurrik" target="_blank" itemprop="author">shurrik</a>
+		
+  <p class="article-time">
+    <time datetime="2017-03-06T06:23:19.000Z" itemprop="datePublished"> 发表于 2017-03-06</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>　　最近写了一个自动巡检工具，用了很多字符串处理的东西，在这里总结一下。</p>
+<blockquote>
+<p><strong>awk(关键字:分析&amp;处理)</strong> 一行一行的分析处理，awk ‘条件类型1{动作1}条件类型2{动作2}’ filename， awk也可以读取来自前一个指令的standard input。</p>
+</blockquote>
+<p>　　相对于sed常常用于一整行处理， awk则比较倾向于一行当中分成数个”字段”(区域)来处理，默认的分隔符是空格键或tab键。<br>例如:<br>　　last -n 5 | awk ‘{print $1 “\t” $3}’ 这里大括号内$1”\t”$3 之间不加空格也可以， 不过最好还是加上个空格， 另外注意”\t”是有双引号的， 因为本身这些内容都在单引号内，$0 代表整行 $1代表第一个区域， 依此类推。<br>　　awk的处理流程是:</p>
+<ol>
+<li>读第一行， 将第一行资料填入变量 $0， $1… 等变量中</li>
+<li>依据条件限制， 执行动作</li>
+<li>接下来执行下一行<br>　　所以， awk一次处理是一行， 而一次中处理的最小单位是一个区域。</li>
+</ol>
+<p>　　另外还有3个变量， NF：每一行处理的字段数， NR：目前处理到第几行，FS：目前的分隔符，逻辑判断 &gt; &lt; &gt;= &lt;= == !== ， 赋值直接使用=。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/blog/2017/03/06/awk-sed-grep总结/">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/blog/categories/Linux/">Linux</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/blog/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/blog/2017/03/06/awk-sed-grep总结/#comments" class="ds-thread-count comments-count-link" data-thread-key="2017/03/06/awk-sed-grep总结/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/blog/2017/02/16/三亚游记/" title="三亚游记" itemprop="url">三亚游记</a>
   </h1>
   <p class="article-author">By
@@ -661,76 +735,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/blog/2016/05/20/你遇到问题了，不是我/" title="你遇到问题了，不是我" itemprop="url">你遇到问题了，不是我</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/blog/about" title="shurrik" target="_blank" itemprop="author">shurrik</a>
-		
-  <p class="article-time">
-    <time datetime="2016-05-20T01:27:56.000Z" itemprop="datePublished"> 发表于 2016-05-20</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>　　由于工作原因，经常有其他同事打电话询问如何解决故障，希望我告诉他应该怎么做。<br>　　<br>　　我开始还挺慎重地询问详细状况，并给出一些建议，但渐渐我发现这并不是对他或者对我最好的方法。
-　　</p>
-<ol>
-<li>有些问题是重复的，或者本质上是类似的。但是你会发现他们每天都会问相同的问题，就算你今天告诉他们该怎么怎么做，他们明天还是会来问。</li>
-<li>我是比较乐于助人，也喜欢解决问题的，特别是一些高质量的问题，提问的人和我能够产生互动，在讨论中得出问题的解决方案。这样大家都能得到提高，岂不美哉？（注意我赞赏的语气）</li>
-<li>授人以鱼不如授人以渔，有时候我不知道如何解决这个问题，然后会大概说一下思路。但是这样就会给别人一种错觉：我的问题转移到你身上了，你要帮我解决好。</li>
-<li>外事不决问谷歌，内事不决问百度。当遇到我解决不了的问题时，我第一反应是上网查资料，而不是把问题推给别人。
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/blog/2016/05/20/你遇到问题了，不是我/">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/blog/categories/水/">水</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/blog/tags/呵呵/">呵呵</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/blog/2016/05/20/你遇到问题了，不是我/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/05/20/你遇到问题了，不是我/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="page-number" href="/blog/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/blog/page/8/">8</a><a class="extend next" rel="next" href="/blog/page/2/">Next<span></span></a>
@@ -749,7 +753,7 @@
 		<ul>
 		
 		  
-			<li><a href="/blog/categories/Linux/" title="Linux">Linux<sup>8</sup></a></li>
+			<li><a href="/blog/categories/Linux/" title="Linux">Linux<sup>9</sup></a></li>
 		  
 		
 		  

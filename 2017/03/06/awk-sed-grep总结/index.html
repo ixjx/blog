@@ -4,26 +4,35 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>再论IP QAM技术 | CodeShurrik</title>
+    <title>awk &amp; sed &amp; grep总结 | CodeShurrik</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="shurrik">
     
 
     
-    <meta name="description" content="工作相关，最近发现国内IP QAM技术特别新鲜，从广电知名杂志，知名人士，到电信知名杂志（人民邮电报等），到各厂商，各运营商，纷纷呼吁，采用IP QAM技术。
-在IP QoS和千兆光以太网技术成熟以前, 有线电视VOD业务的VOD视频流, 从视频服务器到边沿视频服务器或边沿QAM调制解调器的传送, 必须使用SDH或SONET网络。 这种方式成本开销大，并且很难满足这种VOD业务的带宽增长需求。故而">
+    <meta name="description" content="最近写了一个自动巡检工具，用了很多字符串处理的东西，在这里总结一下。
+
+awk(关键字:分析&amp;amp;处理) 一行一行的分析处理，awk ‘条件类型1{动作1}条件类型2{动作2}’ filename， awk也可以读取来自前一个指令的standard input。
+
+　　相对于sed常常用于一整行处理， awk则比较倾向于一行当中分成数个”字段”(区域)来处理，默认的分隔符是空格键或tab键">
 <meta property="og:type" content="article">
-<meta property="og:title" content="再论IP QAM技术">
-<meta property="og:url" content="https://ixjx.github.io/blog/2013/07/29/再论IP QAM技术/index.html">
+<meta property="og:title" content="awk & sed & grep总结">
+<meta property="og:url" content="https://ixjx.github.io/blog/2017/03/06/awk-sed-grep总结/index.html">
 <meta property="og:site_name" content="CodeShurrik">
-<meta property="og:description" content="工作相关，最近发现国内IP QAM技术特别新鲜，从广电知名杂志，知名人士，到电信知名杂志（人民邮电报等），到各厂商，各运营商，纷纷呼吁，采用IP QAM技术。
-在IP QoS和千兆光以太网技术成熟以前, 有线电视VOD业务的VOD视频流, 从视频服务器到边沿视频服务器或边沿QAM调制解调器的传送, 必须使用SDH或SONET网络。 这种方式成本开销大，并且很难满足这种VOD业务的带宽增长需求。故而">
-<meta property="og:updated_time" content="2017-01-19T05:23:29.343Z">
+<meta property="og:description" content="最近写了一个自动巡检工具，用了很多字符串处理的东西，在这里总结一下。
+
+awk(关键字:分析&amp;amp;处理) 一行一行的分析处理，awk ‘条件类型1{动作1}条件类型2{动作2}’ filename， awk也可以读取来自前一个指令的standard input。
+
+　　相对于sed常常用于一整行处理， awk则比较倾向于一行当中分成数个”字段”(区域)来处理，默认的分隔符是空格键或tab键">
+<meta property="og:updated_time" content="2017-03-06T07:14:09.055Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="再论IP QAM技术">
-<meta name="twitter:description" content="工作相关，最近发现国内IP QAM技术特别新鲜，从广电知名杂志，知名人士，到电信知名杂志（人民邮电报等），到各厂商，各运营商，纷纷呼吁，采用IP QAM技术。
-在IP QoS和千兆光以太网技术成熟以前, 有线电视VOD业务的VOD视频流, 从视频服务器到边沿视频服务器或边沿QAM调制解调器的传送, 必须使用SDH或SONET网络。 这种方式成本开销大，并且很难满足这种VOD业务的带宽增长需求。故而">
+<meta name="twitter:title" content="awk & sed & grep总结">
+<meta name="twitter:description" content="最近写了一个自动巡检工具，用了很多字符串处理的东西，在这里总结一下。
+
+awk(关键字:分析&amp;amp;处理) 一行一行的分析处理，awk ‘条件类型1{动作1}条件类型2{动作2}’ filename， awk也可以读取来自前一个指令的standard input。
+
+　　相对于sed常常用于一整行处理， awk则比较倾向于一行当中分成数个”字段”(区域)来处理，默认的分隔符是空格键或tab键">
 
     
     <link rel="alternative" href="/atom.xml" title="CodeShurrik" type="application/atom+xml">
@@ -80,43 +89,51 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/blog/2013/07/29/再论IP QAM技术/" title="再论IP QAM技术" itemprop="url">再论IP QAM技术</a>
+      <a href="/blog/2017/03/06/awk-sed-grep总结/" title="awk &amp; sed &amp; grep总结" itemprop="url">awk &amp; sed &amp; grep总结</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/blog/about" title="shurrik" target="_blank" itemprop="author">shurrik</a>
 		
   <p class="article-time">
-    <time datetime="2013-07-29T13:43:15.000Z" itemprop="datePublished"> 发表于 2013-07-29</time>
+    <time datetime="2017-03-06T06:23:19.000Z" itemprop="datePublished"> 发表于 2017-03-06</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
-		<p>工作相关，最近发现国内IP QAM技术特别新鲜，从广电知名杂志，知名人士，到电信知名杂志（人民邮电报等），到各厂商，各运营商，纷纷呼吁，采用IP QAM技术。</p>
-<p>在IP QoS和千兆光以太网技术成熟以前, 有线电视VOD业务的VOD视频流, 从视频服务器到边沿视频服务器或边沿QAM调制解调器的传送, 必须使用SDH或SONET网络。 这种方式成本开销大，并且很难满足这种VOD业务的带宽增长需求。故而，在那时候有线电视VOD业务只能是一个好听的概念和好看的演示，而很难被大规模的商用。由于IPTV技术的发展和成熟，有线电视VOD业务已能使用千兆光以太网，将VOD视频流以IP的方式(MPEG over IP), 从视频服务器传送到边沿QAM调制解调器，并且许多厂商已将接收IP包和完成IP包到MPEG2流的转换功能做进了边沿QAM调制解调器中。这种网络架构大大降低了VOD流的传输成本，提高了系统的可扩展性，使得有线电视VOD业务的大规模的商用成为可能。</p>
-<p>初看确实有道理，盛先生身为国家级有线网络公司的副总工程师，应该算是行业权威了。</p>
-<p>可是，事实真的如此吗？<br><a id="more"></a></p>
-<p>就笔者所知，在CATV上开展VOD业务，在IP 技术突飞猛进之前，较多的就已经采用中心大型服务器＋窄播区分配的技术，而且都是经过国内外成熟的市场应用的技术，好像不存在非要设置边缘视频服务器或者边缘QAM调制器呢，当然，更不用采用SDH网络进行中继传输了。不过，在广域应用时，的确有采用SDH做为CDN的方式的，但不是接入方式。</p>
-<p>举一个实际的案例吧，假定，某中等城市（假定750 Mhz网络，前端机房共20台光发射机），预备开展VOD业务。</p>
-<p>频率规划如下：</p>
-<p>回传信号    隔离频道    音频频段    模拟广播信号    DVB广播信号    VOD视频信号    Cable Modem下行<br>5－65 Mhz    65－85 Mhz    85－110 Mhz    110－450 Mhz    450－550 Mhz    550－710 Mhz    710－750 Mhz</p>
-<p>那么，的确，从表面上看来，VOD下行仅20个模拟频点，按照64QAM调制技术，仅20 x 38Mbps ＝ 760Mbps的下传速率，仅满足253个 3Mbps 并发MPEG-2流的传输。</p>
-<p>为解决这个问题，有线电视的前辈设计了窄播区技术，将窄播信号统一进行混合，混合后的信号在分别和广播信号进行混合，然后送入单独的窄播区。窄播区可以是一个或者一个以上的光发射机的组合。</p>
-<p>具体窄播区分配如下表所示：</p>
-<p>频率范围    窄播区1    窄播区2    ……    窄播区20    QAM频道数    比特率<br>550－710Mhz                    400个8M频道    15200Mbps<br>710－750Mhz                    100个8M频道    3800Mbps</p>
-<p>这种技术，上述的城市而言，理论上可以达到20 x 20 x 38 Mbps ＝ 15200Mbps的下行速率，差不多是5000个并发的33Mbps MPEG-2流，基本上满足用户当前的需求了，若今后用户需求进一步上升，则在机房进一步增加光发射机或者减少模拟频点，都是解决方案。</p>
-<p>由此而言，有线电视网做为接入网络，在目前和可预见的业务及应用的情况下，并不存在下行带宽限制问题，因此，也谈不上说因为带宽不够而无法开展业务了。</p>
-<p>那么，IP QAM做为一个新技术，是否有了比传统的窄播区分配技术更优越的性能价格比，或者说节省整体投资，或者，采用IP全程全网，具备更好的优越性呢？</p>
-<p>个人认为，在大部分的情况下， IP QAM是不具备上述的优势的。</p>
-<p>IP QAM技术的原理大致如下：<br>Server IP out<br>骨干IP传输<br>IP/DVB/QAM转换<br>DVB QAM<br>输出</p>
-<p>在Server输出端，协议为MPEG-2 SPTS over IP（UDP），在边缘，首先是IP头，将MPEG-2 SPTS码流分离出来，然后经过一个简单的复用，将SPTS码流组合为MPTS码流，然后进行QAM调制。</p>
-<p>由IP QAM技术原理可知，IP QAM技术主要用于将IP 承载的MPEG-2 TS流转化为DVB协议的TS流，相当于一个网关吧。</p>
-<p>对有线网络运营商，在开展城域VOD业务时，普遍的有一张遍布全城的HFC网络，在光发射机数量、频率上一般没有问题（如果仅仅几个前端机房光发，光发在750Mhz以下，估计这样的运营商不可能开展VOD业务了），这时候采用IP QAM方案，中心平白增加若干千兆交换机，边缘增加边缘交换设备和IP-DVB转换协议设备（QAM数量不变），并且增加光纤占用数量（模拟传输还是要占用光纤，而窄播区方案不会增加光纤占用），增加一套需要重新管理的设备，增加若干的运营人员，由此看，节省投资无从说起。</p>
-<p>而增加IP技术的应用，实际上在终端还是使用DVB标准，并没有说全程全网的IP，因此也谈不上和IP标准的兼容。</p>
-<p>或者，应用于广域网的VOD领域，的确，这时候IP有相当的优势，比方，省到地市的广域VOD，地市没有设置视频服务器，此时IP QAM的确可以采用，不过，这种情况比较少，一般地市使用了视频服务器的情况下，更多的是采用IP 做为CDN网络，视频服务器之间均为IP技术。</p>
-<p>或者，在某些情况下，Server只有IP输出，没有DVB输出，这时候个人建议，在Server端直接将IP转化为DVB码流，复用处理后进行QAM调制（需要码流处理时），或者将IP QAM调制器直接做为中心的调制器（不需要码流处理），仍然采用窄播区技术。</p>
-<p>综上所述，IP QAM技术不失为一个可行的技术，但在中国广电目前的环境下，城域的VOD系统一般没有必要采用昂贵的 IP QAM技术。</p>
+		<p>　　最近写了一个自动巡检工具，用了很多字符串处理的东西，在这里总结一下。</p>
+<blockquote>
+<p><strong>awk(关键字:分析&amp;处理)</strong> 一行一行的分析处理，awk ‘条件类型1{动作1}条件类型2{动作2}’ filename， awk也可以读取来自前一个指令的standard input。</p>
+</blockquote>
+<p>　　相对于sed常常用于一整行处理， awk则比较倾向于一行当中分成数个”字段”(区域)来处理，默认的分隔符是空格键或tab键。<br>例如:<br>　　last -n 5 | awk ‘{print $1 “\t” $3}’ 这里大括号内$1”\t”$3 之间不加空格也可以， 不过最好还是加上个空格， 另外注意”\t”是有双引号的， 因为本身这些内容都在单引号内，$0 代表整行 $1代表第一个区域， 依此类推。<br>　　awk的处理流程是:</p>
+<ol>
+<li>读第一行， 将第一行资料填入变量 $0， $1… 等变量中</li>
+<li>依据条件限制， 执行动作</li>
+<li>接下来执行下一行<br>　　所以， awk一次处理是一行， 而一次中处理的最小单位是一个区域。</li>
+</ol>
+<p>　　另外还有3个变量， NF：每一行处理的字段数， NR：目前处理到第几行，FS：目前的分隔符，逻辑判断 &gt; &lt; &gt;= &lt;= == !== ， 赋值直接使用=。<br><a id="more"></a></p>
+<p>　　cat /etc/passwd | awk ‘{FS=”:”} $3&lt;10 {print $1 “\t” $3}’ 首先定义分隔符为:， 然后判断， 注意看， 判断没有写在{}中， 然后执行动作， FS=”:”这是一个动作， 赋值动作， 不是一个判断， 所以不写在{}中。</p>
+<p>　　BEGIN END ， 给程序员一个初始化和收尾的工作， BEGIN之后列出的操作在{}内将在awk开始扫描输入之前执行， 而END{}内的操作， 将在扫描完输入文件后执行。</p>
+<p>　　awk ‘/test/ {print NR}’ abc 将带有test的行的行号打印出来， 注意//之间可以使用正则表达式</p>
+<p>　　awk {}内， 可以使用 if else ，for(i=0;i&lt;10;i++)， i=1 while(i&lt;NF)</p>
+<p>　　可见， awk的很多用法都等同于C语言， 比如”\t” 分隔符， print的格式， if， while， for 等等</p>
+<p>　　awk 是相当复杂的工具， 真正使用时， 再补充吧。</p>
+<blockquote>
+<p><strong>sed(关键字: 编辑)</strong> 以行为单位的文本编辑工具。这个算是用得比较多的，sed可以直接修改档案， 不过一般不推荐这么做， 可以分析 standard input。</p>
+</blockquote>
+<p>　　基本工作方式: sed [-nef] ‘[动作]’ [输入文本]<br>-n : 安静模式， 一般sed用法中， 来自stdin的数据一般会被列出到屏幕上， 如果使用-n参数后， 只有经过sed处理的那一行被列出来.<br>-e : 多重编辑， 比如你同时又想删除某行， 又想改变其他行， 那么可以用 sed -e ‘1，5d’ -e ‘s/abc/xxx/g’ filename<br>-f : 首先将 sed的动作写在一个档案内， 然后通过 sed -f scriptfile 就可以直接执行 scriptfile 内的sed动作 (没有实验成功， 不推荐使用)<br>-i : 直接编辑， 这回就是真的改变文件中的内容了， 别的都只是改变显示. (不推荐使用)</p>
+<p>　　动作:<br>a 新增， a 后面可以接字符串， 而这个字符串会在新的一行出现. (下一行)<br>c 取代， c 后面的字符串， 这些字符串可以取代 n1，n2之间的行<br>d 删除， 后面不接任何东西<br>i 插入， 后面的字符串， 会在上一行出现<br>p 打印， 将选择的资料列出， 通常和 sed -n 一起运作 sed -n ‘3p’ 只打印第3行<br>s 取代， 类似vi中的取代， 1，20s/old/new/g</p>
+<p>q 退出， 匹配到某行退出， 提高效率</p>
+<p>r 匹配到的行读取某文件 例如: sed ‘1r qqq’ abc ， 注意， 写入的文本是写在了第1行的后边， 也就是第2行</p>
+<p>w file， 匹配到的行写入某文件  例如: sed -n ‘/m/w qqq’ abc ， 从abc中读取带m的行写到qqq文件中， 注意， 这个写入带有覆盖性，<br>或者<code>sed &#39;s/^/\&lt;br\&gt;/&#39; /cnr/123 &gt; /cnr/124</code> 直接重定向</p>
+<p>Ex:<br>sed ‘1d’ abc 删除 abc 档案里的第一行， 注意， 这时会显示除了第一行之外的所有行， 因为第一行已经被删除了(实际文件并没有被删除，而只是显示的时候被删除了)<br>sed -n ‘1d’ abc 什么内容也不显示， 因为经过sed处理的行， 是个删除操作， 所以不显示。<br>sed ‘2，$d’ abc 删除abc中从第二行到最后一行所有的内容， 注意， $符号正则表达式中表示行末尾， 但是这里并没有说那行末尾， 就会指最后一行末尾， ^开头， 如果没有指定哪行开头， 那么就是第一行开头<br>sed ‘$d’ abc 只删除了最后一行， 因为并没有指定是那行末尾， 就认为是最后一行末尾<br>sed ‘/test/d’ abc 文件中所有带 test 的行， 全部删除<br>sed ‘/test/a RRRRRRR’ abc 将 RRRRRRR 追加到所有的带 test 行的下一行 也有可能通过行 sed ‘1，5c RRRRRRR’ abc<br>sed ‘/test/c RRRRRRR’ abc 将 RRRRRRR 替换所有带 test 的行， 当然， 这里也可以是通过行来进行替换， 比如 sed ‘1，5c RRRRRRR’ abc</p>
+<blockquote>
+<p><strong>grep(关键字: 截取)</strong> 文本搜索工具， 结合正则表达式非常强大，配合管道工具 | ，这个也是用得比较多了。</p>
+</blockquote>
+<p>　　主要参数：<br>-c : 只输出匹配的行<br>-I : 不区分大小写<br>-h : 查询多文件时不显示文件名<br>-l : 查询多文件时， 只输出包含匹配字符的文件名<br>-n : 显示匹配的行号及行<br>-v : 显示不包含匹配文本的所有行(我经常用除去grep本身)</p>
+<p>　　基本工作方式: grep 要匹配的内容 文件名， 例如:</p>
+<p>grep ‘test’ d* 显示所有以d开头的文件中包含test的行<br>grep ‘test’ aa bb cc 显示在 aa bb cc 文件中包含test的行<br>grep ‘[a-z]{5}\’ aa 显示所有包含字符串至少有5个连续小写字母的串</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -124,13 +141,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/blog/categories/转载/">转载</a>
+  <a class="article-category-link" href="/blog/categories/Linux/">Linux</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/blog/tags/IP-QAM/">IP QAM</a>
+  <span></span> <a href="/blog/tags/Linux/">Linux</a>
   </div>
 
 </div>
@@ -139,7 +156,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="https://ixjx.github.io/blog/blog/2013/07/29/再论IP QAM技术/" data-title="再论IP QAM技术 | CodeShurrik" data-tsina="null" class="share clearfix">
+	  <div data-url="https://ixjx.github.io/blog/blog/2017/03/06/awk-sed-grep总结/" data-title="awk &amp; sed &amp; grep总结 | CodeShurrik" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -152,19 +169,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/blog/2013/08/18/Linux 的启动流程/" title="Linux 的启动流程">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Linux 的启动流程</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/blog/2013/07/14/不必当真，重要的是创意/"  title="不必当真，重要的是创意">
+<a href="/blog/2017/02/16/三亚游记/"  title="三亚游记">
  <strong>下一篇：</strong><br/> 
- <span>不必当真，重要的是创意
+ <span>三亚游记
 </span>
 </a>
 </div>
@@ -173,7 +182,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2013/07/29/再论IP QAM技术/" data-title="再论IP QAM技术" data-url="https://ixjx.github.io/blog/blog/2013/07/29/再论IP QAM技术/"></div>
+	<div class="ds-thread" data-thread-key="2017/03/06/awk-sed-grep总结/" data-title="awk & sed & grep总结" data-url="https://ixjx.github.io/blog/blog/2017/03/06/awk-sed-grep总结/"></div>
 	 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
 	var duoshuoQuery = {short_name:'ixjx'};

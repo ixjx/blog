@@ -1,11 +1,24 @@
+---
+layout: null
+---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
-  <url>
-    <loc>https://ixjx.github.io/blog/404.html</loc>
-    
-    <lastmod>2017-01-19T05:23:29.327Z</lastmod>
-    
-  </url>
-  
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    {% for post in site.posts %}
+    <url>
+        <loc>{{ post.url | prepend: site.baseurl | prepend: site.url }}</loc>
+        <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% endfor %}
+    {% for post in site.pages %}{% if post.isNavItem %}
+    <url>
+        <loc>{{ post.url | prepend: site.baseurl | prepend: site.url }}</loc>
+        <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+        <changefreq>weekly</changefreq>
+    </url>
+    {% endif %}
+    {% endfor %}
 </urlset>

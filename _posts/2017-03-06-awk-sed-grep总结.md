@@ -1,7 +1,6 @@
 ---
 layout: post
 title: awk & sed & grep总结
-date: 2017-03-06 14:23:19
 categories: Linux
 tags: Linux
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(6)
+title: CPU和内存虚拟化原理-每天5分钟的OpenStack(6)
 categories: Linux
 tags: 虚拟化
 

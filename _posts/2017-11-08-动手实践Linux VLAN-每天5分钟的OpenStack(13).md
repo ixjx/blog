@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(13)
+title: 动手实践Linux VLAN-每天5分钟的OpenStack(13)
 categories: Linux
 tags: 虚拟化
 

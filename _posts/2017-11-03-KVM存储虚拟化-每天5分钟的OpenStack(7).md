@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(7)
+title: KVM存储虚拟化-每天5分钟的OpenStack(7)
 categories: Linux
 tags: 虚拟化
 

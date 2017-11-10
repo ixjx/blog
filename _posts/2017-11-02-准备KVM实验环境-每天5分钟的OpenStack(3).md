@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(3)
+title: 准备KVM实验环境-每天5分钟的OpenStack(3)
 categories: Linux
 tags: 虚拟化
 

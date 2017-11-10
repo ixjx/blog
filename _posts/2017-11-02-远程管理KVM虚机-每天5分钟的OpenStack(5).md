@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(5)
+title: 远程管理KVM虚机-每天5分钟的OpenStack(5)
 categories: Linux
 tags: 虚拟化
 

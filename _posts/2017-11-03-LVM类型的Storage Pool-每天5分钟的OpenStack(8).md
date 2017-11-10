@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(8)
+title: LVM类型的Storage Pool-每天5分钟的OpenStack(8)
 categories: Linux
 tags: 虚拟化
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(4)
+title: 启动第一个KVM虚机-每天5分钟的OpenStack(4)
 categories: Linux
 tags: 虚拟化
 

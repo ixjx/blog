@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 每天5分钟的OpenStack(12)
+title: Linux如何实现VLAN-每天5分钟的OpenStack(12)
 categories: Linux
 tags: 虚拟化
 

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Linux下JDK的安装与配置</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="keywords" content="Linux下JDK的安装与配置, Linux, Linux, CodeShurrik" />
+    <meta name="description" content="Linux下JDK的安装与配置, Linux, Linux, 1.安装" />
+    <meta name="theme-color" content="#2CA6CB"/>
+    <link rel="shortcut icon" type="image/x-icon" media="screen" href="http://localhost:4000/favicon.ico" />
+    <link rel="canonical" href="http://localhost:4000/2013-06-01/Linux%E4%B8%8BJDK%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" />
+    <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="http://localhost:4000/feed.xml"  />
+
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/octicons/3.5.0/octicons.min.css" >
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/static/css/highlight.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:4000/static/css/post.css" />
+    
+
+</head>
+
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-tiffany rectangle" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="http://localhost:4000/">CodeShurrik</a>
+                    <p class="navbar-text">shurrik`s blog</p>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        
+                        <li>
+                        <a href="http://localhost:4000/" class="word-keep"><span class="octicon octicon-book"></span></span>&nbsp;&nbsp;Blog</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="http://localhost:4000/category/" class="word-keep"><span class="octicon octicon-list-unordered"></span>&nbsp;&nbsp;Category</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="http://localhost:4000/tags/" class="word-keep"><span class="octicon octicon-tag"></span>&nbsp;&nbsp;Tag</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="http://localhost:4000/fm/" class="word-keep"><span class="octicon octicon-unmute"></span>&nbsp;&nbsp;FM</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="http://localhost:4000/about/" class="word-keep"><span class="octicon octicon-terminal"></span>&nbsp;&nbsp;About</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+
+<div class="main">
+    <div class="container">
+        <div class="row">
+    <div class="content col-lg-9">
+        <div class="sheet post">
+          <header>
+            <h2>Linux下JDK的安装与配置</h2>
+            <p class="post-meta">
+                <span class="octicon octicon-clock"></span> Jun 1, 2013
+            </p>
+            <p class="post-tag">
+                <span><a href="http://localhost:4000/category/#Linux"><span class="octicon octicon-list-unordered"></span>&nbsp;Linux</a></span>
+                <span>
+                    <a class="word-keep" href="http://localhost:4000/tags/#Linux"><span class="octicon octicon-tag"></span>&nbsp;Linux</a>
+                    
+                </span>
+            </p>
+          </header>
+          <hr class="boundary">
+          <article>
+            <p>1.安装</p>
+
+<p>从sun公司网站www.sun .com下载linux版本的jdk</p>
+
+<p>打开终端，用cd命令进入jdk所在目录，执行复制命令</p>
+
+<p><code class="highlighter-rouge">sudo cp jdk-6u7-linux-i586.bin /usr</code></p>
+
+<p>即将jdk复制到/usr目录下</p>
+
+<!--more-->
+
+<p>然后进入/usr目录</p>
+
+<p><code class="highlighter-rouge">cd /usr</code></p>
+
+<p>执行权限</p>
+
+<p><code class="highlighter-rouge">chmod +x jdk-6u7-linux-i586.bin</code></p>
+
+<p>执行安装命令</p>
+
+<p><code class="highlighter-rouge">./jdk-6u21-linux-i586.bin</code></p>
+
+<p>(文件名)</p>
+
+<p>如遇错误，可先切换至root用户下，su root，再执行安装命令</p>
+
+<p>安装成功会在/usr目录下生成jdk1.6.0_07目录，就是jdk的安装目录</p>
+
+<p>重启电脑，打开终端，输入java -version</p>
+
+<p>如若有显示java的版本信息，则表示安装成功，</p>
+
+<p>2.配置</p>
+
+<p>安装成功后需要配置jdk环境变量</p>
+
+<p>用cd命令进入/etc目录</p>
+
+<p><code class="highlighter-rouge">sudo vi profile</code></p>
+
+<p>即执行编辑profile文件命令</p>
+
+<p>在前添加如下内容:</p>
+
+<p>export JAVA_HOME=/usr/jdk1.6.0_21</p>
+
+<p>export JRE_HOME=/usr/jdk1.6.0_21/jre</p>
+
+<p>export PATH=$PATH:/usr/jdk1.6.0_21/bin</p>
+
+<p>export CLASSPATH=./:/usr/jdk1.6.0_21/lib:/usr/jdk1.6.0_21/jre/lib</p>
+
+<p>保存退出，重启电脑</p>
+
+<p>3.测试
+(注意文件名与类名一致)
+新建Test.java</p>
+
+<p><code class="highlighter-rouge">public class Test</code></p>
+
+<p>{</p>
+
+<p>public static void main(String[] args)</p>
+
+<p>{</p>
+
+<p>System.out.println(“Hello，Welcome to Linux World!”);</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>在终端用cd命令进入Test.java目录，然后输入</p>
+
+<p><code class="highlighter-rouge">javac Test.java</code></p>
+
+<p>java Test</p>
+
+<p>若输出</p>
+
+<p>Hello，Welcome to Linux World!</p>
+
+<p>则表明配置成功!</p>
+
+<p>如不能通过编译，可通过重新启动系统试试</p>
+
+<p>至此，Linux jdk环境变量配置完成</p>
+
+          </article>
+          <hr class="boundary">
+          <div id="post-share" class="bdsharebuttonbox">
+              <a href="#" class="bds_more" data-cmd="more"></a>
+              <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+              <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+              <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+              <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+              <a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a>
+          </div>
+        </div>
+        <div class="pad-min"></div>
+       <div id="post-comment" class="sheet post">
+        <!--PC和WAP自适应版-->
+        <div id="SOHUCS" ></div> 
+        <script type="text/javascript"> 
+        (function(){ 
+        var appid = 'cyt71nso6'; 
+        var conf = 'prod_d224308500d6b59d843a38fa4a3b0fd9'; 
+        var width = window.innerWidth || document.documentElement.clientWidth; 
+        if (width < 960) { 
+        window.document.write('<script id="changyan_mobile_js" charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/mobile/wap-js/changyan_mobile.js?client_id=' + appid + '&conf=' + conf + '"><\/script>'); } else { var loadJs=function(d,a){var c=document.getElementsByTagName("head")[0]||document.head||document.documentElement;var b=document.createElement("script");b.setAttribute("type","text/javascript");b.setAttribute("charset","UTF-8");b.setAttribute("src",d);if(typeof a==="function"){if(window.attachEvent){b.onreadystatechange=function(){var e=b.readyState;if(e==="loaded"||e==="complete"){b.onreadystatechange=null;a()}}}else{b.onload=a}}c.appendChild(b)};loadJs("https://changyan.sohu.com/upload/changyan.js",function(){window.changyan.api.config({appid:appid,conf:conf})}); } })(); </script>
+
+            <!--<div id="disqus_thread"></div> -->
+        </div>
+    </div>
+    <div class="content-navigation col-lg-3">
+      <div class="shadow-bottom-center" >
+        <div class="content-navigation-toc">
+            <div class="content-navigation-header">
+                <span class="octicon octicon-list-unordered"></span>&nbsp;Toc
+            </div>
+            <div class="content-navigation-list toc"></div>
+        </div>
+        <div class="content-navigation-tag">
+            <div class="content-navigation-header">
+                <span class="octicon octicon-list-unordered"></span>&nbsp;Tags
+            </div>
+            <div class="content-navigation-list">
+                <ul>
+                    
+                    <li>
+                        <a href="http://localhost:4000/tags#Linux"><span class="octicon octicon-tag"></span>&nbsp;Linux</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="content-navigation-related">
+            <div class="content-navigation-header">
+                <span class="octicon octicon-list-unordered"></span>&nbsp;Related
+            </div>
+            <div class="content-navigation-list">
+                <ul>
+                    
+
+                    
+
+                    
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/">动手实践Linux VLAN-每天5分钟的OpenStack(13)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/">Linux如何实现VLAN-每天5分钟的OpenStack(12)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/">理解virbr0-每天5分钟的OpenStack(11)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/">动手实践虚拟网络-每天5分钟的OpenStack(10)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/">KVM网络虚拟化基础-每天5分钟的OpenStack(9)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/">LVM类型的Storage Pool-每天5分钟的OpenStack(8)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/">KVM存储虚拟化-每天5分钟的OpenStack(7)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/">CPU和内存虚拟化原理-每天5分钟的OpenStack(6)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-02/%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86KVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(5)/">远程管理KVM虚机-每天5分钟的OpenStack(5)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-02/%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(2)/">虚拟化-每天5分钟的OpenStack(2)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-02/%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%80%E4%B8%AAKVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(4)/">启动第一个KVM虚机-每天5分钟的OpenStack(4)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-02/%E5%87%86%E5%A4%87KVM%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(3)/">准备KVM实验环境-每天5分钟的OpenStack(3)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-01/%E5%86%99%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(1)/">写在最前面-每天5分钟的OpenStack(1)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-08-24/Docker%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%87%BA%E9%97%A8/">Docker从入门到出门</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-08-08/KVM%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E4%B8%8D%E4%BA%86%E9%97%A8/">KVM从入门到入不了门</a>
+                            </li>
+                        
+                    
+                </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+    </div>
+    
+    <div class="page-scrollTop" data-toggle="tooltip" data-placement="top" title="Top">
+        <a href="javascript:void(0);">
+            <div class="arrow"></div>
+            <div class="stick"></div>
+        </a>
+    </div>
+</div>
+
+    <footer  class="footnote footnote-tiffany">
+        <div class="container">
+                <a class="foot-item" href="mailto:shurrik.dly@gmail.com" target="_blank"><span class="octicon octicon-mail"></span></a>
+                <a class="foot-item" href="https://github.com/ixjx" target="_blank"><span class="octicon octicon-mark-github"></span></a>
+                <a class="foot-item" href="http://localhost:4000/feed.xml" target="_blank"><span class="octicon octicon-rss"></span></a>
+                <a class="foot-item" href="http://localhost:4000/link/"><span class="octicon octicon-link-external"></span></a>
+                &nbsp;
+                <a href="https://ixjx.github.io/blog"><span class="word-keep">&copy; Codeshurrik</span></a>
+                <p>珍爱生命，远离IE。请使用Chrome或Safari，你懂的 :)</p>
+        </div>
+    </footer>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://localhost:4000/static/js/script.js"></script>
+    <script type="text/javascript" src="http://localhost:4000/static/js/post.js"></script>
+    
+
+
+</body>
+</html>

@@ -3,10 +3,10 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>https://ixjx.github.io/</link>
-    <atom:link href="https://ixjx.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 13 Feb 2018 15:53:51 +0800</pubDate>
-    <lastBuildDate>Tue, 13 Feb 2018 15:53:51 +0800</lastBuildDate>
+    <link>https://ixjx.github.io/blog/</link>
+    <atom:link href="https://ixjx.github.io/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 13 Feb 2018 16:04:43 +0800</pubDate>
+    <lastBuildDate>Tue, 13 Feb 2018 16:04:43 +0800</lastBuildDate>
     <generator>Jekyll v3.5.0</generator>
     
       <item>
@@ -76,8 +76,8 @@ docker run \
 &lt;p&gt;　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。&lt;/p&gt;
 </description>
         <pubDate>Tue, 16 Jan 2018 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
+        <link>https://ixjx.github.io/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
         
         <category>翻墙</category>
         
@@ -137,8 +137,8 @@ docker run \
 &lt;/ol&gt;
 </description>
         <pubDate>Wed, 06 Dec 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>https://ixjx.github.io/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -251,8 +251,8 @@ docker run \
 &lt;p&gt;eth0.20，vent1 和 brvlan20 都可以看着 vlan20 的 access 口&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
         
         <category>虚拟化</category>
         
@@ -335,8 +335,8 @@ docker run \
 &lt;p&gt;下一节我们通过实验来实践 VLAN。&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
         
         <category>虚拟化</category>
         
@@ -391,8 +391,8 @@ virbr0          8000.fe540075dd1a       yes                   vnet0
 
 </description>
         <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
         
         <category>虚拟化</category>
         
@@ -501,8 +501,8 @@ vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
 &lt;p&gt;下节我们讨论 virbr0&lt;/p&gt;
 </description>
         <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</guid>
         
         <category>虚拟化</category>
         
@@ -569,8 +569,8 @@ vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
 &lt;p&gt;有了上面的基础知识，下一节将演示如何在实验环境中实现这套虚拟网络。&lt;/p&gt;
 </description>
         <pubDate>Sun, 05 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</guid>
         
         <category>虚拟化</category>
         
@@ -654,8 +654,8 @@ vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
 
 </description>
         <pubDate>Fri, 03 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</guid>
         
         <category>虚拟化</category>
         
@@ -742,8 +742,8 @@ total 14044
 &lt;p&gt;下一节介绍 LVM 类型的 Storage Pool。&lt;/p&gt;
 </description>
         <pubDate>Fri, 03 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/</guid>
         
         <category>虚拟化</category>
         
@@ -806,8 +806,8 @@ total 14044
 &lt;p&gt;下一节我们讨论 KVM 如何实现存储虚拟化。&lt;/p&gt;
 </description>
         <pubDate>Fri, 03 Nov 2017 00:00:00 +0800</pubDate>
-        <link>https://ixjx.github.io/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/</link>
-        <guid isPermaLink="true">https://ixjx.github.io/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/</guid>
+        <link>https://ixjx.github.io/blog/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/</link>
+        <guid isPermaLink="true">https://ixjx.github.io/blog/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/</guid>
         
         <category>虚拟化</category>
         

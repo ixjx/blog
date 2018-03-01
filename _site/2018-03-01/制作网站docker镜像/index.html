@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>启动第一个KVM虚机-每天5分钟的OpenStack(4)</title>
+    <title>制作网站docker镜像</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="启动第一个KVM虚机-每天5分钟的OpenStack(4), Linux, 虚拟化, CodeShurrik" />
-    <meta name="description" content="启动第一个KVM虚机-每天5分钟的OpenStack(4), Linux, 虚拟化, " />
+    <meta name="keywords" content="制作网站docker镜像, 网络, 容器, CodeShurrik" />
+    <meta name="description" content="制作网站docker镜像, 网络, 容器, 　　看docker官方文档的时候，官网总被墙，怎么办呢？" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="/blog/favicon.ico" />
-    <link rel="canonical" href="/blog/2017-11-02/%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%80%E4%B8%AAKVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(4)/" />
+    <link rel="canonical" href="/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/" />
     <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="/blog/feed.xml"  />
 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
@@ -109,52 +109,45 @@
     <div class="content col-lg-9">
         <div class="sheet post">
           <header>
-            <h2>启动第一个KVM虚机-每天5分钟的OpenStack(4)</h2>
+            <h2>制作网站docker镜像</h2>
             <p class="post-meta">
-                <span class="octicon octicon-clock"></span> Nov 2, 2017
+                <span class="octicon octicon-clock"></span> Mar 1, 2018
             </p>
             <p class="post-tag">
-                <span><a href="/blog/category/#Linux"><span class="octicon octicon-list-unordered"></span>&nbsp;Linux</a></span>
+                <span><a href="/blog/category/#网络"><span class="octicon octicon-list-unordered"></span>&nbsp;网络</a></span>
                 <span>
-                    <a class="word-keep" href="/blog/tags/#虚拟化"><span class="octicon octicon-tag"></span>&nbsp;虚拟化</a>
+                    <a class="word-keep" href="/blog/tags/#容器"><span class="octicon octicon-tag"></span>&nbsp;容器</a>
                     
                 </span>
             </p>
           </header>
           <hr class="boundary">
           <article>
-            
-<p><img src="http://shurriklab.qiniudn.com/pp4ipsagt4e4gf522s25nrx2bj.png" alt="" /></p>
+            <p>　　看docker官方文档的时候，官网总被墙，怎么办呢？</p>
 
-<p>本节演示如何使用 virt-manager 启动 KVM 虚机。</p>
+<p>　　首先 <em>感谢</em> 伟大的墙及其先祖。</p>
 
-<p>首先通过命令 virt-manager 启动图形界面，点上面的图标创建虚机</p>
+<p>　　然后，我们可以本地运行 Docker 官方文档的网站，以 docker 的方式：</p>
 
-<p><img src="http://shurriklab.qiniudn.com/xxowgek8n3h4z89y4u1kdnm079.png" alt="" /></p>
+<blockquote>
+  <p><code class="highlighter-rouge">$ docker run -d -p 80:4000 docs/docker.github.io</code></p>
+</blockquote>
 
-<p>给虚机命名为 kvm1，这里选择从哪里启动虚机。如果是安装新的 OS，可以选择第一项。如果已经有安装好的镜像文件，选最后一项（如上图）</p>
+<p>　　这样访问docker宿主机的 80 端口，如<a href="http://localhost">http://localhost</a>，就会看到官网文档了。</p>
 
-<p>接下来需要告诉 virt-manager 镜像的位置。</p>
+<p>　　最近有朋友说我的blog被墙了打不开，我大惊，定睛一看发现是github pages改成了https，也就是说网址要改成<a href="https://ixjx.github.io/blog">https://ixjx.github.io/blog</a> 。</p>
 
-<p><img src="http://shurriklab.qiniudn.com/5mttqzn5a0fcgnhsdof9l8y9cn.png" alt="" /></p>
+<p>　　想到同样可以用docker的方式来本地运行网站，说干就干。依然是利用docker cloud的automated build，在blog的github里写Dockerfile，Dockerfile很简单，一共就5行~~</p>
 
-<p>在我的系统中存放了一个 cirros-0.3.3-x86_64-disk.img 镜像文件 。cirros 是一个很小的 linux 镜像，非常适合测试用，大家可以到 http://download.cirros-cloud.net/ 下载，然后放到 /var/lib/libvirt/images/ 目录下，这是 KVM 默认查找镜像文件的地方。</p>
+<p>　　因为使用了caddy作为web服务器，同时还要写一个Caddyfile。</p>
 
-<p><img src="http://shurriklab.qiniudn.com/h7a1g3m21b2csfp46gml1d8nz5.png" alt="" /></p>
+<p>　　然后就可以通过:</p>
 
-<p>为虚拟机分配 CPU 和内存，点击 “Forward”， 再确认一下信息，就可以启动虚机了。</p>
+<blockquote>
+  <p><code class="highlighter-rouge">$ docker run -d -p 80:80 ixjx/ixjx.github.io</code></p>
+</blockquote>
 
-<p>virt-manager 可以对虚机进行各种管理操作，界面直观友好，很容易上手。 同时我们也可以用命令 virsh 管理虚机，比如查看宿主机上的虚机。</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>root@ubuntu:~# virsh list
-Id    Name              State
---------------------------------
-8     kvm1              running
-</code></pre>
-</div>
-
-<p>至此，第一个虚机已经跑起来了，采用的都是默认设置，后面我们会逐步讨论有关虚机更细节的内容，比如存储和网卡的设置。</p>
-
+<p>　　然后就可以访问本地 80 端口看到最新的blog了 <del>说得好像有人看一样</del></p>
 
           </article>
           <hr class="boundary">
@@ -198,7 +191,7 @@ Id    Name              State
                 <ul>
                     
                     <li>
-                        <a href="/blog/tags#虚拟化"><span class="octicon octicon-tag"></span>&nbsp;虚拟化</a>
+                        <a href="/blog/tags#容器"><span class="octicon octicon-tag"></span>&nbsp;容器</a>
                     </li>
                     
                 </ul>
@@ -217,51 +210,7 @@ Id    Name              State
                     
                         
                             <li>
-                                <a href="/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/">动手实践Linux VLAN-每天5分钟的OpenStack(13)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/">Linux如何实现VLAN-每天5分钟的OpenStack(12)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/">理解virbr0-每天5分钟的OpenStack(11)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/">动手实践虚拟网络-每天5分钟的OpenStack(10)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/">KVM网络虚拟化基础-每天5分钟的OpenStack(9)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/">LVM类型的Storage Pool-每天5分钟的OpenStack(8)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/">KVM存储虚拟化-每天5分钟的OpenStack(7)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/">CPU和内存虚拟化原理-每天5分钟的OpenStack(6)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-02/%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86KVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(5)/">远程管理KVM虚机-每天5分钟的OpenStack(5)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-02/%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(2)/">虚拟化-每天5分钟的OpenStack(2)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-02/%E5%87%86%E5%A4%87KVM%E5%AE%9E%E9%AA%8C%E7%8E%AF%E5%A2%83-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(3)/">准备KVM实验环境-每天5分钟的OpenStack(3)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2017-11-01/%E5%86%99%E5%9C%A8%E6%9C%80%E5%89%8D%E9%9D%A2-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(1)/">写在最前面-每天5分钟的OpenStack(1)</a>
+                                <a href="/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/">使用docker科学上网</a>
                             </li>
                         
                             <li>
@@ -269,11 +218,27 @@ Id    Name              State
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-08-08/KVM%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%85%A5%E4%B8%8D%E4%BA%86%E9%97%A8/">KVM从入门到入不了门</a>
+                                <a href="/blog/2015-08-16/%E5%85%B3%E4%BA%8Ecacti/">关于cacti</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-03-06/awk-sed-grep%E6%80%BB%E7%BB%93/">awk & sed & grep总结</a>
+                                <a href="/blog/2015-06-05/%E7%A7%91%E5%AD%A6%E5%A7%BF%E5%8A%BF%E4%B8%8Agoogle%E6%8C%87%E5%8C%97/">科学姿势上google指北</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2014-10-09/%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97RAID/">磁盘阵列RAID</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2014-09-13/SDN%E7%BD%91%E7%BB%9C%E4%B9%8BMininet/">SDN网络之Mininet</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2014-04-16/%E6%95%B0%E6%8D%AE%E7%BD%91%E4%B8%8E%E4%BC%A0%E9%80%81%E7%BD%91%E6%80%BB%E7%BB%93/">数据网与传送网总结</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2013-09-25/%E5%96%9C%E5%9F%B9%E8%AE%AD/">喜培训</a>
                             </li>
                         
                     

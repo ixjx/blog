@@ -172,12 +172,11 @@ KVM 将宿主机目录 /var/lib/libvirt/images/ 作为默认的 Storage Pool。<
 <p><img src="http://shurriklab.qiniudn.com/5nolfucas8twqfpgc808n88j5g.png" alt="" /></p>
 
 <p>在 /var/lib/libvirt/images/ 下多了一个 8G 的文件 kvm1.img</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>root@ubuntu:~# ls -l /var/lib/libvirt/images/        
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@ubuntu:~# ls -l /var/lib/libvirt/images/        
 total 14044
 -rw-r--r-- 1 root root   14417920 Sep  4 11:24 cirros-0.3.3-x86_64-disk.img
 -rw------- 1 root root 8589934592 Sep  4 21:39 kvm1.img 
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>使用文件做 Volume 有很多优点：存储方便、移植性好、可复制、可远程访问。</p>
 
 <p>前面几个优点都很好理解，这里对“可远程访问”多解释一下。</p>

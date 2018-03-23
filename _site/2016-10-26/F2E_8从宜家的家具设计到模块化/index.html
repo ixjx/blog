@@ -135,22 +135,20 @@
 　　这小小一堆东西包含了一张床，一个书桌，一个小桌子，脚凳，和一把躺椅。你所需要做的，就是像搭积木将它们组装起来。</p>
 
 <p>　　模块化的特点也是这样，可以组合，相对独立，在需要的时候可以很方便的加上，而去掉的时候不会影响现有功能。那怎么可以基本实现这种方式呢？给个简单的例子：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div class="mod-a"&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-a"&gt;
     &lt;h3&gt;模块化Demo&lt;/h3&gt;
     &lt;p&gt;模块化结构的例子。&lt;/p&gt;
 &lt;/div&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　对应的CSS可以这么写：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>.mod-a {...}
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-a {...}
 .mod-a h3{...}
 .mod-a p{...}
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　其中“mod-a”就是这个模块的名称，表示这是名为“a”的模块，现在这个模块可以被放到你所需要的地方。既然是做模块，就不会只有一个，我们再加一个“mod-b”：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div class="mod-b"&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-b"&gt;
     &lt;h3&gt;模块化Demo&lt;/h3&gt;
     &lt;div&gt;
         &lt;h4&gt;模块化的特点：&lt;/h4&gt;
@@ -160,15 +158,13 @@
         &lt;/ul&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-</code></pre>
-</div>
-<div class="highlighter-rouge"><pre class="highlight"><code>.mod-b{...}
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-b{...}
 .mod-b h3{...}
 .mod-b div{...}
 .mod-b h4{...}
 .mod-b ul li{...}
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　实际应用中大多需要加一些classname来减少类定义的复杂度，这个例子比较简单，但足以说明模块化的特点。</p>
 
@@ -177,7 +173,7 @@
 <p>　　宜家那些小件的商品，往往可以组合到不同的其它商品上面。这也带出了模块化的另一个话题：模块中的模块。即在模块中可以存在其它的模块，整个页面的结构就像是一个大的模块，而上面所讲的例子就是模块中的模块了，只不过我们把这个定义缩小一层。上面例子中对h3的定义，就可以看成是一个模块，它在“mod-a”、“mod-b”两个模块中都出现，并且结构表现相对固定。</p>
 
 <p>　　SO，这只是对一个标签的定义，如果不只一个标签呢？我们重新改下例子：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div class="mod-c"&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-c"&gt;
     &lt;div class="mod-a"&gt;
         &lt;h3&gt;模块化Demo&lt;/h3&gt;
         &lt;p&gt;这个是“模块中的模块”的例子。&lt;/p&gt;
@@ -187,9 +183,8 @@
         &lt;p&gt;模块“mod-a”就是一个模块中的模块。&lt;/p&gt;
     &lt;/div&gt;
 &lt;/div&gt;
-</code></pre>
-</div>
-<div class="highlighter-rouge"><pre class="highlight"><code>.mod-a{...}
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-a{...}
 .mod-a h3{...}
 .mod-a p{...}
 
@@ -197,8 +192,7 @@
 .mod-c h4{...}
 .mod-c .cont{...}
 .mod-c .cont p{...}
-</code></pre>
-</div>
+</code></pre></div></div>
 <p><img src="http://shurriklab.qiniudn.com/yijia3.jpg" alt="" /></p>
 
 <p>　　晒下成果，如果可以，其实我倒是挺想整体风格都照搬宜家:D，因为不喜欢其他家具的过度设计。比如说床，床头动不动给你雕上龙和祥云，顺手加木头柱子，雕的好看也行，关键丑得突破天际。一说就是实木————我要实木干嘛？让你雕难看的送子观音吗？而且大部分家具都在家具城里卖，得讲价，就让我觉得很难办，讲价吧……不会，不讲价吧，又觉得自己吃亏了。</p>

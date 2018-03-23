@@ -143,7 +143,7 @@
   <p>CSS</p>
 </blockquote>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;div class="content studio-wrap"&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="content studio-wrap"&gt;
   &lt;textarea name="" cols="30" rows="10" hmd-editor&gt;&lt;/textarea&gt;
 &lt;/div&gt;
 &lt;footer class="tool"&gt;
@@ -155,19 +155,17 @@
     &lt;a studio-save href="javascript://" class="btn btn-primary" title="保存更改" style="border-radius:0;"&gt;&lt;i class="glyphicon glyphicon-floppy-disk"&gt;&lt;/i&gt;&lt;/a&gt;
   &lt;/section&gt;
 &lt;/footer&gt;
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　CSS写得比较难看，没什么好说的。
 　　样式里我大量使用了<code class="highlighter-rouge">calc</code>这个功能，这在布局的时候非常的方便，比如：</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>body {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>body {
     height: calc(100% - 50px);
     overflow: hidden;
     color: #fff;
     background: #1E1E1E;
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　那么工具条就是这个样子啦。
 <img src="http://shurriklab.qiniudn.com/eajy1g3zveaveh01izyxz982gl.png" alt="" /></p>
@@ -185,7 +183,7 @@
 <p>　　这个功能很简单，只要把当前文件设为空，并且清空编辑器内容就算是新建文件了，保存的时候才会让用户选择保存路径。
 　　
 　　修改<code class="highlighter-rouge">editor.js</code>的<code class="highlighter-rouge">setFile</code>方法</p>
-<div class="highlighter-rouge"><pre class="highlight"><code> //设置当前文件
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> //设置当前文件
     setFile:function(filepath){
       if(filepath &amp;&amp; fs.existsSync(filepath)){
         var txt = util.readFileSync(filepath);
@@ -197,19 +195,17 @@
         this.cm.setValue('');
       }
     }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　实现<code class="highlighter-rouge">directive</code>，点击按钮时调用编辑器的<code class="highlighter-rouge">setFile</code>让<code class="highlighter-rouge">filepath</code>为空。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code> studio.directive('studioNewfile', function () {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> studio.directive('studioNewfile', function () {
     return function ($scope, elem) {
       $(elem[0]).on('click',function(){
         hmd.editor.setFile();
       });
     };
   });
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　这样新建文件按钮就完成了，其实这按钮的功能就是清空编辑器，真正的保存新文件功能在保存按钮功能里实现。</p>
 
@@ -219,7 +215,7 @@
 
 <p>　　保存按钮只有在文本有改动时才可用，这样用户就能很直观的看到是否已保存(禁用按钮时，按ctrl+s依然可以保存，很多人都习惯一直按ctrl+s)。
 　　通过<code class="highlighter-rouge">ng-class</code>来实现这个功能，将class:disabled绑定到<code class="highlighter-rouge">editorChanged</code>这个上下文变量上。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code> studio.directive('studioSave',function(){
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> studio.directive('studioSave',function(){
     return function($scope,elem){
       var editor = hmd.editor;
       //标识是否有未保存的变更.
@@ -238,13 +234,12 @@
       });
     };
     });
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　这样$scope.editorChanged变化时，保存按钮也会跟着变化，不需要直接操作dom元素。
 　　
 　　<code class="highlighter-rouge">editor.js</code>里保存功能的实现</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>//保存文件
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//保存文件
 save : function () {
   var txt = this.cm.getValue();
   if(this.filepath){
@@ -270,8 +265,7 @@ save : function () {
 
       hmd.msg('保存新文件');
     },
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <blockquote>
   <p>打开文件</p>
@@ -288,7 +282,7 @@ save : function () {
 </blockquote>
 
 <p>　　通过按钮打开与另存为类似，直接上代码，不用多做解释。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>openFile:function(){
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openFile:function(){
       var me = this;
       this.openFileInput = $('&lt;input style="display:none;" type="file"  accept=".md"/&gt;');
       this.openFileInput[0].addEventListener("change", function (evt) {
@@ -298,11 +292,10 @@ save : function () {
       }, false);
       this.openFileInput.trigger('click');
     },
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　然后是实现按钮绑定的<code class="highlighter-rouge">directive</code>。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;a studio-openfile href="javascript://" class="btn btn-primary" title="打开文件" ng-click="openTerminal()"&gt;省略..&lt;/a&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;a studio-openfile href="javascript://" class="btn btn-primary" title="打开文件" ng-click="openTerminal()"&gt;省略..&lt;/a&gt;
 
  studio.directive('studioOpenfile', function () {
     return function ($scope, elem) {
@@ -311,8 +304,7 @@ save : function () {
       });
     };
   });
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <blockquote>
   <p>双击md文件打开</p>
@@ -320,7 +312,7 @@ save : function () {
 
 <p>　　首先，选随便选中一个md文件，并设置默认用HexoMD程序打开。然后双击随便一个md文件试试,可以看到双击后程序会启动，但是并不会打开双击的文件，接下来就写代码实现它。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>studio.directive('hmdEditor', function () {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>studio.directive('hmdEditor', function () {
     return function ($scope, elem) {
       hmd.editor.init({el:elem[0]});
       //省略部分代码...
@@ -336,8 +328,7 @@ save : function () {
       });
     };
   });
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　<a href="https://github.com/nwjs/nw.js/wiki/Handling-files-and-arguments">相关知识</a> ，关掉程序，再次双击md文件，就可以看到打开功能正常了。在软件已启动的状态双击文件也可以打开该文件。</p>
 

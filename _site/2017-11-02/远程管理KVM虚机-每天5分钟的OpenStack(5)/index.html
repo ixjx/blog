@@ -141,13 +141,12 @@
 <p>因为 KVM（准确说是 Libvirt）默认不接受远程管理，需要按下面的内容配置被管理宿主机中的两个文件</p>
 
 <p>/etc/default/libvirt-bin</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>start_libvirtd="yes"
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>start_libvirtd="yes"
 libvirtd_opts="-d -l"
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>/etc/libvirt/libvirtd.conf</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>listen_tls = 0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>listen_tls = 0
 listen_tcp = 1
 unix_sock_group = "libvirtd"
 unix_sock_ro_perms = "0777"
@@ -155,8 +154,7 @@ unix_sock_rw_perms = "0770"
 auth_unix_ro = "none"
 auth_unix_rw = "none"
 auth_tcp = "none" 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>然后重启 Libvirtd 服务就可以远程管理了。</p>
 

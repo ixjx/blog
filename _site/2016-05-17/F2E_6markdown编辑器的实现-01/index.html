@@ -151,31 +151,30 @@
   <li><code class="highlighter-rouge">package.json</code>nw.js的配置文件</li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HexoMD"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Markdown for hexo"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"app/index.html"</span><span class="p">,</span><span class="w"> </span><span class="err">//程序入口页面</span><span class="w">
-  </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="s2">"shurrik"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"license"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MIT"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"directories"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"no"</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"devDependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
-  </span><span class="nt">"window"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HexoMD"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"icon"</span><span class="p">:</span><span class="w"> </span><span class="s2">"app/img/logo.png"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"toolbar"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="err">//是否显示地址栏工具条(很重要)</span><span class="w">
-    </span><span class="nt">"frame"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="err">//是否显示程序边框</span><span class="w">
-    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">700</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"center"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"min_width"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"min_height"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "name": "HexoMD",
+  "description": "Markdown for hexo",
+  "main": "app/index.html", //程序入口页面
+  "author": "shurrik",
+  "license": "MIT",
+  "directories": {
+    "test": "no"
+  },
+  "devDependencies": {},
+  "window": {
+    "title": "HexoMD",
+    "icon": "app/img/logo.png",
+    "toolbar": false, //是否显示地址栏工具条(很重要)
+    "frame": false, //是否显示程序边框
+    "width": 1000,
+    "height": 700,
+    "position": "center",
+    "min_width": 600,
+    "min_height": 400
+  }
   
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+}
+</code></pre></div></div>
 
 <ol>
   <li><code class="highlighter-rouge">app目录</code> 程序的所有源代码的根目录</li>
@@ -193,19 +192,17 @@
   <img src="http://shurriklab.qiniudn.com/75m2b6vni01f9sr0gap251vtv5.png" alt="" /></p>
 
 <p>　　界面采用三栏布局，分别为<code class="highlighter-rouge">导航栏</code>、<code class="highlighter-rouge">内容区</code>，<code class="highlighter-rouge">工具条</code>。为了美观，我在配置里去掉了系统自带的边框，因此要实现自定义的拖动窗口功能还需要增加一些设置。所谓的设置，其实只要加上对应的样式即可，功能都由nw.js实现了。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>  .navbar{
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  .navbar{
   	-webkit-app-region: drag;
   }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　另外为了让编辑器看起来更像客户端一点，我禁用掉了文本选择，防止一些被作为按钮的a标签被选中。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>html{
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html{
 	height: 100%;
     -webkit-user-select: none;
 }
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <blockquote>
   <p>app.js</p>
@@ -215,7 +212,7 @@
 <code class="highlighter-rouge">angular.module('hmd', ['ui.router','hmd.studio'])</code></p>
 
 <p>　　定义angular模块，<code class="highlighter-rouge">modules</code>所有的业务模块都会放到单独的子目录里，如这里注册的<code class="highlighter-rouge">hmd.studio</code></p>
-<div class="highlighter-rouge"><pre class="highlight"><code> //模块根目录
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> //模块根目录
   var baseModuleDir = './app/modules/';
   //引入模块,模块内js文件会被自动加载到页面中
   hmd.regModule = function (name, reqModule) {
@@ -230,14 +227,13 @@
       }
     });
   };
-</code></pre>
-</div>
+</code></pre></div></div>
 <blockquote>
   <p>导航栏按钮</p>
 </blockquote>
 
 <p>　　导航栏右边有3个按钮，分别为最小化、最大化、关闭，在modules根目录的<code class="highlighter-rouge">directives.js</code>用于实现。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>(function () {
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(function () {
   var gui = require('nw.gui'), win = gui.Window.get(),winMaximize = false;
   angular.module('hmd.directives', [])
   //最小化窗口
@@ -281,8 +277,7 @@
     };
   }]);
 })();
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>　　定义了全局directive模块<code class="highlighter-rouge">angular.module('hmd.directives', [])</code>，接下来将directive应用到按钮上，将script添加到index.html的app.js之后。
 　　app.js里的angular模块注册里增加hmd.directives模块<code class="highlighter-rouge">angular.module('hmd', ['ui.router','hmd.directives','hmd.studio'])</code></p>
 

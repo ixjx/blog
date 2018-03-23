@@ -173,10 +173,9 @@
 <p>##自定义脚本的添加以及监控
 　　很多时候，我们需要为我们独有的环境去指定监控内容，那么如何制定呢？就可以通过自己写脚本的方式进行收集数据。
 　　我们需要一个脚本，脚本的语言随意，只要在Linux的机器上能够使用运行并且有返回内容。这里我用一个监控QQ在线人数的例子来举例。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash </span>
-<span class="nb">echo</span> <span class="s2">"QQ_Now:</span><span class="sb">`</span>curl im.qq.com/online.shtml | grep qqdata | cut -d<span class="s2">":"</span> -f 3 | cut -d<span class="s2">"&gt;"</span> -f 2 | cut -d<span class="s2">"&lt;"</span> -f 1<span class="sb">`</span><span class="s2">"</span> 
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash </span>
+<span class="nb">echo</span> <span class="s2">"QQ_Now:</span><span class="sb">`</span>curl im.qq.com/online.shtml | <span class="nb">grep </span>qqdata | <span class="nb">cut</span> <span class="nt">-d</span><span class="s2">":"</span> <span class="nt">-f</span> 3 | <span class="nb">cut</span> <span class="nt">-d</span><span class="s2">"&gt;"</span> <span class="nt">-f</span> 2 | <span class="nb">cut</span> <span class="nt">-d</span><span class="s2">"&lt;"</span> <span class="nt">-f</span> 1<span class="sb">`</span><span class="s2">"</span> 
+</code></pre></div></div>
 <p>　　此脚本运行之后输出内容为：
 <img src="http://ixjx.coding.me/blog/pic/cacti4.png" alt="" />
 　　这个里面只有最后一行是有用的，其他的为curl的抓取信息。

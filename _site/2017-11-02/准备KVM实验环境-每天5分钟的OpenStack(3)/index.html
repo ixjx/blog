@@ -164,7 +164,7 @@
 <p>apt 默认会到官网上去下载安装包，速度很慢，我们可以使用国内的镜像站点。</p>
 
 <p>配置/etc/apt/sources.list</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>deb http://mirrors.163.com/ubuntu/ trusty main restricted universe multiverse
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>deb http://mirrors.163.com/ubuntu/ trusty main restricted universe multiverse
 deb http://mirrors.163.com/ubuntu/ trusty-security main restricted universe multiverse
 deb http://mirrors.163.com/ubuntu/ trusty-updates main restricted universe multiverse
 deb http://mirrors.163.com/ubuntu/ trusty-proposed main restricted universe multiverse
@@ -174,8 +174,7 @@ deb-src http://mirrors.163.com/ubuntu/ trusty-security main restricted universe 
 deb-src http://mirrors.163.com/ubuntu/ trusty-updates main restricted universe multiverse
 deb-src http://mirrors.163.com/ubuntu/ trusty-proposed main restricted universe multiverse
 deb-src http://mirrors.163.com/ubuntu/ trusty-backports main restricted universe multiverse
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>然后执行下面命令更新安装包 index</p>
 
@@ -198,10 +197,9 @@ deb-src http://mirrors.163.com/ubuntu/ trusty-backports main restricted universe
 <p><img src="http://shurriklab.qiniudn.com/jw8q0btbyx5375vzt80e5jw0zf.png" alt="" /></p>
 
 <p>Ubuntu 启动后，用以下命令确认 CPU 支持虚拟化</p>
-<div class="highlighter-rouge"><pre class="highlight"><code># egrep -o '(vmx|svm)' /proc/cpuinfo
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># egrep -o '(vmx|svm)' /proc/cpuinfo
 # vmx
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>确认 Libvirtd 服务已经启动</p>
 
 <p>KVM 准备就绪，下一节我们将创建虚拟机。</p>

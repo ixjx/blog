@@ -38,7 +38,7 @@ disqus_shortname: ""
 #imgrepo: "http://127.0.0.1:4000/static/img"
 
 url: "/blog"
-baseurl: "https://ixjx.github.io"
+baseurl: "/"
 imgrepo: "https://ixjx.github.io/demo/static/img"
 
 

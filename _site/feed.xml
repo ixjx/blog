@@ -3,11 +3,67 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>/blog/</link>
-    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 27 Mar 2018 16:51:05 +0800</pubDate>
-    <lastBuildDate>Tue, 27 Mar 2018 16:51:05 +0800</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 15 May 2018 11:23:09 +0800</pubDate>
+    <lastBuildDate>Tue, 15 May 2018 11:23:09 +0800</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
+    
+      <item>
+        <title>碎碎念</title>
+        <description>&lt;p&gt;　　最近开始使用Firefox，我相信用惯了Chrome/360急速的人看着最上面标签条十分辣眼睛，找了个插件&lt;a href=&quot;https://addons.mozilla.org/zh-CN/firefox/user/nanpuyue/&quot;&gt;https://addons.mozilla.org/zh-CN/firefox/user/nanpuyue/&lt;/a&gt;需要安装一个脚本，然而我这里的网络打不开gist。。。不过另外３个插件最小化最大化和关闭键倒是用上了&lt;/p&gt;
+
+&lt;p&gt;　　参考了&lt;a href=&quot;http://eleveni386.7axu.com/blog/post/admin/Linux%E7%94%A8%E6%88%B7%E5%8E%BB%E6%8E%89Firefox-57-%E8%AE%A8%E5%8E%8C%E7%9A%84Title-bar&quot;&gt;http://eleveni386.7axu.com/blog/post/admin/Linux%E7%94%A8%E6%88%B7%E5%8E%BB%E6%8E%89Firefox-57-%E8%AE%A8%E5%8E%8C%E7%9A%84Title-bar&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;　思路&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　利用wmctrl找到窗口ID , 使用GDK得到该窗口句柄, 并操作窗口. 去掉窗口装饰器(外边框)&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;准备工具&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　需要wmctrl, 以及pygtk包&lt;/p&gt;
+
+&lt;p&gt;　　这两个需要自行安装, 一般发行版本 不自带&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;操作步骤&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;重命名firefox
+&lt;code class=&quot;highlighter-rouge&quot;&gt;mv /usr/lib/firefox/firefox /usr/lib/firefox/firefox-browser&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;创建同名脚本vi firefox
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+/usr/lib/firefox/firefox-browser &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &amp;amp;
+&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;2
+&lt;span class=&quot;nv&quot;&gt;F_W_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;wmctrl &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; |grep &lt;span class=&quot;s1&quot;&gt;'Firefox'&lt;/span&gt;|awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'from gtk.gdk import window_foreign_new, window_process_all_updates; w = window_foreign_new(int(&quot;'&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$F_W_ID&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot;, 16)); w.set_decorations(0); window_process_all_updates()'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;给予执行权限
+&lt;code class=&quot;highlighter-rouge&quot;&gt;chomd 777 firefox&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;完毕, 截图
+&lt;img src=&quot;http://shurriklab.qiniudn.com/20180326170147.png&quot; alt=&quot;&quot; /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Tue, 15 May 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
+        
+        <category>Linux</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
     
       <item>
         <title>干掉Linux Firefox的Title bar</title>
@@ -55,8 +111,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;/ol&gt;
 </description>
         <pubDate>Mon, 26 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
-        <guid isPermaLink="true">/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
+        <link>http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
         
         <category>Linux</category>
         
@@ -94,8 +150,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;p&gt;　　然后就可以访问本地 80 端口看到最新的blog了 &lt;del&gt;说得好像有人看一样&lt;/del&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
-        <guid isPermaLink="true">/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
+        <link>http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
         
         <category>容器</category>
         
@@ -167,8 +223,8 @@ docker run \
 &lt;p&gt;　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。&lt;/p&gt;
 </description>
         <pubDate>Tue, 16 Jan 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
-        <guid isPermaLink="true">/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
+        <link>http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
         
         <category>翻墙</category>
         
@@ -228,8 +284,8 @@ docker run \
 &lt;/ol&gt;
 </description>
         <pubDate>Wed, 06 Dec 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>http://localhost:4000/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -342,8 +398,8 @@ docker run \
 &lt;p&gt;eth0.20，vent1 和 brvlan20 都可以看着 vlan20 的 access 口&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
-        <guid isPermaLink="true">/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
+        <link>http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
         
         <category>虚拟化</category>
         
@@ -426,8 +482,8 @@ docker run \
 &lt;p&gt;下一节我们通过实验来实践 VLAN。&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
-        <guid isPermaLink="true">/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
+        <link>http://localhost:4000/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
         
         <category>虚拟化</category>
         
@@ -479,8 +535,8 @@ virbr0          8000.fe540075dd1a       yes                   vnet0
 
 </description>
         <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
-        <guid isPermaLink="true">/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
+        <link>http://localhost:4000/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
         
         <category>虚拟化</category>
         
@@ -585,8 +641,8 @@ vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
 &lt;p&gt;下节我们讨论 virbr0&lt;/p&gt;
 </description>
         <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</link>
-        <guid isPermaLink="true">/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</guid>
+        <link>http://localhost:4000/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</guid>
         
         <category>虚拟化</category>
         
@@ -653,93 +709,8 @@ vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
 &lt;p&gt;有了上面的基础知识，下一节将演示如何在实验环境中实现这套虚拟网络。&lt;/p&gt;
 </description>
         <pubDate>Sun, 05 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</link>
-        <guid isPermaLink="true">/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</guid>
-        
-        <category>虚拟化</category>
-        
-        
-        <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>LVM类型的Storage Pool-每天5分钟的OpenStack(8)</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#lvm-类型的-storage-pool&quot; id=&quot;markdown-toc-lvm-类型的-storage-pool&quot;&gt;LVM 类型的 Storage Pool&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#其他类型的storage-pool&quot; id=&quot;markdown-toc-其他类型的storage-pool&quot;&gt;其他类型的Storage Pool&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/rb1ofgr0in5ng5uincqh2rjf3l.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;lvm-类型的-storage-pool&quot;&gt;LVM 类型的 Storage Pool&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;不仅一个文件可以分配给客户机作为虚拟磁盘，宿主机上 VG 中的 LV 也可以作为虚拟磁盘分配给虚拟机使用。&lt;/p&gt;
-
-&lt;p&gt;不过，LV 由于没有磁盘的 MBR 引导记录，不能作为虚拟机的启动盘，只能作为数据盘使用。&lt;/p&gt;
-
-&lt;p&gt;这种配置下，宿主机上的 VG 就是一个 Storage Pool，VG 中的 LV 就是 Volume。&lt;/p&gt;
-
-&lt;p&gt;LV 的优点是有较好的性能；不足的地方是管理和移动性方面不如镜像文件，而且不能通过网络远程使用。&lt;/p&gt;
-
-&lt;p&gt;下面举个例子。&lt;/p&gt;
-
-&lt;p&gt;首先，在宿主机上创建了一个容量为 10G 的 VG，命名为 HostVG。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/tgbproab3lnb37ninhrpsahpk3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;然后创建了一个 Storage Pool 的定义文件 /etc/libvirt/storage/HostVG.xml，内容为&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/52e4qv5l0nfm9gb5wy2tivlmzp.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;然后通过 virsh 命令创建新的 Storage Pool “HostVG”&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/i8xj0gultw6d279pzd6yhk580v.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;并启用这个 HostVG&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/0vb8mz9jjbr9tkb49urb8hmgc7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;现在我们可以在 virt-manager 中为虚机 kvm1 添加 LV 的虚拟磁盘了。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/bhhrmh00u7mk7jz7zuv63fecdi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;可以看到 HostVG 已经在 Stroage Pool 的列表中了，选择 HostVG&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/s3cxphn7uikym4sxz70nb79vvl.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;为 volume 命名为 newlv 并设置大小 100MB&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/bbaga3qtp2sat9nd14nmktpqa1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;点击 Finish，newlv 创建成功，点击 Choose Volume&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/hxyjdhht5t7c7gmbp0btylftak.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;点击 Finish 确认将 newlv 作为 volume 添加到 kvm1&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/1ndma0hg8b3p70wlo95wofofg8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;新 volume 添加成功&lt;/p&gt;
-
-&lt;p&gt;在宿主机上则多了一个命名为newlv的LV&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/ej7ui7ea0fcg10wmc81078wzse.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;其他类型的storage-pool&quot;&gt;其他类型的Storage Pool&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;KVM 还支持 iSCSI，Ceph 等多种类型的 Storage Pool，这里就不一一介绍了，最常用的就是目录类型，其他类型可以参考文档 http://libvirt.org/storage.html&lt;/p&gt;
-
-&lt;p&gt;下一节我们将开始讨论 KVM 的网络虚拟化原理&lt;/p&gt;
-
-</description>
-        <pubDate>Fri, 03 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</link>
-        <guid isPermaLink="true">/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/</guid>
+        <link>http://localhost:4000/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</guid>
         
         <category>虚拟化</category>
         

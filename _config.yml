@@ -9,7 +9,7 @@ kramdown:
 gems: [jekyll-paginate]
 
 paginate: 5
-paginate_path: "/blog/page:num"
+paginate_path: "/page:num"
 
 
 
@@ -37,7 +37,7 @@ disqus_shortname: ""
 #url: "http://127.0.0.1:4000"
 #imgrepo: "http://127.0.0.1:4000/static/img"
 
-url: "/blog"
+url: ""
 imgrepo: "https://ixjx.github.io/demo/static/img"
 
 

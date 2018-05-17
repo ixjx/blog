@@ -5,8 +5,8 @@
     <description>shurrik`s blog</description>
     <link>/blog/</link>
     <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 15 May 2018 15:14:22 +0800</pubDate>
-    <lastBuildDate>Tue, 15 May 2018 15:14:22 +0800</lastBuildDate>
+    <pubDate>Thu, 17 May 2018 14:18:31 +0800</pubDate>
+    <lastBuildDate>Thu, 17 May 2018 14:18:31 +0800</lastBuildDate>
     <generator>Jekyll v3.7.3</generator>
     
       <item>
@@ -22,10 +22,10 @@
 
 &lt;p&gt;　　某天突然心血来潮想写个小游戏玩玩，然后发现微信小程序又更新了好几个版本，加了好多内容。等我更新完 SDK，看过更新的内容之后，写游戏这件事本身却被抛在了脑后。等哪天突然又想起来，发现 SDK 又更新了，周而复始。我学习的速度，已经赶不上微信小程序引擎更新的速度了。&lt;/p&gt;
 
-&lt;p&gt;　　去年我在 GitHub 上的代码提交次数只有80 几次，可以忽略不计了。
+&lt;p&gt;　　去年我在 Github 上的代码提交次数只有80 几次，可以忽略不计了。
   &lt;img src=&quot;http://shurriklab.qiniudn.com/nfhcyx6pny1ramw3hdn8to0cc8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;　　这里还要提下 Go 的静态网站生成器 Hugo，从我最早使用时的 v0.2 几版本，到现在已经到了 v0.40 版本。开源社区的项目就像一个大轮子，单位时间内虽然不是速度最快，但是不断有人参与进来推动轮子前进，不知不觉之间，已经前进了很多很多。新版本不断在改进完善，旧的过时功能不断被修正和删除，以至于之前我练手写的几个主题被迫进行了几次升级，以支持新版的 Hugo。&lt;/p&gt;
+&lt;p&gt;　　这里还要提下Docker，从我最早使用时的 1.8 版本，到现在已经到了 18.XX 版本，连版本号结构都变了。开源社区的项目就像一个大轮子，单位时间内虽然不是速度最快，但是不断有人参与进来推动轮子前进，不知不觉之间，已经前进了很多很多。新版本不断在改进完善，旧的过时功能不断被修正和删除，以至于之前我练手写的几个镜像被迫进行了几次升级，以支持新版的 Docker。&lt;/p&gt;
 
 &lt;p&gt;　　所以，我的一个感悟是，这个世界正在以你难以想象的速度在向前发展，不管你看得见还是看不见。所以你一定要保持前进，不然等你回过神来，会发现已经被远远的抛在后面。前进是很困难的，只有努力，才能保持原地不动。&lt;/p&gt;
 </description>

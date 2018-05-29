@@ -3,5 +3,15 @@
 browse
 gzip
 
+root /srv
+
+filemanager / {
+        show /srv/file
+        allow_new true
+        allow_edit true
+        allow_commands false
+
+}
+
 log stdout
 errors stderr

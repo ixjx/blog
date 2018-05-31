@@ -5,7 +5,7 @@ gzip
 
 root /srv
 
-filemanager / {
+filemanager /file {
         show /srv/file
         allow_new true
         allow_edit true

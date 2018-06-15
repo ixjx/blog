@@ -22,7 +22,6 @@
                 without /token
         }
 
-        templates
         markdown {
                 ext .md .markdown
                 template /template/markdown.html

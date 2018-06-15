@@ -1,17 +1,30 @@
-0.0.0.0:80
+:80 {
+        gzip
+        browse
 
-browse
-gzip
+        root /srv
+        basicauth ixjx xjxam {
+                realm "ixjx`s secret"
+                /resume.md
+        }
 
-root /srv
-
-filemanager /file {
+        filemanager /file {
         show /srv/file
         allow_new true
         allow_edit true
         allow_commands false
 
-}
+        }
 
-log stdout
-errors stderr
+        tls self_signed
+
+        proxy /token localhost:3000/ {
+                without /token
+        }
+
+        templates
+        markdown {
+                ext .md .markdown
+                template /template/markdown.html
+        }
+}

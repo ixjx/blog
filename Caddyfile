@@ -21,9 +21,4 @@
         proxy /token localhost:3000/ {
                 without /token
         }
-
-        markdown {
-                ext .md .markdown
-                template /template/markdown.html
-        }
 }

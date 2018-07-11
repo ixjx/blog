@@ -16,4 +16,4 @@ tags: 容器
 
 ![这是原文](http://shurriklab.qiniudn.com/18-7-10/46528275.jpg)
 
-![这是译文](http://shurriklab.qiniudn.com/18-7-10/64896079.jpg)
+![这是译文](http://shurriklab.qiniudn.com/18-7-11/77399485.jpg)

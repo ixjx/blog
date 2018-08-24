@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>F2E_8从宜家的家具设计到模块化</title>
+    <title>深入理解装饰器</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="F2E_8从宜家的家具设计到模块化, 随编, IKEA, CodeShurrik" />
-    <meta name="description" content="F2E_8从宜家的家具设计到模块化, 随编, IKEA, 　　很久之前就知道宜家，但从未买过东西。一直听人说宜家的家具质量不好，便宜，整体是出租屋风，不过我倒是挺喜欢他家风格。上周去宜家逛了下，买了几件家具。你会发现宜家的设计很是巧妙，工作人员说无论家具大小，2个人就可以组装起来，像是搭积木一样。通过宜家的家具设计方法，抛下砖聊聊模块化设计。" />
+    <meta name="keywords" content="深入理解装饰器, 随编, python, CodeShurrik" />
+    <meta name="description" content="深入理解装饰器, 随编, python, 　　等offer等得心慌，写写之前面试遇到的坑吧。" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="http://localhost:4000/favicon.ico" />
-    <link rel="canonical" href="http://localhost:4000/2016-10-26/F2E_8%E4%BB%8E%E5%AE%9C%E5%AE%B6%E7%9A%84%E5%AE%B6%E5%85%B7%E8%AE%BE%E8%AE%A1%E5%88%B0%E6%A8%A1%E5%9D%97%E5%8C%96/" />
+    <link rel="canonical" href="http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/" />
     <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="http://localhost:4000/feed.xml"  />
 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
@@ -109,95 +109,174 @@
     <div class="content col-lg-9">
         <div class="sheet post">
           <header>
-            <h2>F2E_8从宜家的家具设计到模块化</h2>
+            <h2>深入理解装饰器</h2>
             <p class="post-meta">
-                <span class="octicon octicon-clock"></span> Oct 26, 2016
+                <span class="octicon octicon-clock"></span> Aug 24, 2018
             </p>
             <p class="post-tag">
                 <span><a href="http://localhost:4000/category/#随编"><span class="octicon octicon-list-unordered"></span>&nbsp;随编</a></span>
                 <span>
-                    <a class="word-keep" href="http://localhost:4000/tags/#IKEA"><span class="octicon octicon-tag"></span>&nbsp;IKEA</a>
+                    <a class="word-keep" href="http://localhost:4000/tags/#python"><span class="octicon octicon-tag"></span>&nbsp;python</a>
                     
                 </span>
             </p>
           </header>
           <hr class="boundary">
           <article>
-            <p>　　很久之前就知道宜家，但从未买过东西。一直听人说宜家的家具质量不好，便宜，整体是出租屋风，<del>不过我倒是挺喜欢他家风格</del>。上周去宜家逛了下，买了几件家具。你会发现宜家的设计很是巧妙，工作人员说无论家具大小，2个人就可以组装起来，像是搭积木一样。通过宜家的家具设计方法，抛下砖聊聊模块化设计。</p>
+            <p>　　等offer等得心慌，写写之前面试遇到的坑吧。</p>
 
-<p>　　去过宜家的同学应该都有注意到，宜家的家具基本都是组合的，可拆装。像是这样：</p>
+<p>　　面试官：看你简历写了熟悉python？</p>
 
-<!--more -->
-<p><img src="http://shurriklab.qiniudn.com/yijia1.jpg" alt="" /></p>
+<p>　　我：…会一点,shell脚本写得比较多</p>
 
-<p>　　还有这样：
-<img src="http://shurriklab.qiniudn.com/yijia2.jpg" alt="" />
-　　这小小一堆东西包含了一张床，一个书桌，一个小桌子，脚凳，和一把躺椅。你所需要做的，就是像搭积木将它们组装起来。</p>
+<p>　　面试官：那你给我讲讲装饰器吧</p>
 
-<p>　　模块化的特点也是这样，可以组合，相对独立，在需要的时候可以很方便的加上，而去掉的时候不会影响现有功能。那怎么可以基本实现这种方式呢？给个简单的例子：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-a"&gt;
-    &lt;h3&gt;模块化Demo&lt;/h3&gt;
-    &lt;p&gt;模块化结构的例子。&lt;/p&gt;
-&lt;/div&gt;
+<p>　　我：…呵呵</p>
+
+<p>　　之前只是了解python的函数式编程，大概知道装饰器(decorator)是在代码运行期间动态增加功能同时又不改变原有代码。</p>
+
+<blockquote>
+  <p>&lt; 函数+返回值高阶函数+实参高阶函数+嵌套函数+语法糖 = 装饰器 &gt;</p>
+</blockquote>
+
+<p>　　你能看懂吗？反正我是没看懂，所以一个一个的查了后才略有理解：装饰器本质上还是函数。</p>
+
+<h2 id="函数">函数</h2>
+
+<p>　　理解装饰器前，需要明白函数的工作原理，我们先从一个最简单函数定义开始：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span>
 </code></pre></div></div>
 
-<p>　　对应的CSS可以这么写：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-a {...}
-.mod-a h3{...}
-.mod-a p{...}
+<p>　　上面定义了一个函数，名字叫foo，也可以把 foo 可理解为变量名，该变量指向一个函数对象</p>
+
+<p><img src="http://shurriklab.qiniudn.com/18-8-24/81273610.jpg" alt="" /></p>
+
+<p>　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">value</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c"># 4</span>
 </code></pre></div></div>
 
-<p>　　其中“mod-a”就是这个模块的名称，表示这是名为“a”的模块，现在这个模块可以被放到你所需要的地方。既然是做模块，就不会只有一个，我们再加一个“mod-b”：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-b"&gt;
-    &lt;h3&gt;模块化Demo&lt;/h3&gt;
-    &lt;div&gt;
-        &lt;h4&gt;模块化的特点：&lt;/h4&gt;
-        &lt;ul&gt;
-            &lt;li&gt;相对独立&lt;/li&gt;
-            &lt;li&gt;可移植性高&lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-b{...}
-.mod-b h3{...}
-.mod-b div{...}
-.mod-b h4{...}
-.mod-b ul li{...}
+<p>　　变量名 foo 现在指向 &lt;function foo at 0x1030060c8&gt; 函数对象，但它也可以指向另外一个函数</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"bar"</span><span class="p">)</span>
+<span class="n">foo</span> <span class="o">=</span> <span class="n">bar</span>
+<span class="n">foo</span><span class="p">()</span> <span class="c"># bar()</span>
 </code></pre></div></div>
 
-<p>　　实际应用中大多需要加一些classname来减少类定义的复杂度，这个例子比较简单，但足以说明模块化的特点。</p>
+<p><img src="http://shurriklab.qiniudn.com/18-8-24/26546525.jpg" alt="" /></p>
 
-<p>　　在宜家的卖场中，基本是以设计师来划分商品区的，比如我买的床和书桌都叫MALM。模块化后的代码也可以被分配给不同的人进行编写，提高效率。当然要实现这种方式，我们也需要做些工作，如模块的命名、模块中哪些地方是需要留接口的等等。如上面的例子中可以约定的就有：命名以“mod”开头，模块标题使用h3标签。</p>
+<h2 id="返回值高阶函数">返回值高阶函数</h2>
 
-<p>　　宜家那些小件的商品，往往可以组合到不同的其它商品上面。这也带出了模块化的另一个话题：模块中的模块。即在模块中可以存在其它的模块，整个页面的结构就像是一个大的模块，而上面所讲的例子就是模块中的模块了，只不过我们把这个定义缩小一层。上面例子中对h3的定义，就可以看成是一个模块，它在“mod-a”、“mod-b”两个模块中都出现，并且结构表现相对固定。</p>
-
-<p>　　SO，这只是对一个标签的定义，如果不只一个标签呢？我们重新改下例子：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;div class="mod-c"&gt;
-    &lt;div class="mod-a"&gt;
-        &lt;h3&gt;模块化Demo&lt;/h3&gt;
-        &lt;p&gt;这个是“模块中的模块”的例子。&lt;/p&gt;
-    &lt;/div&gt;
-    &lt;div class="cont"&gt;
-        &lt;h4&gt;模块中的模块：&lt;/h4&gt;
-        &lt;p&gt;模块“mod-a”就是一个模块中的模块。&lt;/p&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
+<p>在Python中，一切皆为对象，函数也不例外，它可以像整数一样作为其它函数的返回值，例如：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">1</span>
+ 
+<span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">foo</span>
+ 
+<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">())</span> <span class="c"># &lt;function foo at 0x10a2f4140&gt;</span>
+ 
+<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">()())</span> <span class="c"># 1 </span>
+<span class="c"># 等价于</span>
+<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">())</span> <span class="c"># 1</span>
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.mod-a{...}
-.mod-a h3{...}
-.mod-a p{...}
 
-.mod-c{...}
-.mod-c h4{...}
-.mod-c .cont{...}
-.mod-c .cont p{...}
+<p>　　调用函数 bar() 的返回值是一个函数对象 &lt;function foo at 0x10a2f4140&gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。</p>
+
+<h2 id="实参高阶函数">实参高阶函数</h2>
+
+<p>　　函数还可以像整数一样作为函数的参数，例如：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span>
+ 
+<span class="k">def</span> <span class="nf">bar</span><span class="p">(</span><span class="n">fun</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+ 
+<span class="n">value</span> <span class="o">=</span> <span class="n">bar</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c"># 4</span>
 </code></pre></div></div>
-<p><img src="http://shurriklab.qiniudn.com/yijia3.jpg" alt="" /></p>
 
-<p>　　晒下成果，如果可以，其实我倒是挺想整体风格都照搬宜家:D，因为不喜欢其他家具的过度设计。比如说床，床头动不动给你雕上龙和祥云，顺手加木头柱子，雕的好看也行，关键丑得突破天际。一说就是实木————我要实木干嘛？让你雕难看的送子观音吗？而且大部分家具都在家具城里卖，得讲价，就让我觉得很难办，讲价吧……不会，不讲价吧，又觉得自己吃亏了。</p>
+<p>　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。</p>
 
-<p>　　顺便提醒一下，宜家的大件东西，比如床什么的，如果你没有 “用好棒的工具装这东西真让人exciting！” 的觉悟，就最好让安装师傅装。</p>
+<h2 id="嵌套函数">嵌套函数</h2>
+
+<p>　　函数不仅可以作为参数和返回值，函数还可以定义在另一个函数中，作为嵌套函数存在，例如：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">outer</span><span class="p">():</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">inner</span><span class="p">()</span>
+ 
+<span class="n">outer</span><span class="p">()</span> <span class="c"># 1</span>
+</code></pre></div></div>
+
+<p>　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：</p>
+
+<ol>
+  <li>给变量 x 赋值为1</li>
+  <li>定义嵌套函数 inner，此时并不会执行 inner 中的代码，因为该函数还没被调用，直到第3步</li>
+  <li>调用 inner 函数，执行 inner 中的代码逻辑。</li>
+</ol>
+
+<h2 id="闭包">闭包</h2>
+
+<p>　　再来看一个例子：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+ 
+    <span class="k">return</span> <span class="n">inner</span>
+<span class="n">closure</span> <span class="o">=</span> <span class="n">outer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">closure</span><span class="p">()</span> <span class="c"># 1</span>
+</code></pre></div></div>
+<p>　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。</p>
+
+<h2 id="装饰器">装饰器</h2>
+
+<p>　　终于到正题了：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>　　上面这个函数虽然没什么用，但是能说明问题就行。现在，有一个新的需求，需要在执行该函数时加上日志：</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"记录日志开始"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"记录日志结束"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>　　功能实现，唯一的问题就是它需要侵入到原来的代码里面，把日志逻辑加上去，如果还有好几十个这样的函数要加日志，也必须这样做，显然，这样的代码一点都不Cooooooool。那么有没有可能在不修改业务代码的提前下，实现日志功能呢？答案就是装饰器。</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"记录日志开始"</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">()</span> <span class="c"># 业务函数</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"记录日志结束"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">inner</span>
+ 
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+ 
+<span class="n">foo</span> <span class="o">=</span> <span class="n">outer</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span> 
+<span class="n">foo</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>　　我没有修改 foo 函数里面的任何逻辑，只是给 foo 变量重新赋值了，指向了一个新的函数对象。最后调用 foo()，不仅能打印日志，业务逻辑也执行完了。现在来分析一下它的执行流程。</p>
+
+<p>　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()</p>
+
+<p>　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@outer</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
+
+<span class="c">#即 @outer 等价于 foo = outer(foo)</span>
+
+<span class="n">foo</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧</p>
 
           </article>
           <hr class="boundary">
@@ -241,7 +320,7 @@
                 <ul>
                     
                     <li>
-                        <a href="http://localhost:4000/tags#IKEA"><span class="octicon octicon-tag"></span>&nbsp;IKEA</a>
+                        <a href="http://localhost:4000/tags#python"><span class="octicon octicon-tag"></span>&nbsp;python</a>
                     </li>
                     
                 </ul>
@@ -260,7 +339,7 @@
                     
                         
                             <li>
-                                <a href="http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/">深入理解装饰器</a>
+                                <a href="http://localhost:4000/2016-10-26/F2E_8%E4%BB%8E%E5%AE%9C%E5%AE%B6%E7%9A%84%E5%AE%B6%E5%85%B7%E8%AE%BE%E8%AE%A1%E5%88%B0%E6%A8%A1%E5%9D%97%E5%8C%96/">F2E_8从宜家的家具设计到模块化</a>
                             </li>
                         
                             <li>

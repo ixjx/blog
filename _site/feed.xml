@@ -3,11 +3,204 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>/blog/</link>
-    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 31 May 2018 14:48:42 +0800</pubDate>
-    <lastBuildDate>Thu, 31 May 2018 14:48:42 +0800</lastBuildDate>
-    <generator>Jekyll v3.7.3</generator>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 24 Aug 2018 15:43:45 +0800</pubDate>
+    <lastBuildDate>Fri, 24 Aug 2018 15:43:45 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.3</generator>
+    
+      <item>
+        <title>深入理解装饰器</title>
+        <description>&lt;p&gt;　　等offer等得心慌，写写之前面试遇到的坑吧。&lt;/p&gt;
+
+&lt;p&gt;　　面试官：看你简历写了熟悉python？&lt;/p&gt;
+
+&lt;p&gt;　　我：…会一点,shell脚本写得比较多&lt;/p&gt;
+
+&lt;p&gt;　　面试官：那你给我讲讲装饰器吧&lt;/p&gt;
+
+&lt;p&gt;　　我：…呵呵&lt;/p&gt;
+
+&lt;p&gt;　　之前只是了解python的函数式编程，大概知道装饰器(decorator)是在代码运行期间动态增加功能同时又不改变原有代码。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&amp;lt; 函数+返回值高阶函数+实参高阶函数+嵌套函数+语法糖 = 装饰器 &amp;gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　你能看懂吗？反正我是没看懂，所以一个一个的查了后才略有理解：装饰器本质上还是函数。&lt;/p&gt;
+
+&lt;h2 id=&quot;函数&quot;&gt;函数&lt;/h2&gt;
+
+&lt;p&gt;　　理解装饰器前，需要明白函数的工作原理，我们先从一个最简单函数定义开始：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　上面定义了一个函数，名字叫foo，也可以把 foo 可理解为变量名，该变量指向一个函数对象&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/81273610.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　变量名 foo 现在指向 &amp;lt;function foo at 0x1030060c8&amp;gt; 函数对象，但它也可以指向另外一个函数&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# bar()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/26546525.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;返回值高阶函数&quot;&gt;返回值高阶函数&lt;/h2&gt;
+
+&lt;p&gt;在Python中，一切皆为对象，函数也不例外，它可以像整数一样作为其它函数的返回值，例如：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+ 
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;
+ 
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;&lt;/span&gt;
+ 
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1 &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 等价于&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　调用函数 bar() 的返回值是一个函数对象 &amp;lt;function foo at 0x10a2f4140&amp;gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。&lt;/p&gt;
+
+&lt;h2 id=&quot;实参高阶函数&quot;&gt;实参高阶函数&lt;/h2&gt;
+
+&lt;p&gt;　　函数还可以像整数一样作为函数的参数，例如：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+ 
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ 
+&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。&lt;/p&gt;
+
+&lt;h2 id=&quot;嵌套函数&quot;&gt;嵌套函数&lt;/h2&gt;
+
+&lt;p&gt;　　函数不仅可以作为参数和返回值，函数还可以定义在另一个函数中，作为嵌套函数存在，例如：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+ 
+&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;给变量 x 赋值为1&lt;/li&gt;
+  &lt;li&gt;定义嵌套函数 inner，此时并不会执行 inner 中的代码，因为该函数还没被调用，直到第3步&lt;/li&gt;
+  &lt;li&gt;调用 inner 函数，执行 inner 中的代码逻辑。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;闭包&quot;&gt;闭包&lt;/h2&gt;
+
+&lt;p&gt;　　再来看一个例子：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ 
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。&lt;/p&gt;
+
+&lt;h2 id=&quot;装饰器&quot;&gt;装饰器&lt;/h2&gt;
+
+&lt;p&gt;　　终于到正题了：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　上面这个函数虽然没什么用，但是能说明问题就行。现在，有一个新的需求，需要在执行该函数时加上日志：&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　功能实现，唯一的问题就是它需要侵入到原来的代码里面，把日志逻辑加上去，如果还有好几十个这样的函数要加日志，也必须这样做，显然，这样的代码一点都不Cooooooool。那么有没有可能在不修改业务代码的提前下，实现日志功能呢？答案就是装饰器。&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 业务函数&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
+ 
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ 
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　我没有修改 foo 函数里面的任何逻辑，只是给 foo 变量重新赋值了，指向了一个新的函数对象。最后调用 foo()，不仅能打印日志，业务逻辑也执行完了。现在来分析一下它的执行流程。&lt;/p&gt;
+
+&lt;p&gt;　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()&lt;/p&gt;
+
+&lt;p&gt;　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@outer&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#即 @outer 等价于 foo = outer(foo)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
+</description>
+        <pubDate>Fri, 24 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+        
+        <category>python</category>
+        
+        
+        <category>随编</category>
+        
+      </item>
+    
+      <item>
+        <title>ELK Docker image中文文档</title>
+        <description>&lt;p&gt;　　又有两个月没写东西了，主要是最近在看&lt;a href=&quot;https://hub.docker.com/r/sebp/elk/&quot;&gt;ELK&lt;/a&gt;，网上资料一大堆（大多数都是过时的），我发现还是看英文文档比较舒服。&lt;/p&gt;
+
+&lt;p&gt;　　同时为了锻炼一下自己毕业后就没怎么提升的英语水平，免得提Issue时都表达不清楚自己的意思，毕竟还想着去美帝自由行呢，几句Hello I`m fine Thank you 还是要会的吧。脑子一热就决定翻译&lt;a href=&quot;http://elk-docker.readthedocs.io/&quot;&gt;这个文档&lt;/a&gt;，当然翻译过程中没少用翻译软件…&lt;/p&gt;
+
+&lt;p&gt;　　看的时候没觉得什么，真翻译起来才觉得头大，有时明明知道是什么意思，但就是没法很好的用中文表达出来，有些技术上的名词用英文原文比较好，有时候翻译出来又改了回去，所以花了不少时间才做完。&lt;/p&gt;
+
+&lt;p&gt;　　尝试了&lt;a href=&quot;https://www.gitbook.com&quot;&gt;gitbook&lt;/a&gt;写作，写好 &lt;code class=&quot;highlighter-rouge&quot;&gt;README.md&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;SUMMARY.md&lt;/code&gt; ，再 &lt;code class=&quot;highlighter-rouge&quot;&gt;gitbook init&lt;/code&gt; 就生成了大纲，然后上传到&lt;a href=&quot;https://github.com/ixjx/docker-elk-doc&quot;&gt;github repo&lt;/a&gt;，然后再和&lt;a href=&quot;https://ixjx.gitbooks.io/docker-elk-doc&quot;&gt;gitbooks.com&lt;/a&gt;关联一下就自动生成了文档，确实方便。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-10/46528275.jpg&quot; alt=&quot;这是原文&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-11/77399485.jpg&quot; alt=&quot;这是译文&quot; /&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 10 Jul 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
+        
+        <category>容器</category>
+        
+        
+        <category>随读</category>
+        
+      </item>
     
       <item>
         <title>碎碎念</title>
@@ -30,8 +223,8 @@
 &lt;p&gt;　　所以，我的一个感悟是，这个世界正在以你难以想象的速度在向前发展，不管你看得见还是看不见。所以你一定要保持前进，不然等你回过神来，会发现已经被远远的抛在后面。前进是很困难的，只有努力，才能保持原地不动。&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 May 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
-        <guid isPermaLink="true">/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
+        <link>http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
         
         <category>负能量</category>
         
@@ -86,8 +279,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;/ol&gt;
 </description>
         <pubDate>Mon, 26 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
-        <guid isPermaLink="true">/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
+        <link>http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
         
         <category>Linux</category>
         
@@ -125,8 +318,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;p&gt;　　然后就可以访问本地 80 端口看到最新的blog了 &lt;del&gt;说得好像有人看一样&lt;/del&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
-        <guid isPermaLink="true">/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
+        <link>http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
         
         <category>容器</category>
         
@@ -198,8 +391,8 @@ docker run \
 &lt;p&gt;　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。&lt;/p&gt;
 </description>
         <pubDate>Tue, 16 Jan 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
-        <guid isPermaLink="true">/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
+        <link>http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
         
         <category>翻墙</category>
         
@@ -259,8 +452,8 @@ docker run \
 &lt;/ol&gt;
 </description>
         <pubDate>Wed, 06 Dec 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">/blog/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>http://localhost:4000/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-12-06/2017%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -373,8 +566,8 @@ docker run \
 &lt;p&gt;eth0.20，vent1 和 brvlan20 都可以看着 vlan20 的 access 口&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
-        <guid isPermaLink="true">/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
+        <link>http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
         
         <category>虚拟化</category>
         
@@ -457,8 +650,8 @@ docker run \
 &lt;p&gt;下一节我们通过实验来实践 VLAN。&lt;/p&gt;
 </description>
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
-        <guid isPermaLink="true">/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
+        <link>http://localhost:4000/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
         
         <category>虚拟化</category>
         
@@ -510,182 +703,8 @@ virbr0          8000.fe540075dd1a       yes                   vnet0
 
 </description>
         <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
-        <guid isPermaLink="true">/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
-        
-        <category>虚拟化</category>
-        
-        
-        <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>动手实践虚拟网络-每天5分钟的OpenStack(10)</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#配置-linux-bridge-br0&quot; id=&quot;markdown-toc-配置-linux-bridge-br0&quot;&gt;配置 Linux Bridge br0&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#配置-vm1&quot; id=&quot;markdown-toc-配置-vm1&quot;&gt;配置 VM1&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#vm2同理&quot; id=&quot;markdown-toc-vm2同理&quot;&gt;VM2同理&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/og9i1qfzh56u5ecabhewxa1ct0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;本节将演示如何在实验环境中实现下图所示的虚拟网络&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/n0odaculpee6zkhib5utmnz6c4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;配置-linux-bridge-br0&quot;&gt;配置 Linux Bridge br0&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;编辑 /etc/network/interfaces，配置 br0。&lt;/p&gt;
-
-&lt;p&gt;下面用 vimdiff 展示了对 /etc/network/interfaces 的修改&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/cmlrlznw73rw9it1n72ytaj68n.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;有两点需要注意：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;之前宿主机的 IP 是通过 dhcp 配置在 eth0 上的；创建 Linux Bridge 之后，IP 就必须放到 br0 上了&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;在 br0 的配置信息中请注意最后一行 “bridge_ports eth0”，其作用就是将 eth0 挂到 br0 上&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;重启宿主机，查看 IP 配置，可以看到 IP 已经放到 br0 上了&lt;/p&gt;
-
-&lt;p&gt;用 brctl show 查看当前 Linux Bridge 的配置。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# brctl show
-bridge name     bridge id               STP enabled     interfaces
-br0             8000.000c298decbe       no                    eth0
-virbr0          8000.000000000000       yes
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;除了 br0，大家应该注意到还有一个 virbr0 的 Bridge，而且 virbr0 上已经配置了 IP 地址 192.168.122.1。&lt;/p&gt;
-
-&lt;p&gt;virbr0 的作用我们会在后面介绍。&lt;/p&gt;
-
-&lt;p&gt;在宿主机中 CloudMan 已经提前创建好了虚机 VM1 和 VM2，现在都处于关机状态。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# virsh list --all
- Id    Name                           State
-----------------------------------------------------
- -     VM1                            shut off
- -     VM2                            shut off
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;配置-vm1&quot;&gt;配置 VM1&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;下面我们在 virt-manager 中查看一下 VM1 的网卡配置（为了使大家能够熟练使用命令行工具 virsh 和图形工具 virt-manager，CloudMan 在演示的时候会同时用到它们，两个工具都很重要）&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/yswaw21r7esfke2mbk07u5uufe.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;可以看到虚拟网卡的 source device 我们选择的是 br0&lt;/p&gt;
-
-&lt;p&gt;下面我们启动 VM1，看会发生什么&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# brctl show
-
-bridge name     bridge id               STP enabled     interfaces
-br0             8000.000c298decbe       no                    eth0
-                                                                                  vnet0
-virbr0          8000.000000000000       yes
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;brctl show 告诉我们 br0 下面添加了一个 vnet0 设备，通过 virsh 确认这就是VM1的虚拟网卡。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# virsh domiflist VM1
-Interface  Type       Source     Model       MAC
--------------------------------------------------------
-vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;另外，在 VM1 中虚拟网卡是 eth0，并不是 vnet0。&lt;/p&gt;
-
-&lt;p&gt;vent0 是该虚拟网卡在宿主机中对应的设备名称，其类型是 TAP 设备，这里需要注意一下。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;vm2同理&quot;&gt;VM2同理&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;通过 br0 这个 Linux Bridge，我们实现了 VM1、VM2、宿主机和外网这四者之间的数据通信。&lt;/p&gt;
-
-&lt;p&gt;下节我们讨论 virbr0&lt;/p&gt;
-</description>
-        <pubDate>Mon, 06 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</link>
-        <guid isPermaLink="true">/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/</guid>
-        
-        <category>虚拟化</category>
-        
-        
-        <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>KVM网络虚拟化基础-每天5分钟的OpenStack(9)</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#linux-bridge-基本概念&quot; id=&quot;markdown-toc-linux-bridge-基本概念&quot;&gt;Linux Bridge 基本概念&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/kg8z02ffcldcaryhnt0pwlgsw0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;网络虚拟化是虚拟化技术中最复杂的部分，学习难度最大。 但因为网络是虚拟化中非常重要的资源，所以再硬的骨头也必须要把它啃下来。&lt;/p&gt;
-
-&lt;p&gt;为了让大家对虚拟化网络的复杂程度有一个直观的认识，请看下图&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/gi9e6acegclerg57pybpdnxxhi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这是 OpenStack 官网上给出的计算节点（可以理解为 KVM 的宿主机）虚拟网络的逻辑图，上面的网络设备很多，层次也很复杂。&lt;/p&gt;
-
-&lt;p&gt;我第一次看到这张图，也着实被吓了一跳。&lt;/p&gt;
-
-&lt;p&gt;不过大家也不要怕，万丈高楼从地起，虚拟网络再复杂，也是由一些基础的组件构成的。只要我们将这些基础组件的概念和它们之间的逻辑关系搞清楚了，就能深刻理解虚拟网络的架构，那么云环境下的虚拟化网络也就不在话下了。&lt;/p&gt;
-
-&lt;p&gt;下面我们来学习网络虚拟化中最重要的两个东西：Linux Bridge 和 VLAN&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;linux-bridge-基本概念&quot;&gt;Linux Bridge 基本概念&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;假设宿主机有 1 块与外网连接的物理网卡 eth0，上面跑了 1 个虚机 VM1，现在有个问题是： 如何让 VM1 能够访问外网？&lt;/p&gt;
-
-&lt;p&gt;至少有两种方案&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;将物理网卡eth0直接分配给VM1，但随之带来的问题很多： 宿主机就没有网卡，无法访问了； 新的虚机，比如 VM2 也没有网卡。 下面看推荐的方案&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;给 VM1 分配一个虚拟网卡 vnet0，通过 Linux Bridge  br0 将 eth0 和 vnet0 连接起来，如下图所示&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/s8m2p6j0zy2xz0cswr68t107ii.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Linux Bridge 是 Linux 上用来做 TCP/IP 二层协议交换的设备，其功能大家可以简单的理解为是一个二层交换机或者 Hub。多个网络设备可以连接到同一个 Linux Bridge，当某个设备收到数据包时，Linux Bridge 会将数据转发给其他设备。&lt;/p&gt;
-
-&lt;p&gt;在上面这个例子中，当有数据到达 eth0 时，br0 会将数据转发给 vnet0，这样 VM1 就能接收到来自外网的数据；&lt;/p&gt;
-
-&lt;p&gt;反过来，VM1 发送数据给 vnet0，br0 也会将数据转发到 eth0，从而实现了 VM1 与外网的通信。&lt;/p&gt;
-
-&lt;p&gt;现在我们增加一个虚机 VM2，如下图所示&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/7rqpib71nxzmeinfl67p8386ht.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;VM2 的虚拟网卡 vnet1 也连接到了 br0 上。&lt;/p&gt;
-
-&lt;p&gt;现在 VM1 和 VM2 之间可以通信，同时 VM1 和 VM2 也都可以与外网通信。&lt;/p&gt;
-
-&lt;p&gt;有了上面的基础知识，下一节将演示如何在实验环境中实现这套虚拟网络。&lt;/p&gt;
-</description>
-        <pubDate>Sun, 05 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</link>
-        <guid isPermaLink="true">/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/</guid>
+        <link>http://localhost:4000/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</link>
+        <guid isPermaLink="true">http://localhost:4000/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/</guid>
         
         <category>虚拟化</category>
         

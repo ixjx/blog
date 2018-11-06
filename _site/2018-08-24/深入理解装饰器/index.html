@@ -155,15 +155,15 @@
 
 <p>　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）</p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">value</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c"># 4</span>
-</code></pre></div></div>
+<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="c1"># 4
+</span></code></pre></div></div>
 
 <p>　　变量名 foo 现在指向 &lt;function foo at 0x1030060c8&gt; 函数对象，但它也可以指向另外一个函数</p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
     <span class="k">print</span><span class="p">(</span><span class="s">"bar"</span><span class="p">)</span>
 <span class="n">foo</span> <span class="o">=</span> <span class="n">bar</span>
-<span class="n">foo</span><span class="p">()</span> <span class="c"># bar()</span>
-</code></pre></div></div>
+<span class="n">foo</span><span class="p">()</span> <span class="c1"># bar()
+</span></code></pre></div></div>
 
 <p><img src="http://shurriklab.qiniudn.com/18-8-24/26546525.jpg" alt="" /></p>
 
@@ -176,12 +176,12 @@
 <span class="k">def</span> <span class="nf">bar</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">foo</span>
  
-<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">())</span> <span class="c"># &lt;function foo at 0x10a2f4140&gt;</span>
- 
-<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">()())</span> <span class="c"># 1 </span>
-<span class="c"># 等价于</span>
-<span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">())</span> <span class="c"># 1</span>
-</code></pre></div></div>
+<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">())</span> <span class="c1"># &lt;function foo at 0x10a2f4140&gt;
+</span> 
+<span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">()())</span> <span class="c1"># 1 
+# 等价于
+</span><span class="k">print</span><span class="p">(</span><span class="n">foo</span><span class="p">())</span> <span class="c1"># 1
+</span></code></pre></div></div>
 
 <p>　　调用函数 bar() 的返回值是一个函数对象 &lt;function foo at 0x10a2f4140&gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。</p>
 
@@ -196,8 +196,8 @@
     <span class="k">return</span> <span class="n">fun</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
  
 <span class="n">value</span> <span class="o">=</span> <span class="n">bar</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c"># 4</span>
-</code></pre></div></div>
+<span class="k">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># 4
+</span></code></pre></div></div>
 
 <p>　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。</p>
 
@@ -210,8 +210,8 @@
         <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">inner</span><span class="p">()</span>
  
-<span class="n">outer</span><span class="p">()</span> <span class="c"># 1</span>
-</code></pre></div></div>
+<span class="n">outer</span><span class="p">()</span> <span class="c1"># 1
+</span></code></pre></div></div>
 
 <p>　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：</p>
 
@@ -230,8 +230,8 @@
  
     <span class="k">return</span> <span class="n">inner</span>
 <span class="n">closure</span> <span class="o">=</span> <span class="n">outer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">closure</span><span class="p">()</span> <span class="c"># 1</span>
-</code></pre></div></div>
+<span class="n">closure</span><span class="p">()</span> <span class="c1"># 1
+</span></code></pre></div></div>
 <p>　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。</p>
 
 <h2 id="装饰器">装饰器</h2>
@@ -252,8 +252,8 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">inner</span><span class="p">():</span>
         <span class="k">print</span><span class="p">(</span><span class="s">"记录日志开始"</span><span class="p">)</span>
-        <span class="n">func</span><span class="p">()</span> <span class="c"># 业务函数</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">"记录日志结束"</span><span class="p">)</span>
+        <span class="n">func</span><span class="p">()</span> <span class="c1"># 业务函数
+</span>        <span class="k">print</span><span class="p">(</span><span class="s">"记录日志结束"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">inner</span>
  
 <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
@@ -268,12 +268,12 @@
 <p>　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()</p>
 
 <p>　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@outer</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">outer</span>
 <span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
     <span class="k">print</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>
 
-<span class="c">#即 @outer 等价于 foo = outer(foo)</span>
-
+<span class="c1">#即 @outer 等价于 foo = outer(foo)
+</span>
 <span class="n">foo</span><span class="p">()</span>
 </code></pre></div></div>
 
@@ -338,6 +338,10 @@
                     
 
                     
+                        
+                            <li>
+                                <a href="/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/">基于Docker+Jenkins+Gitlab搭建持续集成测试环境</a>
+                            </li>
                         
                             <li>
                                 <a href="/blog/2016-10-26/F2E_8%E4%BB%8E%E5%AE%9C%E5%AE%B6%E7%9A%84%E5%AE%B6%E5%85%B7%E8%AE%BE%E8%AE%A1%E5%88%B0%E6%A8%A1%E5%9D%97%E5%8C%96/">F2E_8从宜家的家具设计到模块化</a>

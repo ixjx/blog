@@ -19,6 +19,7 @@
         tls self_signed
 
         proxy /token localhost:3000/ {
-                without /token
+                transparent
+                except static
         }
 }

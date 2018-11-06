@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>git的清点对象算法</title>
+    <title>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="git的清点对象算法, 随编, 算法, CodeShurrik" />
-    <meta name="description" content="git的清点对象算法, 随编, 算法, 　　使用github的时候，你有没有见过这样的提示？" />
+    <meta name="keywords" content="基于Docker+Jenkins+Gitlab搭建持续集成测试环境, 随编, 容器, CodeShurrik" />
+    <meta name="description" content="基于Docker+Jenkins+Gitlab搭建持续集成测试环境, 随编, 容器, 　　七牛云的测试域名到期了，所有图片的图床都崩了，早知如此不该图方便，自己做静态资源算了。进入今天的正题，到新公司一个月，项目开发前后端分离，差不多拉通了开发到测试的流程，在此记录一下。" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="/blog/favicon.ico" />
-    <link rel="canonical" href="/blog/2016-03-03/github%E7%9A%84%E6%B8%85%E7%82%B9%E5%AF%B9%E8%B1%A1%E7%AE%97%E6%B3%95/" />
+    <link rel="canonical" href="/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/" />
     <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="/blog/feed.xml"  />
 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
@@ -110,78 +110,194 @@
     <div class="content col-lg-9">
         <div class="sheet post">
           <header>
-            <h2>git的清点对象算法</h2>
+            <h2>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</h2>
             <p class="post-meta">
-                <span class="octicon octicon-clock"></span> Mar 3, 2016
+                <span class="octicon octicon-clock"></span> Nov 6, 2018
             </p>
             <p class="post-tag">
                 <span><a href="/blog/category/#随编"><span class="octicon octicon-list-unordered"></span>&nbsp;随编</a></span>
                 <span>
-                    <a class="word-keep" href="/blog/tags/#算法"><span class="octicon octicon-tag"></span>&nbsp;算法</a>
+                    <a class="word-keep" href="/blog/tags/#容器"><span class="octicon octicon-tag"></span>&nbsp;容器</a>
                     
                 </span>
             </p>
           </header>
           <hr class="boundary">
           <article>
-            <p>　　使用github的时候，你有没有见过这样的提示？</p>
+            <p>　　七牛云的测试域名到期了，所有图片的图床都崩了，早知如此不该图方便，自己做静态资源算了。进入今天的正题，到新公司一个月，项目开发前后端分离，差不多拉通了开发到测试的流程，在此记录一下。</p>
 
-<p><img src="http://ixjx.coding.me/img/linux.png" alt="" />
-<!--more --></p>
+<p>　　随着DevOps理念和敏捷理念的发展，我们希望通过自动化技术，加快项目的迭代。尤其是当使用微服务方案后，面临在大量的项目构建和部署工作，借助于jenkins的持续集成，可以快速把应用打包成docker镜像，实现自动部署。</p>
 
-<p>　　这段提示说，远程代码库一共有4474000个对象需要克隆。</p>
+<p><img src="https://ixjx.github.io/blog/static/img/jenkins.png" alt="" /></p>
 
-<p>　　这就是“清点对象”(counting objects)，github需要实时计算，需要克隆的对象总数。</p>
-
-<p>　　这个过程非常慢，像Linux kernel这样巨大的库，清点一次需要8分钟。也就是说，发出<code class="highlighter-rouge">git clone</code>命令后，会干等8分钟，然后才会开始真正的数据传输。这当然是无法忍受的，github团队一直想解决这个问题。</p>
-
-<p>　　后来，他们终于发明了一种新的<a href="http://githubengineering.com/counting-objects/">算法</a>，现在清点一次对象只要3毫秒。</p>
-
-<p>　　为了理解这个算法，你必须先知道，什么是git的对象。简单说，对象就是文件，最重要的对象有三种。</p>
+<p>如图演示了以下的场景：</p>
 
 <ul>
-  <li>快照对象（Commit）</li>
-  <li>目录对象（Directory）</li>
-  <li>文件对象（File）</li>
+  <li>
+    <p>开发者向自己的gitlab提交了代码</p>
+  </li>
+  <li>
+    <p>jenkins通过定时任务检测到了代码有变成，执行自动化构建过程</p>
+  </li>
+  <li>
+    <p>jenkins在自动化构建脚本中调用docker命令将构建好的镜像push到私有镜像中心harbor</p>
+  </li>
+  <li>
+    <p>同时，jenkins也可以直接执行remote shell启动构建好的容器</p>
+  </li>
+  <li>
+    <p>构建失败或者成功，可以及时将结果推送给相关人员，比如测试人员，安排测试</p>
+  </li>
+  <li>
+    <p>服务端可以手动通过docker命令，从镜像仓库中心拉取镜像，进行手动部署</p>
+  </li>
 </ul>
 
-<p>　　每次提交代码的时候，会生成一个快照对象，里面有对应的当前”目录对象”的名字。”目录对象”保存了代码根目录所含有的子目录和文件信息。每一个子目录就是另一个”目录对象”，每一个文件则是”文件对象”，里面是具体的文件内容。</p>
-
-<p><img src="http://ixjx.coding.me/blog/pic/github1.jpg" alt="" /></p>
-
-<p>　　所以，”清点对象”就是清点各种commit、目录、文件等。<code class="highlighter-rouge">git clone</code>和<code class="highlighter-rouge">git fetch</code>操作都需要清点对象，因为需要知道，到底下载哪些对象文件。</p>
-
-<p><img src="http://ixjx.coding.me/blog/pic/github2.png" alt="" /></p>
-
-<p>　　清点对象的原始算法如下：</p>
 <blockquote>
-  <ol>
-    <li>列出本地所有分支最新的一个commit</li>
-    <li>列出远程所有分支最新的一个commit</li>
-    <li>两者进行比较，只要有不同，就意味着分支发生变动</li>
-    <li>每一个发生变动的commit，都清点其中具体变动的子目录和文件</li>
-    <li>追溯到当前commit的父节点，重复第四步，直至本地与远程的历史一致为止</li>
-    <li>加总所有需要变动的对象</li>
-  </ol>
+  <p>环境如下:</p>
 </blockquote>
 
-<p>　　上面的过程说明，”清点对象”是一个文件遍历算法，变动的对象会被一一清点到，这就意味着大量的文件读操作。对于大型代码库来说，这个过程非常慢。</p>
+<table>
+  <tbody>
+    <tr>
+      <td>192.168.110.202</td>
+      <td>harbor</td>
+    </tr>
+    <tr>
+      <td>192.168.110.203</td>
+      <td>gitlab jenkins</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>　　github团队想到的新算法，是建立一个Bitmap索引，即为每一个commit生成一个二进制值。</p>
+<p>　　除了jenkins均采用docker部署。</p>
 
-<p>　　打开本地github仓库的.git/objects/pack/目录，你会看到一个索引文件和一个数据文件，它们就是Bitmap。简单说，这两个文件索引了当前代码库的所有对象，然后使用一个二进制值代表这些对象。有多少个对象，这个二进制值就有多少位。它的第n位，就代表数据文件里面的第n个对象。</p>
+<h2 id="1-搭建harbor">1. 搭建harbor</h2>
 
-<p><img src="http://ixjx.coding.me/blog/pic/github3.png" alt="" /></p>
+<p><del>docker run -d -p 5000:5000 -v /opt/docker-registry:/var/lib/registry registry</del> 一开始用的registry，连个UI都没有，使用不便，弃了</p>
 
-<p>　　每个commit都会有一个对应的二进制值，表示当前快照包含的所有对象。这些对象对应的二进制位都为1，其他二进制位都为0。</p>
+<p><a href="https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md">harbor官方安装文档</a></p>
 
-<p>　　这样做的好处是，不用读取commit对象，只要读取这个二进制值，就会知道当前commit包含了哪些节点。更妙的是，两个二进制值只要做一次XOR运算，就会知道哪些位（即哪些对象）发生了变动。而且，因为新的对象总是添加到现有二进制位的后面，所以只要读取多出来的那些位，就知道当前commit比上一次commit多出了哪些对象。</p>
+<p>采用offline安装包,在执行./prepare的时候抛出如下异常：</p>
 
-<p>　　这样一来，”清点对象”就变成了二进制值的比较运算，因此速度极快。</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@ubuntu:~/harbor# ./prepare 
+Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./common/config/registry/root.crt
+</code></pre></div></div>
 
-<blockquote>
-  <p>原文: http://githubengineering.com/counting-objects/</p>
-</blockquote>
+<p>需要修改prepare文件，将第498行：</p>
+
+<p><code class="highlighter-rouge">empty_subj = "/C=/ST=/L=/O=/CN=/"</code></p>
+
+<p>修改如下：</p>
+
+<p><code class="highlighter-rouge">empty_subj = "/C=US/ST=California/L=Palo Alto/O=VMware, Inc./OU=Harbor/CN=notarysigner"</code></p>
+
+<p>配置daemon.json，去掉docker(每个docker client都需要配置)默认的https的访问<code class="highlighter-rouge">vim /etc/docker/daemon.json</code></p>
+
+<p>里面的内容是一个json对象,加上一项insecure-registries，地址自己更改：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "insecure-registries":["192.168.1.78"]
+}
+</code></pre></div></div>
+
+<p>然后重启docker,执行</p>
+
+<p><code class="highlighter-rouge">systemctl daemon-reload</code></p>
+
+<p><code class="highlighter-rouge">systemctl restart docker</code></p>
+
+<h2 id="2-搭建gitlab">2. 搭建gitlab</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--detach</span> <span class="se">\</span>
+<span class="nt">--hostname</span> localhost <span class="se">\</span>
+<span class="nt">--publish</span> 443:443 <span class="nt">--publish</span> 80:80 <span class="se">\</span>
+<span class="nt">--name</span> gitlab <span class="se">\</span>
+<span class="nt">--restart</span> always <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/config:/etc/gitlab <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/logs:/var/log/gitlab <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/data:/var/opt/gitlab <span class="se">\</span>
+gitlab/gitlab-ce:latest
+</code></pre></div></div>
+
+<p>　　之后push demo代码。</p>
+
+<h2 id="3-jenkins安装">3. jenkins安装</h2>
+
+<p>　　这一块比较复杂，不讲了</p>
+
+<h2 id="4-打包前端demojenkins构建shell">4. 打包前端demo，jenkins构建shell</h2>
+
+<p>　　前端用npm打包，后端用的maven。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">source</span> /etc/profile
+cnpm cache verify
+cnpm <span class="nb">install
+</span>cnpm run build
+<span class="nb">tar</span> <span class="nt">-zcf</span> web.tar.gz dist
+<span class="nb">rm</span> <span class="nt">-rf</span> dist
+<span class="nb">echo</span> <span class="s2">"******打包完成******"</span>
+
+
+<span class="c">#!/bin/sh</span>
+<span class="nv">REGISTRY</span><span class="o">=</span><span class="s2">"192.168.110.202"</span>
+<span class="nv">REPO</span><span class="o">=</span><span class="s2">"library"</span>
+<span class="nv">HARBOR_USER</span><span class="o">=</span><span class="s2">"admin"</span>
+<span class="nv">HARBOR_PASSWD</span><span class="o">=</span><span class="s2">"Harbor12345"</span>
+<span class="nv">API_NAME</span><span class="o">=</span><span class="s2">"demo"</span>
+<span class="nv">API_TAG</span><span class="o">=</span><span class="s2">"1.0"</span>
+<span class="nv">IMAGE_NAME</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">REPO</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">API_NAME</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">API_TAG</span><span class="k">}</span><span class="s2">"</span>
+<span class="nv">CONTAINER_NAME</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">API_NAME</span><span class="k">}</span><span class="s2">-v</span><span class="k">${</span><span class="nv">API_TAG</span><span class="k">}</span><span class="s2">"</span>
+
+docker login <span class="nt">-u</span> <span class="k">${</span><span class="nv">HARBOR_USER</span><span class="k">}</span> <span class="nt">-p</span> <span class="k">${</span><span class="nv">HARBOR_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span>
+
+<span class="nb">tar</span> <span class="nt">-zxf</span> web.tar.gz
+<span class="c">#Dockerfile用的caddy</span>
+docker build <span class="nt">-t</span> <span class="nv">$IMAGE_NAME</span> <span class="nb">.</span>
+docker push <span class="nv">$IMAGE_NAME</span>
+<span class="nb">echo</span> <span class="s2">"******镜像推送完成******"</span>
+
+
+<span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$CONTAINER_NAME</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+    </span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
+<span class="k">fi
+</span><span class="nb">echo</span> <span class="s2">"******删除旧容器完成******"</span>
+
+<span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"none"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+    </span>docker rmi <span class="nv">$iid</span>
+<span class="k">fi
+</span><span class="nb">echo</span> <span class="s2">"******删除旧镜像完成******"</span>
+
+docker run <span class="nt">-d</span> <span class="nt">-p</span> 2015:2015 <span class="nt">--name</span> <span class="nv">$CONTAINER_NAME</span> <span class="nv">$IMAGE_NAME</span>
+<span class="nb">echo</span> <span class="s2">"******部署新容器完成******"</span>
+</code></pre></div></div>
+
+<h2 id="5-问题">5. 问题</h2>
+
+<ol>
+  <li>gitlab需通过root账号登录，允许本地webhook。这是因为gitlab和jenkins在同一个节点部署，实际分开部署不会有这个问题</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gitlab-rails console production   <span class="c">#gitlab居然是用ruby写的</span>
+u <span class="o">=</span> User.where<span class="o">(</span>email: <span class="s1">'admin@example.com'</span><span class="o">)</span>.first
+u.password<span class="o">=</span><span class="s1">'new_password'</span>
+u.save!
+</code></pre></div></div>
+
+<p>gitlab配置Admin area：</p>
+
+<p>Setting-&gt;Network-&gt;Outbound requests</p>
+
+<p>勾选Allow requests to the local network from hooks and services</p>
+
+<p>jenkins配置：</p>
+
+<p>Jenkins–&gt;Jenkins Manages–&gt;Configure System，找到GitLab配置，去掉勾选</p>
+
+<p>系统管理–&gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造</p>
 
           </article>
           <hr class="boundary">
@@ -225,7 +341,7 @@
                 <ul>
                     
                     <li>
-                        <a href="/blog/tags#算法"><span class="octicon octicon-tag"></span>&nbsp;算法</a>
+                        <a href="/blog/tags#容器"><span class="octicon octicon-tag"></span>&nbsp;容器</a>
                     </li>
                     
                 </ul>
@@ -244,11 +360,19 @@
                     
                         
                             <li>
-                                <a href="/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/">基于Docker+Jenkins+Gitlab搭建持续集成测试环境</a>
+                                <a href="/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/">深入理解装饰器</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/">深入理解装饰器</a>
+                                <a href="/blog/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/">ELK Docker image中文文档</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/">制作网站docker镜像</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2017-08-24/Docker%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%87%BA%E9%97%A8/">Docker从入门到出门</a>
                             </li>
                         
                             <li>
@@ -261,6 +385,10 @@
                         
                             <li>
                                 <a href="/blog/2016-05-17/F2E_6markdown%E7%BC%96%E8%BE%91%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0-01/">F2E_6markdown编辑器的实现-01</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2016-03-03/github%E7%9A%84%E6%B8%85%E7%82%B9%E5%AF%B9%E8%B1%A1%E7%AE%97%E6%B3%95/">git的清点对象算法</a>
                             </li>
                         
                             <li>
@@ -289,14 +417,6 @@
                         
                             <li>
                                 <a href="/blog/2013-11-02/%E8%99%9A%E5%87%BD%E6%95%B0-%E6%8A%BD%E8%B1%A1%E5%87%BD%E6%95%B0-%E6%8A%BD%E8%B1%A1%E7%B1%BB-%E6%8E%A5%E5%8F%A3/">虚函数、抽象函数、抽象类、接口</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2013-09-16/%E5%9B%A7%E7%91%9F%E5%A4%AB%E9%97%AE%E9%A2%98/">囧瑟夫问题</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2013-06-01/CFileDialog%E7%9A%84%E7%94%A8%E6%B3%95/">CFileDialog的用法</a>
                             </li>
                         
                     

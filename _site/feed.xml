@@ -5,9 +5,197 @@
     <description>shurrik`s blog</description>
     <link>/blog/</link>
     <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 28 Sep 2018 13:48:03 +0800</pubDate>
-    <lastBuildDate>Fri, 28 Sep 2018 13:48:03 +0800</lastBuildDate>
-    <generator>Jekyll v3.8.3</generator>
+    <pubDate>Tue, 06 Nov 2018 20:43:01 +0800</pubDate>
+    <lastBuildDate>Tue, 06 Nov 2018 20:43:01 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</title>
+        <description>&lt;p&gt;　　七牛云的测试域名到期了，所有图片的图床都崩了，早知如此不该图方便，自己做静态资源算了。进入今天的正题，到新公司一个月，项目开发前后端分离，差不多拉通了开发到测试的流程，在此记录一下。&lt;/p&gt;
+
+&lt;p&gt;　　随着DevOps理念和敏捷理念的发展，我们希望通过自动化技术，加快项目的迭代。尤其是当使用微服务方案后，面临在大量的项目构建和部署工作，借助于jenkins的持续集成，可以快速把应用打包成docker镜像，实现自动部署。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ixjx.github.io/blog/static/img/jenkins.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如图演示了以下的场景：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;开发者向自己的gitlab提交了代码&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;jenkins通过定时任务检测到了代码有变成，执行自动化构建过程&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;jenkins在自动化构建脚本中调用docker命令将构建好的镜像push到私有镜像中心harbor&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;同时，jenkins也可以直接执行remote shell启动构建好的容器&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;构建失败或者成功，可以及时将结果推送给相关人员，比如测试人员，安排测试&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;服务端可以手动通过docker命令，从镜像仓库中心拉取镜像，进行手动部署&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;环境如下:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;192.168.110.202&lt;/td&gt;
+      &lt;td&gt;harbor&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;192.168.110.203&lt;/td&gt;
+      &lt;td&gt;gitlab jenkins&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;　　除了jenkins均采用docker部署。&lt;/p&gt;
+
+&lt;h2 id=&quot;1-搭建harbor&quot;&gt;1. 搭建harbor&lt;/h2&gt;
+
+&lt;p&gt;&lt;del&gt;docker run -d -p 5000:5000 -v /opt/docker-registry:/var/lib/registry registry&lt;/del&gt; 一开始用的registry，连个UI都没有，使用不便，弃了&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md&quot;&gt;harbor官方安装文档&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;采用offline安装包,在执行./prepare的时候抛出如下异常：&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@ubuntu:~/harbor# ./prepare 
+Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./common/config/registry/root.crt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;需要修改prepare文件，将第498行：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;empty_subj = &quot;/C=/ST=/L=/O=/CN=/&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;修改如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;empty_subj = &quot;/C=US/ST=California/L=Palo Alto/O=VMware, Inc./OU=Harbor/CN=notarysigner&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;配置daemon.json，去掉docker(每个docker client都需要配置)默认的https的访问&lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/docker/daemon.json&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;里面的内容是一个json对象,加上一项insecure-registries，地址自己更改：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+    &quot;insecure-registries&quot;:[&quot;192.168.1.78&quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后重启docker,执行&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl daemon-reload&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl restart docker&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2-搭建gitlab&quot;&gt;2. 搭建gitlab&lt;/h2&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;--detach&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--hostname&lt;/span&gt; localhost &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 443:443 &lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/config:/etc/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/logs:/var/log/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/data:/var/opt/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+gitlab/gitlab-ce:latest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;　　之后push demo代码。&lt;/p&gt;
+
+&lt;h2 id=&quot;3-jenkins安装&quot;&gt;3. jenkins安装&lt;/h2&gt;
+
+&lt;p&gt;　　这一块比较复杂，不讲了&lt;/p&gt;
+
+&lt;h2 id=&quot;4-打包前端demojenkins构建shell&quot;&gt;4. 打包前端demo，jenkins构建shell&lt;/h2&gt;
+
+&lt;p&gt;　　前端用npm打包，后端用的maven。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /etc/profile
+cnpm cache verify
+cnpm &lt;span class=&quot;nb&quot;&gt;install
+&lt;/span&gt;cnpm run build
+&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zcf&lt;/span&gt; web.tar.gz dist
+&lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-rf&lt;/span&gt; dist
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******打包完成******&quot;&lt;/span&gt;
+
+
+&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;REPO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;library&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Harbor12345&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;API_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;demo&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;API_TAG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;1.0&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REPO&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;API_NAME&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;API_TAG&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;API_NAME&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-v&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;API_TAG&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+docker login &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;tar&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-zxf&lt;/span&gt; web.tar.gz
+&lt;span class=&quot;c&quot;&gt;#Dockerfile用的caddy&lt;/span&gt;
+docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+docker push &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******镜像推送完成******&quot;&lt;/span&gt;
+
+
+&lt;span class=&quot;nv&quot;&gt;cid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi
+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧容器完成******&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;iid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker images | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;none&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $3}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;docker rmi &lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi
+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧镜像完成******&quot;&lt;/span&gt;
+
+docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 2015:2015 &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******部署新容器完成******&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;5-问题&quot;&gt;5. 问题&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;gitlab需通过root账号登录，允许本地webhook。这是因为gitlab和jenkins在同一个节点部署，实际分开部署不会有这个问题&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gitlab-rails console production   &lt;span class=&quot;c&quot;&gt;#gitlab居然是用ruby写的&lt;/span&gt;
+u &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; User.where&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;email: &lt;span class=&quot;s1&quot;&gt;'admin@example.com'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.first
+u.password&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'new_password'&lt;/span&gt;
+u.save!
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;gitlab配置Admin area：&lt;/p&gt;
+
+&lt;p&gt;Setting-&amp;gt;Network-&amp;gt;Outbound requests&lt;/p&gt;
+
+&lt;p&gt;勾选Allow requests to the local network from hooks and services&lt;/p&gt;
+
+&lt;p&gt;jenkins配置：&lt;/p&gt;
+
+&lt;p&gt;Jenkins–&amp;gt;Jenkins Manages–&amp;gt;Configure System，找到GitLab配置，去掉勾选&lt;/p&gt;
+
+&lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
+</description>
+        <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
+        <link>/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <guid isPermaLink="true">/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        
+        <category>容器</category>
+        
+        
+        <category>随编</category>
+        
+      </item>
     
       <item>
         <title>美帝游记——1.准备</title>
@@ -246,15 +434,15 @@
 
 &lt;p&gt;　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）&lt;/p&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　变量名 foo 现在指向 &amp;lt;function foo at 0x1030060c8&amp;gt; 函数对象，但它也可以指向另外一个函数&lt;/p&gt;
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# bar()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# bar()
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/26546525.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -267,12 +455,12 @@
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;
  
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1 &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 等价于&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;
+&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1 
+# 等价于
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　调用函数 bar() 的返回值是一个函数对象 &amp;lt;function foo at 0x10a2f4140&amp;gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。&lt;/p&gt;
 
@@ -287,8 +475,8 @@
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
  
 &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# 4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。&lt;/p&gt;
 
@@ -301,8 +489,8 @@
         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
  
-&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：&lt;/p&gt;
 
@@ -321,8 +509,8 @@
  
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。&lt;/p&gt;
 
 &lt;h2 id=&quot;装饰器&quot;&gt;装饰器&lt;/h2&gt;
@@ -343,8 +531,8 @@
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 业务函数&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 业务函数
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
  
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
@@ -359,12 +547,12 @@
 &lt;p&gt;　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()&lt;/p&gt;
 
 &lt;p&gt;　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@outer&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;c&quot;&gt;#即 @outer 等价于 foo = outer(foo)&lt;/span&gt;
-
+&lt;span class=&quot;c1&quot;&gt;#即 @outer 等价于 foo = outer(foo)
+&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -772,90 +960,6 @@ docker run \
         <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
         <link>/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
         <guid isPermaLink="true">/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
-        
-        <category>虚拟化</category>
-        
-        
-        <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>Linux如何实现VLAN-每天5分钟的OpenStack(12)</title>
-        <description>
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/fxhjsmemvhci8h2nm99p9hbtbu.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;LAN 表示 Local Area Network，本地局域网，通常使用 Hub 和 Switch 来连接 LAN 中的计算机。&lt;/p&gt;
-
-&lt;p&gt;一般来说，两台计算机连入同一个 Hub 或者 Switch 时，它们就在同一个 LAN 中。&lt;/p&gt;
-
-&lt;p&gt;一个 LAN 表示一个广播域。&lt;/p&gt;
-
-&lt;p&gt;其含义是：LAN 中的所有成员都会收到任意一个成员发出的广播包。&lt;/p&gt;
-
-&lt;p&gt;VLAN 表示 Virtual LAN。一个带有 VLAN 功能的switch 能够将自己的端口划分出多个 LAN。&lt;/p&gt;
-
-&lt;p&gt;计算机发出的广播包可以被同一个 LAN 中其他计算机收到，但位于其他 LAN 的计算机则无法收到。&lt;/p&gt;
-
-&lt;p&gt;简单地说，VLAN 将一个交换机分成了多个交换机，限制了广播的范围，在二层将计算机隔离到不同的 VLAN 中。&lt;/p&gt;
-
-&lt;p&gt;比方说，有两组机器，Group A 和 B。&lt;/p&gt;
-
-&lt;p&gt;我们想配置成 Group A 中的机器可以相互访问，Group B 中的机器也可以相互访问，但是 A 和 B 中的机器无法互相访问。&lt;/p&gt;
-
-&lt;p&gt;一种方法是使用两个交换机，A 和 B 分别接到一个交换机。&lt;/p&gt;
-
-&lt;p&gt;另一种方法是使用一个带 VLAN 功能的交换机，将 A 和 B 的机器分别放到不同的 VLAN 中。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;请注意，VLAN 的隔离是二层上的隔离，A 和 B 无法相互访问指的是二层广播包（比如 arp）无法跨越 VLAN 的边界。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;但在三层上（比如IP）是可以通过路由器让 A 和 B 互通的。概念上一定要分清。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;现在的交换机几乎都是支持 VLAN 的。&lt;/p&gt;
-
-&lt;p&gt;通常交换机的端口有两种配置模式： Access 和 Trunk。看下图&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/01fcumrn5amunxsqdg0bnxg808.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;了解了 VLAN 的概念之后，我们来看 KVM 虚拟化环境下是如何实现 VLAN 的。还是先看图，&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/269q6xm0gpkfbw497e1flpfgmy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;eth0 是宿主机上的物理网卡，有一个命名为 eth0.10 的子设备与之相连。&lt;/p&gt;
-
-&lt;p&gt;eth0.10 就是 VLAN 设备了，其 VLAN ID 就是 VLAN 10。&lt;/p&gt;
-
-&lt;p&gt;eth0.10 挂在命名为 brvlan10 的 Linux Bridge 上，虚机 VM1 的虚拟网卡 vent0 也挂在 brvlan10 上。&lt;/p&gt;
-
-&lt;p&gt;这样的配置其效果就是：&lt;/p&gt;
-
-&lt;p&gt;宿主机用软件实现了一个交换机（当然是虚拟的），上面定义了一个 VLAN10。&lt;/p&gt;
-
-&lt;p&gt;eth0.10，brvlan10 和 vnet0 都分别接到 VLAN10 的 Access口上。而 eth0 就是一个 Trunk 口。&lt;/p&gt;
-
-&lt;p&gt;VM1 通过 vnet0 发出来的数据包会被打上 VLAN10 的标签。&lt;/p&gt;
-
-&lt;p&gt;eth0.10 的作用是：定义了 VLAN10&lt;/p&gt;
-
-&lt;p&gt;brvlan10 的作用是：Bridge 上的其他网络设备自动加入到 VLAN10 中&lt;/p&gt;
-
-&lt;p&gt;我们再增加一个 VLAN20，见下图&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/rsm27anxn7hnnk9tph4371yktk.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这样虚拟交换机就有两个 VLAN 了，VM1 和 VM2 分别属于 VLAN10 和 VLAN20。&lt;/p&gt;
-
-&lt;p&gt;对于新创建的虚机，只需要将其虚拟网卡放入相应的 Bridge，就能控制其所属的 VLAN。&lt;/p&gt;
-
-&lt;p&gt;VLAN 设备总是以母子关系出现，母子设备之间是一对多的关系。&lt;/p&gt;
-
-&lt;p&gt;一个母设备（eth0）可以有多个子设备（eth0.10，eth0.20 ……），而一个子设备只有一个母设备。&lt;/p&gt;
-
-&lt;p&gt;下一节我们通过实验来实践 VLAN。&lt;/p&gt;
-</description>
-        <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</link>
-        <guid isPermaLink="true">/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/</guid>
         
         <category>虚拟化</category>
         

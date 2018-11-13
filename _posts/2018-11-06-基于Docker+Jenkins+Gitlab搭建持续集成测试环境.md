@@ -120,7 +120,6 @@ CONTAINER_NAME="${API_NAME}-v${API_TAG}"
 docker login -u ${HARBOR_USER} -p ${HARBOR_PASSWD} ${REGISTRY}
 
 tar -zxf web.tar.gz
-#Dockerfile用的caddy
 docker build -t $IMAGE_NAME .
 docker push $IMAGE_NAME
 echo "******镜像推送完成******"
@@ -128,18 +127,52 @@ echo "******镜像推送完成******"
 
 cid=$(docker ps -a | grep "$CONTAINER_NAME" | awk '{print $1}')
 if [ -n "$cid" ];then
-    docker rm -f $cid
+	docker rm -f $cid
 fi
 echo "******删除旧容器完成******"
 
 iid=$(docker images | grep "none" | awk '{print $3}')
 if [ -n "$iid" ];then
-    docker rmi $iid
+	docker rmi $iid
 fi
 echo "******删除旧镜像完成******"
 
 docker run -d -p 2015:2015 --name $CONTAINER_NAME $IMAGE_NAME
-echo "******部署新容器完成******"
+echo "******本地部署新容器完成******"
+
+
+#!/bin/sh
+REGISTRY="192.168.110.202"
+REPO="library"
+HARBOR_USER="admin"
+HARBOR_PASSWD="Harbor12345"
+API_NAME="demo"
+API_TAG="1.0"
+IMAGE_NAME="${REGISTRY}/${REPO}/${API_NAME}:${API_TAG}"
+OLD_IMAGE_NAME="${REGISTRY}/${REPO}/${API_NAME}"
+CONTAINER_NAME="${API_NAME}-v${API_TAG}"
+
+docker login -u ${HARBOR_USER} -p ${HARBOR_PASSWD} ${REGISTRY}
+
+
+cid=$(docker ps -a | grep "$CONTAINER_NAME" | awk '{print $1}')
+if [ -n "$cid" ];then
+	docker rm -f $cid
+fi
+echo "******删除旧容器完成******"
+
+iid=$(docker images | grep "$OLD_IMAGE_NAME" | awk '{print $3}')
+if [ -n "$iid" ];then
+	docker rmi $iid
+fi
+echo "******删除旧镜像完成******"
+
+docker pull $IMAGE_NAME
+echo "******拉取新镜像完成******"
+
+docker run -d -p 2015:2015 --name $CONTAINER_NAME $IMAGE_NAME
+echo "******远程部署新容器完成******"
+
 ```
 
 ## 5. 问题

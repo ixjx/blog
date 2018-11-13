@@ -253,7 +253,6 @@ cnpm <span class="nb">install
 docker login <span class="nt">-u</span> <span class="k">${</span><span class="nv">HARBOR_USER</span><span class="k">}</span> <span class="nt">-p</span> <span class="k">${</span><span class="nv">HARBOR_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span>
 
 <span class="nb">tar</span> <span class="nt">-zxf</span> web.tar.gz
-<span class="c">#Dockerfile用的caddy</span>
 docker build <span class="nt">-t</span> <span class="nv">$IMAGE_NAME</span> <span class="nb">.</span>
 docker push <span class="nv">$IMAGE_NAME</span>
 <span class="nb">echo</span> <span class="s2">"******镜像推送完成******"</span>
@@ -261,18 +260,52 @@ docker push <span class="nv">$IMAGE_NAME</span>
 
 <span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$CONTAINER_NAME</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="k">)</span>
 <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
-    </span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
+	</span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
 <span class="k">fi
 </span><span class="nb">echo</span> <span class="s2">"******删除旧容器完成******"</span>
 
 <span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"none"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="k">)</span>
 <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
-    </span>docker rmi <span class="nv">$iid</span>
+	</span>docker rmi <span class="nv">$iid</span>
 <span class="k">fi
 </span><span class="nb">echo</span> <span class="s2">"******删除旧镜像完成******"</span>
 
 docker run <span class="nt">-d</span> <span class="nt">-p</span> 2015:2015 <span class="nt">--name</span> <span class="nv">$CONTAINER_NAME</span> <span class="nv">$IMAGE_NAME</span>
-<span class="nb">echo</span> <span class="s2">"******部署新容器完成******"</span>
+<span class="nb">echo</span> <span class="s2">"******本地部署新容器完成******"</span>
+
+
+<span class="c">#!/bin/sh</span>
+<span class="nv">REGISTRY</span><span class="o">=</span><span class="s2">"192.168.110.202"</span>
+<span class="nv">REPO</span><span class="o">=</span><span class="s2">"library"</span>
+<span class="nv">HARBOR_USER</span><span class="o">=</span><span class="s2">"admin"</span>
+<span class="nv">HARBOR_PASSWD</span><span class="o">=</span><span class="s2">"Harbor12345"</span>
+<span class="nv">API_NAME</span><span class="o">=</span><span class="s2">"demo"</span>
+<span class="nv">API_TAG</span><span class="o">=</span><span class="s2">"1.0"</span>
+<span class="nv">IMAGE_NAME</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">REPO</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">API_NAME</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">API_TAG</span><span class="k">}</span><span class="s2">"</span>
+<span class="nv">OLD_IMAGE_NAME</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">REPO</span><span class="k">}</span><span class="s2">/</span><span class="k">${</span><span class="nv">API_NAME</span><span class="k">}</span><span class="s2">"</span>
+<span class="nv">CONTAINER_NAME</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">API_NAME</span><span class="k">}</span><span class="s2">-v</span><span class="k">${</span><span class="nv">API_TAG</span><span class="k">}</span><span class="s2">"</span>
+
+docker login <span class="nt">-u</span> <span class="k">${</span><span class="nv">HARBOR_USER</span><span class="k">}</span> <span class="nt">-p</span> <span class="k">${</span><span class="nv">HARBOR_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span>
+
+
+<span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$CONTAINER_NAME</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+	</span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
+<span class="k">fi
+</span><span class="nb">echo</span> <span class="s2">"******删除旧容器完成******"</span>
+
+<span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$OLD_IMAGE_NAME</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="k">)</span>
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+	</span>docker rmi <span class="nv">$iid</span>
+<span class="k">fi
+</span><span class="nb">echo</span> <span class="s2">"******删除旧镜像完成******"</span>
+
+docker pull <span class="nv">$IMAGE_NAME</span>
+<span class="nb">echo</span> <span class="s2">"******拉取新镜像完成******"</span>
+
+docker run <span class="nt">-d</span> <span class="nt">-p</span> 2015:2015 <span class="nt">--name</span> <span class="nv">$CONTAINER_NAME</span> <span class="nv">$IMAGE_NAME</span>
+<span class="nb">echo</span> <span class="s2">"******远程部署新容器完成******"</span>
+
 </code></pre></div></div>
 
 <h2 id="5-问题">5. 问题</h2>

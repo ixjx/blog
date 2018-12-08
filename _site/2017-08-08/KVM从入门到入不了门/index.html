@@ -134,9 +134,10 @@
   <p>1.查看系统是否支持虚拟化</p>
 </blockquote>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>egrep --color 'vmx|svm' /proc/cpuinfo
+<div class="highlighter-rouge"><pre class="highlight"><code>egrep --color 'vmx|svm' /proc/cpuinfo
 lscpu
-</code></pre></div></div>
+</code></pre>
+</div>
 <p>　　KVM需要CPU的VT-X或者AMD-V支持</p>
 
 <p><img src="http://shurriklab.qiniudn.com/a6igkp5iet81twi6i9ujdc6ioz.png" alt="" /></p>
@@ -164,7 +165,7 @@ kvm:软件包中含有KVM内核模块，它在默认linux内核中提供kvm管�
 
 <p>brctl show可以查看桥接状态</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat  /etc/sysconfig/network-scripts/ifcfg-br0
+<div class="highlighter-rouge"><pre class="highlight"><code>cat  /etc/sysconfig/network-scripts/ifcfg-br0
 TYPE=Bridge  //类型是Bridge
 BOOTPROTO=static
 NAME=br0
@@ -174,9 +175,10 @@ IPADDR=X.X.X.X
 PREFIX=28
 GATEWAY=X.X.X.X
 DNS1=X.X.X.X
-</code></pre></div></div>
+</code></pre>
+</div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat  /etc/sysconfig/network-scripts/ifcfg-eth0 
+<div class="highlighter-rouge"><pre class="highlight"><code>cat  /etc/sysconfig/network-scripts/ifcfg-eth0 
 TYPE=Ethernet
 BOOTPROTO=none
 NAME=eth0
@@ -184,7 +186,8 @@ UUID=4900f010-0575-4295-85b6-1c6edbc7e398
 DEVICE=eth0
 ONBOOT=yes
 BRIDGE=br0    //桥接到br0
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p><img src="http://shurriklab.qiniudn.com/ijb2rp8qhxb6grf0ptx9yzic9d.png" alt="" /></p>
 
@@ -204,11 +207,13 @@ BRIDGE=br0    //桥接到br0
   <p>5.创建虚拟机</p>
 </blockquote>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qemu-img create -f qcow2 -o preallocation=metadata  /kvm/test.img 30G
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>qemu-img create -f qcow2 -o preallocation=metadata  /kvm/test.img 30G
+</code></pre>
+</div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>virt-install --name test --ram 2048 --disk path=/kvm/test.img,format=qcow2,size=30,bus=virtio --vcpus 2 --os-type linux --network bridge=br0 --graphics none --console pty,target_type=serial --location 'http://mirrors.163.com/centos/6.9/os/x86_64/' --extra-args 'console=ttyS0,115200n8 serial'
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>virt-install --name test --ram 2048 --disk path=/kvm/test.img,format=qcow2,size=30,bus=virtio --vcpus 2 --os-type linux --network bridge=br0 --graphics none --console pty,target_type=serial --location 'http://mirrors.163.com/centos/6.9/os/x86_64/' --extra-args 'console=ttyS0,115200n8 serial'
+</code></pre>
+</div>
 
 <p>　　剩下的就是centos的安装步骤，不多说。这样，我们的虚拟机就安装完成，熟练掌握virsh的命令，KVM也就开始入门了。</p>
 

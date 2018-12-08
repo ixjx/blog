@@ -138,20 +138,23 @@
 <p><img src="http://shurriklab.qiniudn.com/v67cryj4viy664kcdp02t63vrt.png" alt="" /></p>
 
 <p>启动 VM1，brctl show 可以查看到 vnet0 已经挂在了 virbr0 上。</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># brctl show
+<div class="highlighter-rouge"><pre class="highlight"><code># brctl show
 bridge name     bridge id               STP enabled     interfaces
 br0             8000.000c298decbe       no                    eth0
 virbr0          8000.fe540075dd1a       yes                   vnet0
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>virbr0 使用 dnsmasq 提供 DHCP 服务，可以在宿主机中查看该进程信息</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># ps -elf|grep dnsmasq
+<div class="highlighter-rouge"><pre class="highlight"><code># ps -elf|grep dnsmasq
 5 S libvirt+  2422     1  0  80   0 -  7054 poll_s 11:26 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf
-</code></pre></div></div>
+</code></pre>
+</div>
 <p>在 /var/lib/libvirt/dnsmasq/ 目录下有一个 default.leases 文件，当 VM1 成功获得 DHCP 的 IP 后，可以在该文件中查看到相应的信息</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># cat /var/lib/libvirt/dnsmasq/default.leases
+<div class="highlighter-rouge"><pre class="highlight"><code># cat /var/lib/libvirt/dnsmasq/default.leases
 1441525677 52:54:00:75:dd:1a 192.168.122.6 ubuntu *
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>上面显示 192.168.122.6 已经分配给 MAC 地址为 52:54:00:75:dd:1a 的网卡，这正是 vnet0 的 MAC。之后就可以使用该 IP 访问 VM1 了。</p>
 

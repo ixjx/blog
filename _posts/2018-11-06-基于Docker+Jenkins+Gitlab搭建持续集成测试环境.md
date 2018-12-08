@@ -92,88 +92,275 @@ gitlab/gitlab-ce:latest
 
 　　这一块比较复杂，不讲了
 
-## 4. 打包前端demo，jenkins构建shell
+## 4. 流水线demo
 
 　　前端用npm打包，后端用的maven。
 
-```bash
-#!/bin/sh
-source /etc/profile
-cnpm cache verify
-cnpm install
-cnpm run build
-tar -zcf web.tar.gz dist
-rm -rf dist
-echo "******打包完成******"
+```groovy
+pipeline{
+    agent {
+        label 'master'
+    }
 
+    stages{
+        stage('拉取代码'){
+            steps{
+                git branch: 'alarm_system_v2',
+                credentialsId: '5d7cb03e-66df-4002-a2d5-70f8aa196ac1',
+                url: 'http://192.168.110.8:10080/fehz/react-garden-system.git'
+            }
+        }
 
-#!/bin/sh
-REGISTRY="192.168.110.202"
-REPO="library"
-HARBOR_USER="admin"
-HARBOR_PASSWD="Harbor12345"
-API_NAME="demo"
-API_TAG="1.0"
-IMAGE_NAME="${REGISTRY}/${REPO}/${API_NAME}:${API_TAG}"
-CONTAINER_NAME="${API_NAME}-v${API_TAG}"
+        stage('安装依赖，进行前端代码鉴定'){
+            steps{
+                nodejs('node-v10.6.0') {
+                    sh'''
+                    npm -v
+                    node -v
+                    npm install react-tree-module-web --registry=http://192.168.110.26:8088/repository/npm/
+                    npm install react-common-module-web --registry=http://192.168.110.26:8088/repository/npm/
+                    npm install
+                    npm run lint --force
+                    '''
 
-docker login -u ${HARBOR_USER} -p ${HARBOR_PASSWD} ${REGISTRY}
+                    hygieiaCodeQualityPublishStep checkstyleFilePattern: '**/*/eslint.xml', findbugsFilePattern: '', jacocoFilePattern: '', junitFilePattern: '', pmdFilePattern: ''
+                }
+            }
+        }
 
-tar -zxf web.tar.gz
-docker build -t $IMAGE_NAME .
-docker push $IMAGE_NAME
-echo "******镜像推送完成******"
+        stage('npm打包'){
+            steps{
+                nodejs('node-v10.6.0'){
+                    hygieiaBuildPublishStep buildStatus: 'InProgress'
+                    sh'''
+                    npm run build:test
+                    cp /var/lib/jenkins/workspace/build_prj/*.js $WORKSPACE/node_modules/connect-cas2/lib/
+                    '''
+                    hygieiaBuildPublishStep buildStatus: 'Success'
+                }
+            }
+        }
 
+        stage('构建docker镜像'){
+            steps{
+                sh'''
+                ###根据git库设置包名
+                jar_name=192.168.110.202/isp/react-garden-alarm-system
+                echo "包名:$jar_name"
+                docker build -t $jar_name .
+                '''
+            }
+        }
 
-cid=$(docker ps -a | grep "$CONTAINER_NAME" | awk '{print $1}')
-if [ -n "$cid" ];then
-	docker rm -f $cid
-fi
-echo "******删除旧容器完成******"
+        stage('将docker镜像上传到镜像仓库'){
+            steps{
+                sh 'docker push 192.168.110.202/isp/react-garden-alarm-system:latest'
+                sh 'docker image prune -f'
+            }
+        }
 
-iid=$(docker images | grep "none" | awk '{print $3}')
-if [ -n "$iid" ];then
-	docker rmi $iid
-fi
-echo "******删除旧镜像完成******"
-
-docker run -d -p 2015:2015 --name $CONTAINER_NAME $IMAGE_NAME
-echo "******本地部署新容器完成******"
-
-
-#!/bin/sh
-REGISTRY="192.168.110.202"
-REPO="library"
-HARBOR_USER="admin"
-HARBOR_PASSWD="Harbor12345"
-API_NAME="demo"
-API_TAG="1.0"
-IMAGE_NAME="${REGISTRY}/${REPO}/${API_NAME}:${API_TAG}"
-OLD_IMAGE_NAME="${REGISTRY}/${REPO}/${API_NAME}"
-CONTAINER_NAME="${API_NAME}-v${API_TAG}"
-
-docker login -u ${HARBOR_USER} -p ${HARBOR_PASSWD} ${REGISTRY}
-
-
-cid=$(docker ps -a | grep "$CONTAINER_NAME" | awk '{print $1}')
-if [ -n "$cid" ];then
-	docker rm -f $cid
-fi
-echo "******删除旧容器完成******"
-
-iid=$(docker images | grep "$OLD_IMAGE_NAME" | awk '{print $3}')
-if [ -n "$iid" ];then
-	docker rmi $iid
-fi
-echo "******删除旧镜像完成******"
-
-docker pull $IMAGE_NAME
-echo "******拉取新镜像完成******"
-
-docker run -d -p 2015:2015 --name $CONTAINER_NAME $IMAGE_NAME
-echo "******远程部署新容器完成******"
+        stage('测试环境部署'){
+            steps{
+                sh'''
+                echo "登录到192.168.110.211服务器执行部署脚本"
+                ssh root@192.168.110.211 "sh /opt/jenkins/deploy.sh react_garden_alarm_system"
+                '''
+                hygieiaDeployPublishStep applicationName: 'react-garden-system-alarm-dev', artifactDirectory: '', artifactGroup: '', artifactName: '', artifactVersion: '', buildStatus: 'Success', environmentName: 'TEST'
+            }
+        }
+    }
+}
 
 ```
+
+```groovy
+pipeline{
+    agent {
+        label 'master'
+    }
+
+    stages{
+        stage('拉取代码'){
+            steps{
+                git branch: 'develop-isp',
+                credentialsId: '5d7cb03e-66df-4002-a2d5-70f8aa196ac1',
+                url: 'http://192.168.110.8:10080/liuran/framework-alarm.git/'
+            }
+        }
+
+        stage('后端代码鉴定'){
+            steps{
+                build job:'garden-sonar-dev',
+                parameters: [string(name: 'choose_service', value: 'framework-alarm-log-sonar')]
+                hygieiaSonarPublishStep ceQueryIntervalInSeconds: '10', ceQueryMaxAttempts: '30'
+            }
+        }
+
+        stage('构建并打包成docker镜像'){
+            steps{
+                withMaven(jdk: 'jdk', maven: 'apache-maven-3.5.4') {
+                    hygieiaBuildPublishStep buildStatus: 'InProgress'
+                    sh 'mvn clean package docker:build'
+                    hygieiaBuildPublishStep buildStatus: 'Success'
+                }
+            }
+        }
+
+        stage('将docker镜像上传到镜像仓库'){
+            steps{
+                sh 'docker push 192.168.110.202/isp/java/framework-alarm-log:latest'
+                sh 'docker image prune -f'
+            }
+        }
+
+        stage('测试环境部署'){
+            steps{
+                sh'''
+                echo "登录到192.168.110.211服务器执行脚本"
+                ssh root@192.168.110.211 "sh /opt/jenkins/deploy.sh java_framework_alarm_log"
+                echo "登录到192.168.110.212部署自动化测试环境"
+                ssh root@192.168.110.212 "sh /root/isp-alarm.sh"
+                '''
+                hygieiaDeployPublishStep applicationName: 'garden-framework-alarm-log-dev', artifactDirectory: 'target', artifactGroup: 'com.letv.dashboard', artifactName: '*.jar', artifactVersion: '', buildStatus: 'Success', environmentName: 'TEST'
+            }
+        }
+    }
+
+    /*post {
+        always {
+            
+            echo 'One way or another, I have finished'
+  
+        }
+        success {
+            echo 'I succeeeded!'
+			hygieiaBuildPublishStep buildStatus: 'Success'
+        }
+        unstable {
+            echo 'I am unstable :/'
+			hygieiaBuildPublishStep buildStatus: 'Unstable'
+        }
+        failure {
+            echo 'I failed :('
+			hygieiaBuildPublishStep buildStatus: 'Failure'
+			
+        }
+        changed {
+            echo 'Things were different before...'
+        }
+    }*/
+}
+```
+
+后面可以加个post阶段给老大发邮件。。
+
+`deploy.sh`参考
+```bash
+#!/bin/sh
+
+login_harbor(){
+
+    REGISTRY="192.168.110.202"
+    HARBOR_USER="admin"
+    HARBOR_PASSWD="Harbor12345"
+
+    docker login -u ${HARBOR_USER} -p ${HARBOR_PASSWD} ${REGISTRY}
+}
+
+deploy_new_container(){
+    # $1 : $CONTAINER_NAME
+    # $2 : $OLD_IMAGE_NAME 
+    # $3 : $IMAGE_NAME 
+    # $4 : $PORT 
+    cid=$(docker ps -a | grep "$1" | awk '{print $1}')
+    if [ -n "$cid" ];then
+        docker rm -f $cid
+    fi
+    echo "******删除旧容器完成******"
+
+    iid=$(docker images | grep "$2" | awk '{print $3}')
+    if [ -n "$iid" ];then
+        docker rmi -f $iid
+    fi
+    echo "******删除旧镜像完成******"
+
+    docker pull $3
+    echo "******拉取新镜像完成******"
+
+    if [[ $3 =~ "java" ]];then
+        docker run -d --restart always -p $4:$4 --name $1 -e JAVA_OPTS="-Denv=UAT" $3
+        echo "******远程部署后端容器完成******"
+    elif [[ $3 =~ "react" ]];then
+        docker run -d --restart always -p $4:$4 --name $1 -e ENV_OPTS="--env test" $3
+        echo "******远程部署前端容器完成******"
+    else
+        echo "镜像名字不合法，请确认!"
+    fi
+}
+
+# 后端微服务
+java_framework_alarm_log(){
+    CONTAINER_NAME="java-alarm-test"
+    OLD_IMAGE_NAME="192.168.110.202/isp/java/framework-alarm-log"
+    IMAGE_NAME="192.168.110.202/isp/java/framework-alarm-log:latest"
+    PORT="8086"
+
+    deploy_new_container $CONTAINER_NAME $OLD_IMAGE_NAME $IMAGE_NAME $PORT
+}
+
+java_isp_ias(){
+    CONTAINER_NAME="java-ias-test"
+    OLD_IMAGE_NAME="192.168.110.202/isp/java/isp-ias"
+    IMAGE_NAME="192.168.110.202/isp/java/isp-ias:latest"
+    PORT="8089"
+
+    deploy_new_container $CONTAINER_NAME $OLD_IMAGE_NAME $IMAGE_NAME $PORT
+}
+
+# 前端
+react_garden_alarm_system(){
+    CONTAINER_NAME="react-alarm-test"
+    OLD_IMAGE_NAME="192.168.110.202/isp/react-garden-alarm-system"
+    IMAGE_NAME="192.168.110.202/isp/react-garden-alarm-system:latest"
+    PORT="8003"
+
+    deploy_new_container $CONTAINER_NAME $OLD_IMAGE_NAME $IMAGE_NAME $PORT
+}
+
+react_garden_inbreak_system(){
+    CONTAINER_NAME="react-ias-test"
+    OLD_IMAGE_NAME="192.168.110.202/isp/react-garden-inbreak-system"
+    IMAGE_NAME="192.168.110.202/isp/react-garden-inbreak-system:latest"
+    PORT="8005"
+
+    deploy_new_container $CONTAINER_NAME $OLD_IMAGE_NAME $IMAGE_NAME $PORT
+}
+
+login_harbor
+
+case $1 in 
+    java_framework_alarm_log)
+        java_framework_alarm_log
+    ;;
+    java_isp_ias)
+        java_isp_ias
+    ;;
+    react_garden_alarm_system)
+        react_garden_alarm_system
+    ;;
+    react_garden_inbreak_system)
+        react_garden_inbreak_system
+    ;;
+    *)
+    echo "请输入正确参数!
+    java_framework_alarm_log
+    java_isp_ias
+    react_garden_alarm_system
+    react_garden_inbreak_system"
+    ;;
+esac
+```
+
 
 ## 5. 问题
 

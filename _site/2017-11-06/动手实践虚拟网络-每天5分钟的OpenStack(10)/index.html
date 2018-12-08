@@ -161,23 +161,25 @@
 
 <p>用 brctl show 查看当前 Linux Bridge 的配置。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># brctl show
+<div class="highlighter-rouge"><pre class="highlight"><code># brctl show
 bridge name     bridge id               STP enabled     interfaces
 br0             8000.000c298decbe       no                    eth0
 virbr0          8000.000000000000       yes
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>除了 br0，大家应该注意到还有一个 virbr0 的 Bridge，而且 virbr0 上已经配置了 IP 地址 192.168.122.1。</p>
 
 <p>virbr0 的作用我们会在后面介绍。</p>
 
 <p>在宿主机中 CloudMan 已经提前创建好了虚机 VM1 和 VM2，现在都处于关机状态。</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># virsh list --all
+<div class="highlighter-rouge"><pre class="highlight"><code># virsh list --all
  Id    Name                           State
 ----------------------------------------------------
  -     VM1                            shut off
  -     VM2                            shut off
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <blockquote>
   <h3 id="配置-vm1">配置 VM1</h3>
@@ -190,20 +192,22 @@ virbr0          8000.000000000000       yes
 <p>可以看到虚拟网卡的 source device 我们选择的是 br0</p>
 
 <p>下面我们启动 VM1，看会发生什么</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># brctl show
+<div class="highlighter-rouge"><pre class="highlight"><code># brctl show
 
 bridge name     bridge id               STP enabled     interfaces
 br0             8000.000c298decbe       no                    eth0
                                                                                   vnet0
 virbr0          8000.000000000000       yes
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>brctl show 告诉我们 br0 下面添加了一个 vnet0 设备，通过 virsh 确认这就是VM1的虚拟网卡。</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># virsh domiflist VM1
+<div class="highlighter-rouge"><pre class="highlight"><code># virsh domiflist VM1
 Interface  Type       Source     Model       MAC
 -------------------------------------------------------
 vnet0      bridge     br0        rtl8139     52:54:00:75:dd:1a
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>另外，在 VM1 中虚拟网卡是 eth0，并不是 vnet0。</p>
 

@@ -133,8 +133,9 @@
 </blockquote>
 
 <p>　　自己写的一个PPTP的镜像，VPS里直接执行</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d --privileged --net=host ixjx/vpn
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>docker run -d --privileged --net=host ixjx/vpn
+</code></pre>
+</div>
 
 <p>就可以食用。</p>
 
@@ -154,14 +155,15 @@
 
 <p>　　然后创建vpn.env文件，在文件中写入：</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>VPN_IPSEC_PSK=&lt;IPsec pre-shared key&gt;
+<div class="highlighter-rouge"><pre class="highlight"><code>VPN_IPSEC_PSK=&lt;IPsec pre-shared key&gt;
 VPN_USER=&lt;VPN Username&gt;
 VPN_PASSWORD=&lt;VPN Password&gt;
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>　　上面的内容分别是秘钥，用户名，密码，随便设置，到时候填入客户端的时候填同样的值就行了。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo modprobe af_key
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo modprobe af_key
 docker run \
     --name ipsec-vpn-server \
     --env-file ./vpn.env \
@@ -171,7 +173,8 @@ docker run \
     -d --privileged \
     --restart=always \
     hwdsl2/ipsec-vpn-server
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <blockquote>
   <p>Shadowsocks</p>
@@ -179,8 +182,9 @@ docker run \
 
 <p>　　大名鼎鼎的SS。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -d -p 1984:1984 oddrationale/docker-shadowsocks -s 0.0.0.0 -p 1984 -k PASSWORD -m aes-256-cfb
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>docker run -d -p 1984:1984 oddrationale/docker-shadowsocks -s 0.0.0.0 -p 1984 -k PASSWORD -m aes-256-cfb
+</code></pre>
+</div>
 
 <p>　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。</p>
 

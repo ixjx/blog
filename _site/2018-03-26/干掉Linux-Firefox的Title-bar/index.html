@@ -152,12 +152,13 @@
 <code class="highlighter-rouge">mv /usr/lib/firefox/firefox /usr/lib/firefox/firefox-browser</code></p>
   </li>
   <li>创建同名脚本vi firefox
-    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+    <div class="language-shell highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 /usr/lib/firefox/firefox-browser <span class="nv">$1</span> &amp;
-<span class="nb">sleep </span>2
-<span class="nv">F_W_ID</span><span class="o">=</span><span class="k">$(</span>wmctrl <span class="nt">-l</span> |grep <span class="s1">'Firefox'</span>|awk <span class="s1">'{print $1}'</span><span class="k">)</span><span class="p">;</span>
-python <span class="nt">-c</span> <span class="s1">'from gtk.gdk import window_foreign_new, window_process_all_updates; w = window_foreign_new(int("'</span><span class="nv">$F_W_ID</span><span class="s1">'", 16)); w.set_decorations(0); window_process_all_updates()'</span>
-</code></pre></div>    </div>
+sleep 2
+<span class="nv">F_W_ID</span><span class="o">=</span><span class="k">$(</span>wmctrl -l |grep <span class="s1">'Firefox'</span>|awk <span class="s1">'{print $1}'</span><span class="k">)</span>;
+python -c <span class="s1">'from gtk.gdk import window_foreign_new, window_process_all_updates; w = window_foreign_new(int("'</span><span class="nv">$F_W_ID</span><span class="s1">'", 16)); w.set_decorations(0); window_process_all_updates()'</span>
+</code></pre>
+    </div>
   </li>
   <li>
     <p>给予执行权限

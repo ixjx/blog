@@ -176,15 +176,16 @@
 <p><strong>如何使用Docker加速器</strong></p>
 
 <p>　　在伟大的GWF下，访问官方Docker网站速度感人，针对Docker客户端版本大于1.10的用户，可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速器：</p>
-<div class="language-perl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">sudo</span> <span class="sr">mkdir -p /etc/dock</span><span class="nv">er</span>
-<span class="nv">sudo</span> <span class="nv">tee</span> <span class="sr">/etc/doc</span><span class="nv">ker</span><span class="o">/</span><span class="nv">daemon</span><span class="o">.</span><span class="nv">json</span> <span class="o">&lt;&lt;-</span><span class="s">'EOF'</span>
+<div class="language-perl highlighter-rouge"><pre class="highlight"><code><span class="nv">sudo</span> <span class="nb">mkdir</span> <span class="o">-</span><span class="nv">p</span> <span class="sr">/etc/</span><span class="nv">docker</span>
+<span class="nv">sudo</span> <span class="nv">tee</span> <span class="sr">/etc/</span><span class="nv">docker</span><span class="o">/</span><span class="nv">daemon</span><span class="o">.</span><span class="nv">json</span> <span class="o">&lt;&lt;-</span><span class="s">'EOF'</span>
 <span class="p">{</span>
   <span class="s">"registry-mirrors"</span><span class="p">:</span> <span class="p">[</span><span class="s">"your own url"</span><span class="p">]</span>
 <span class="p">}</span>
 <span class="nv">EOF</span>
 <span class="nv">sudo</span> <span class="nv">systemctl</span> <span class="nv">daemon</span><span class="o">-</span><span class="nv">reload</span>
 <span class="nv">sudo</span> <span class="nv">systemctl</span> <span class="nv">restart</span> <span class="nv">docker</span>
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <blockquote>
   <h3 id="搜索docker镜像">搜索Docker镜像</h3>

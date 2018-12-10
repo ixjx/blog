@@ -180,10 +180,9 @@
 
 <p>采用offline安装包,在执行./prepare的时候抛出如下异常：</p>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">root@ubuntu:~/harbor# </span>./prepare 
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@ubuntu:~/harbor# ./prepare 
 Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./common/config/registry/root.crt
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>需要修改prepare文件，将第498行：</p>
 
@@ -197,11 +196,10 @@ Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./comm
 
 <p>里面的内容是一个json对象,加上一项insecure-registries，地址自己更改：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-    </span><span class="nt">"insecure-registries"</span><span class="p">:[</span><span class="s2">"192.168.1.78"</span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "insecure-registries":["192.168.1.78"]
+}
+</code></pre></div></div>
 
 <p>然后重启docker,执行</p>
 
@@ -211,17 +209,16 @@ Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./comm
 
 <h2 id="2-搭建gitlab">2. 搭建gitlab</h2>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>docker run --detach <span class="se">\</span>
---hostname localhost <span class="se">\</span>
---publish 443:443 --publish 80:80 <span class="se">\</span>
---name gitlab <span class="se">\</span>
---restart always <span class="se">\</span>
---volume /opt/gitlab/config:/etc/gitlab <span class="se">\</span>
---volume /opt/gitlab/logs:/var/log/gitlab <span class="se">\</span>
---volume /opt/gitlab/data:/var/opt/gitlab <span class="se">\</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">--detach</span> <span class="se">\</span>
+<span class="nt">--hostname</span> localhost <span class="se">\</span>
+<span class="nt">--publish</span> 443:443 <span class="nt">--publish</span> 80:80 <span class="se">\</span>
+<span class="nt">--name</span> gitlab <span class="se">\</span>
+<span class="nt">--restart</span> always <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/config:/etc/gitlab <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/logs:/var/log/gitlab <span class="se">\</span>
+<span class="nt">--volume</span> /opt/gitlab/data:/var/opt/gitlab <span class="se">\</span>
 gitlab/gitlab-ce:latest
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>　　之后push demo代码。</p>
 
@@ -233,7 +230,7 @@ gitlab/gitlab-ce:latest
 
 <p>　　前端用npm打包，后端用的maven。</p>
 
-<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="n">pipeline</span><span class="o">{</span>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pipeline</span><span class="o">{</span>
     <span class="n">agent</span> <span class="o">{</span>
         <span class="n">label</span> <span class="s1">'master'</span>
     <span class="o">}</span>
@@ -258,7 +255,7 @@ gitlab/gitlab-ce:latest
                     npm install
                     npm run lint --force
                     '''</span>
-
+                    <span class="n">checkstyle</span> <span class="nl">canComputeNew:</span> <span class="kc">false</span><span class="o">,</span> <span class="nl">defaultEncoding:</span> <span class="s1">''</span><span class="o">,</span> <span class="nl">healthy:</span> <span class="s1">''</span><span class="o">,</span> <span class="nl">pattern:</span> <span class="s1">'eslint.xml'</span><span class="o">,</span> <span class="nl">unHealthy:</span> <span class="s1">''</span>
                     <span class="n">hygieiaCodeQualityPublishStep</span> <span class="nl">checkstyleFilePattern:</span> <span class="s1">'**/*/eslint.xml'</span><span class="o">,</span> <span class="nl">findbugsFilePattern:</span> <span class="s1">''</span><span class="o">,</span> <span class="nl">jacocoFilePattern:</span> <span class="s1">''</span><span class="o">,</span> <span class="nl">junitFilePattern:</span> <span class="s1">''</span><span class="o">,</span> <span class="nl">pmdFilePattern:</span> <span class="s1">''</span>
                 <span class="o">}</span>
             <span class="o">}</span>
@@ -307,10 +304,9 @@ gitlab/gitlab-ce:latest
     <span class="o">}</span>
 <span class="o">}</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="language-groovy highlighter-rouge"><pre class="highlight"><code><span class="n">pipeline</span><span class="o">{</span>
+<div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pipeline</span><span class="o">{</span>
     <span class="n">agent</span> <span class="o">{</span>
         <span class="n">label</span> <span class="s1">'master'</span>
     <span class="o">}</span>
@@ -386,13 +382,12 @@ gitlab/gitlab-ce:latest
         }
     }*/</span>
 <span class="o">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>后面可以加个post阶段给老大发邮件。。</p>
 
 <p><code class="highlighter-rouge">deploy.sh</code>参考</p>
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
 
 login_harbor<span class="o">(){</span>
 
@@ -400,7 +395,7 @@ login_harbor<span class="o">(){</span>
     <span class="nv">HARBOR_USER</span><span class="o">=</span><span class="s2">"admin"</span>
     <span class="nv">HARBOR_PASSWD</span><span class="o">=</span><span class="s2">"Harbor12345"</span>
 
-    docker login -u <span class="k">${</span><span class="nv">HARBOR_USER</span><span class="k">}</span> -p <span class="k">${</span><span class="nv">HARBOR_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span>
+    docker login <span class="nt">-u</span> <span class="k">${</span><span class="nv">HARBOR_USER</span><span class="k">}</span> <span class="nt">-p</span> <span class="k">${</span><span class="nv">HARBOR_PASSWD</span><span class="k">}</span> <span class="k">${</span><span class="nv">REGISTRY</span><span class="k">}</span>
 <span class="o">}</span>
 
 deploy_new_container<span class="o">(){</span>
@@ -408,26 +403,26 @@ deploy_new_container<span class="o">(){</span>
     <span class="c"># $2 : $OLD_IMAGE_NAME </span>
     <span class="c"># $3 : $IMAGE_NAME </span>
     <span class="c"># $4 : $PORT </span>
-    <span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps -a | grep <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> | awk <span class="s1">'{print $1}'</span><span class="k">)</span>
-    <span class="k">if</span> <span class="o">[</span> -n <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span>;<span class="k">then
-        </span>docker rm -f <span class="nv">$cid</span>
+    <span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="k">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+        </span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
     <span class="k">fi
     </span><span class="nb">echo</span> <span class="s2">"******删除旧容器完成******"</span>
 
-    <span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | grep <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> | awk <span class="s1">'{print $3}'</span><span class="k">)</span>
-    <span class="k">if</span> <span class="o">[</span> -n <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span>;<span class="k">then
-        </span>docker rmi -f <span class="nv">$iid</span>
+    <span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="k">)</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+        </span>docker rmi <span class="nt">-f</span> <span class="nv">$iid</span>
     <span class="k">fi
     </span><span class="nb">echo</span> <span class="s2">"******删除旧镜像完成******"</span>
 
     docker pull <span class="nv">$3</span>
     <span class="nb">echo</span> <span class="s2">"******拉取新镜像完成******"</span>
 
-    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$3</span> <span class="o">=</span>~ <span class="s2">"java"</span> <span class="o">]]</span>;<span class="k">then
-        </span>docker run -d --restart always -p <span class="nv">$4</span>:<span class="nv">$4</span> --name <span class="nv">$1</span> -e <span class="nv">JAVA_OPTS</span><span class="o">=</span><span class="s2">"-Denv=UAT"</span> <span class="nv">$3</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="nv">$3</span> <span class="o">=</span>~ <span class="s2">"java"</span> <span class="o">]]</span><span class="p">;</span><span class="k">then
+        </span>docker run <span class="nt">-d</span> <span class="nt">--restart</span> always <span class="nt">-p</span> <span class="nv">$4</span>:<span class="nv">$4</span> <span class="nt">--name</span> <span class="nv">$1</span> <span class="nt">-e</span> <span class="nv">JAVA_OPTS</span><span class="o">=</span><span class="s2">"-Denv=UAT"</span> <span class="nv">$3</span>
         <span class="nb">echo</span> <span class="s2">"******远程部署后端容器完成******"</span>
-    <span class="k">elif</span> <span class="o">[[</span> <span class="nv">$3</span> <span class="o">=</span>~ <span class="s2">"react"</span> <span class="o">]]</span>;<span class="k">then
-        </span>docker run -d --restart always -p <span class="nv">$4</span>:<span class="nv">$4</span> --name <span class="nv">$1</span> -e <span class="nv">ENV_OPTS</span><span class="o">=</span><span class="s2">"--env test"</span> <span class="nv">$3</span>
+    <span class="k">elif</span> <span class="o">[[</span> <span class="nv">$3</span> <span class="o">=</span>~ <span class="s2">"react"</span> <span class="o">]]</span><span class="p">;</span><span class="k">then
+        </span>docker run <span class="nt">-d</span> <span class="nt">--restart</span> always <span class="nt">-p</span> <span class="nv">$4</span>:<span class="nv">$4</span> <span class="nt">--name</span> <span class="nv">$1</span> <span class="nt">-e</span> <span class="nv">ENV_OPTS</span><span class="o">=</span><span class="s2">"--env test"</span> <span class="nv">$3</span>
         <span class="nb">echo</span> <span class="s2">"******远程部署前端容器完成******"</span>
     <span class="k">else
         </span><span class="nb">echo</span> <span class="s2">"镜像名字不合法，请确认!"</span>
@@ -495,8 +490,7 @@ login_harbor
     react_garden_inbreak_system"</span>
     <span class="p">;;</span>
 <span class="k">esac</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="5-问题">5. 问题</h2>
 
@@ -504,12 +498,11 @@ login_harbor
   <li>gitlab需通过root账号登录，允许本地webhook。这是因为gitlab和jenkins在同一个节点部署，实际分开部署不会有这个问题</li>
 </ol>
 
-<div class="language-bash highlighter-rouge"><pre class="highlight"><code>gitlab-rails console production   <span class="c">#gitlab居然是用ruby写的</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gitlab-rails console production   <span class="c">#gitlab居然是用ruby写的</span>
 u <span class="o">=</span> User.where<span class="o">(</span>email: <span class="s1">'admin@example.com'</span><span class="o">)</span>.first
 u.password<span class="o">=</span><span class="s1">'new_password'</span>
 u.save!
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>gitlab配置Admin area：</p>
 

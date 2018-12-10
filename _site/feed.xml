@@ -5,9 +5,9 @@
     <description>shurrik`s blog</description>
     <link>/blog/</link>
     <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Dec 2018 12:51:02 +0800</pubDate>
-    <lastBuildDate>Sat, 08 Dec 2018 12:51:02 +0800</lastBuildDate>
-    <generator>Jekyll v3.4.3</generator>
+    <pubDate>Mon, 10 Dec 2018 09:46:57 +0800</pubDate>
+    <lastBuildDate>Mon, 10 Dec 2018 09:46:57 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
     
       <item>
         <title>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</title>
@@ -67,10 +67,9 @@
 
 &lt;p&gt;采用offline安装包,在执行./prepare的时候抛出如下异常：&lt;/p&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;root@ubuntu:~/harbor# &lt;/span&gt;./prepare 
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@ubuntu:~/harbor# ./prepare 
 Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./common/config/registry/root.crt
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;需要修改prepare文件，将第498行：&lt;/p&gt;
 
@@ -84,11 +83,10 @@ Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./comm
 
 &lt;p&gt;里面的内容是一个json对象,加上一项insecure-registries，地址自己更改：&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;insecure-registries&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.1.78&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+    &quot;insecure-registries&quot;:[&quot;192.168.1.78&quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;然后重启docker,执行&lt;/p&gt;
 
@@ -98,17 +96,16 @@ Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./comm
 
 &lt;h2 id=&quot;2-搭建gitlab&quot;&gt;2. 搭建gitlab&lt;/h2&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run --detach &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---hostname localhost &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---publish 443:443 --publish 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---name gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---restart always &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---volume /opt/gitlab/config:/etc/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---volume /opt/gitlab/logs:/var/log/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
---volume /opt/gitlab/data:/var/opt/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;--detach&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--hostname&lt;/span&gt; localhost &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 443:443 &lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/config:/etc/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/logs:/var/log/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/data:/var/opt/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 gitlab/gitlab-ce:latest
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　之后push demo代码。&lt;/p&gt;
 
@@ -120,7 +117,7 @@ gitlab/gitlab-ce:latest
 
 &lt;p&gt;　　前端用npm打包，后端用的maven。&lt;/p&gt;
 
-&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;agent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'master'&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
@@ -145,7 +142,7 @@ gitlab/gitlab-ce:latest
                     npm install
                     npm run lint --force
                     '''&lt;/span&gt;
-
+                    &lt;span class=&quot;n&quot;&gt;checkstyle&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;canComputeNew:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;defaultEncoding:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;healthy:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;pattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'eslint.xml'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;unHealthy:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
                     &lt;span class=&quot;n&quot;&gt;hygieiaCodeQualityPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;checkstyleFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'**/*/eslint.xml'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;findbugsFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;jacocoFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;junitFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;pmdFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
                 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
             &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
@@ -194,10 +191,9 @@ gitlab/gitlab-ce:latest
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;agent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'master'&lt;/span&gt;
     &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
@@ -273,13 +269,12 @@ gitlab/gitlab-ce:latest
         }
     }*/&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;后面可以加个post阶段给老大发邮件。。&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;deploy.sh&lt;/code&gt;参考&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
 
 login_harbor&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
 
@@ -287,7 +282,7 @@ login_harbor&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
     &lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;
     &lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Harbor12345&quot;&lt;/span&gt;
 
-    docker login -u &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; -p &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
+    docker login &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
 deploy_new_container&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
@@ -295,26 +290,26 @@ deploy_new_container&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
     &lt;span class=&quot;c&quot;&gt;# $2 : $OLD_IMAGE_NAME &lt;/span&gt;
     &lt;span class=&quot;c&quot;&gt;# $3 : $IMAGE_NAME &lt;/span&gt;
     &lt;span class=&quot;c&quot;&gt;# $4 : $PORT &lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;cid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker ps -a | grep &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -n &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker rm -f &lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;cid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;fi
     &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧容器完成******&quot;&lt;/span&gt;
 
-    &lt;span class=&quot;nv&quot;&gt;iid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker images | grep &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | awk &lt;span class=&quot;s1&quot;&gt;'{print $3}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -n &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker rmi -f &lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;iid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker images | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $3}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;docker rmi &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;fi
     &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧镜像完成******&quot;&lt;/span&gt;
 
     docker pull &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
     &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******拉取新镜像完成******&quot;&lt;/span&gt;
 
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;java&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker run -d --restart always -p &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; --name &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; -e &lt;span class=&quot;nv&quot;&gt;JAVA_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-Denv=UAT&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;java&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;JAVA_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-Denv=UAT&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
         &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******远程部署后端容器完成******&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;react&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker run -d --restart always -p &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; --name &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; -e &lt;span class=&quot;nv&quot;&gt;ENV_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;--env test&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;react&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ENV_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;--env test&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
         &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******远程部署前端容器完成******&quot;&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;else
         &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;镜像名字不合法，请确认!&quot;&lt;/span&gt;
@@ -382,8 +377,7 @@ login_harbor
     react_garden_inbreak_system&quot;&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;esac&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;5-问题&quot;&gt;5. 问题&lt;/h2&gt;
 
@@ -391,12 +385,11 @@ login_harbor
   &lt;li&gt;gitlab需通过root账号登录，允许本地webhook。这是因为gitlab和jenkins在同一个节点部署，实际分开部署不会有这个问题&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gitlab-rails console production   &lt;span class=&quot;c&quot;&gt;#gitlab居然是用ruby写的&lt;/span&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gitlab-rails console production   &lt;span class=&quot;c&quot;&gt;#gitlab居然是用ruby写的&lt;/span&gt;
 u &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; User.where&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;email: &lt;span class=&quot;s1&quot;&gt;'admin@example.com'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.first
 u.password&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'new_password'&lt;/span&gt;
 u.save!
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;gitlab配置Admin area：&lt;/p&gt;
 
@@ -648,54 +641,50 @@ u.save!
 &lt;h2 id=&quot;函数&quot;&gt;函数&lt;/h2&gt;
 
 &lt;p&gt;　　理解装饰器前，需要明白函数的工作原理，我们先从一个最简单函数定义开始：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　上面定义了一个函数，名字叫foo，也可以把 foo 可理解为变量名，该变量指向一个函数对象&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/81273610.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　变量名 foo 现在指向 &amp;lt;function foo at 0x1030060c8&amp;gt; 函数对象，但它也可以指向另外一个函数&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# bar()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# bar()
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/26546525.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;返回值高阶函数&quot;&gt;返回值高阶函数&lt;/h2&gt;
 
 &lt;p&gt;在Python中，一切皆为对象，函数也不例外，它可以像整数一样作为其它函数的返回值，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
  
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;
  
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1 &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 等价于&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;
+&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1 
+# 等价于
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　调用函数 bar() 的返回值是一个函数对象 &amp;lt;function foo at 0x10a2f4140&amp;gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。&lt;/p&gt;
 
 &lt;h2 id=&quot;实参高阶函数&quot;&gt;实参高阶函数&lt;/h2&gt;
 
 &lt;p&gt;　　函数还可以像整数一样作为函数的参数，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
  
@@ -703,24 +692,22 @@ u.save!
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
  
 &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# 4&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# 4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。&lt;/p&gt;
 
 &lt;h2 id=&quot;嵌套函数&quot;&gt;嵌套函数&lt;/h2&gt;
 
 &lt;p&gt;　　函数不仅可以作为参数和返回值，函数还可以定义在另一个函数中，作为嵌套函数存在，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
  
-&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：&lt;/p&gt;
 
@@ -733,39 +720,36 @@ u.save!
 &lt;h2 id=&quot;闭包&quot;&gt;闭包&lt;/h2&gt;
 
 &lt;p&gt;　　再来看一个例子：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
  
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。&lt;/p&gt;
 
 &lt;h2 id=&quot;装饰器&quot;&gt;装饰器&lt;/h2&gt;
 
 &lt;p&gt;　　终于到正题了：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　上面这个函数虽然没什么用，但是能说明问题就行。现在，有一个新的需求，需要在执行该函数时加上日志：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　功能实现，唯一的问题就是它需要侵入到原来的代码里面，把日志逻辑加上去，如果还有好几十个这样的函数要加日志，也必须这样做，显然，这样的代码一点都不Cooooooool。那么有没有可能在不修改业务代码的提前下，实现日志功能呢？答案就是装饰器。&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 业务函数&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 业务函数
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
  
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
@@ -773,23 +757,21 @@ u.save!
  
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　我没有修改 foo 函数里面的任何逻辑，只是给 foo 变量重新赋值了，指向了一个新的函数对象。最后调用 foo()，不仅能打印日志，业务逻辑也执行完了。现在来分析一下它的执行流程。&lt;/p&gt;
 
 &lt;p&gt;　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()&lt;/p&gt;
 
 &lt;p&gt;　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@outer&lt;/span&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;c&quot;&gt;#即 @outer 等价于 foo = outer(foo)&lt;/span&gt;
-
+&lt;span class=&quot;c1&quot;&gt;#即 @outer 等价于 foo = outer(foo)
+&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
 </description>
@@ -890,13 +872,12 @@ u.save!
 &lt;code class=&quot;highlighter-rouge&quot;&gt;mv /usr/lib/firefox/firefox /usr/lib/firefox/firefox-browser&lt;/code&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;创建同名脚本vi firefox
-    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+    &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 /usr/lib/firefox/firefox-browser &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &amp;amp;
-sleep 2
-&lt;span class=&quot;nv&quot;&gt;F_W_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;wmctrl -l |grep &lt;span class=&quot;s1&quot;&gt;'Firefox'&lt;/span&gt;|awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;;
-python -c &lt;span class=&quot;s1&quot;&gt;'from gtk.gdk import window_foreign_new, window_process_all_updates; w = window_foreign_new(int(&quot;'&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$F_W_ID&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot;, 16)); w.set_decorations(0); window_process_all_updates()'&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-    &lt;/div&gt;
+&lt;span class=&quot;nb&quot;&gt;sleep &lt;/span&gt;2
+&lt;span class=&quot;nv&quot;&gt;F_W_ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;wmctrl &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; |grep &lt;span class=&quot;s1&quot;&gt;'Firefox'&lt;/span&gt;|awk &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'from gtk.gdk import window_foreign_new, window_process_all_updates; w = window_foreign_new(int(&quot;'&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$F_W_ID&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&quot;, 16)); w.set_decorations(0); window_process_all_updates()'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;
     &lt;p&gt;给予执行权限
@@ -967,9 +948,8 @@ python -c &lt;span class=&quot;s1&quot;&gt;'from gtk.gdk import window_foreign_n
 &lt;/blockquote&gt;
 
 &lt;p&gt;　　自己写的一个PPTP的镜像，VPS里直接执行&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -d --privileged --net=host ixjx/vpn
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -d --privileged --net=host ixjx/vpn
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;就可以食用。&lt;/p&gt;
 
@@ -989,15 +969,14 @@ python -c &lt;span class=&quot;s1&quot;&gt;'from gtk.gdk import window_foreign_n
 
 &lt;p&gt;　　然后创建vpn.env文件，在文件中写入：&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;VPN_IPSEC_PSK=&amp;lt;IPsec pre-shared key&amp;gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;VPN_IPSEC_PSK=&amp;lt;IPsec pre-shared key&amp;gt;
 VPN_USER=&amp;lt;VPN Username&amp;gt;
 VPN_PASSWORD=&amp;lt;VPN Password&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　上面的内容分别是秘钥，用户名，密码，随便设置，到时候填入客户端的时候填同样的值就行了。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo modprobe af_key
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sudo modprobe af_key
 docker run \
     --name ipsec-vpn-server \
     --env-file ./vpn.env \
@@ -1007,8 +986,7 @@ docker run \
     -d --privileged \
     --restart=always \
     hwdsl2/ipsec-vpn-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Shadowsocks&lt;/p&gt;
@@ -1016,9 +994,8 @@ docker run \
 
 &lt;p&gt;　　大名鼎鼎的SS。&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -d -p 1984:1984 oddrationale/docker-shadowsocks -s 0.0.0.0 -p 1984 -k PASSWORD -m aes-256-cfb
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run -d -p 1984:1984 oddrationale/docker-shadowsocks -s 0.0.0.0 -p 1984 -k PASSWORD -m aes-256-cfb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。&lt;/p&gt;
 </description>

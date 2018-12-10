@@ -129,7 +129,7 @@
             <p>无聊水河畔，看了看今年大华为上机题，比较高大上(shui)，无监考，能讨论，还特么能百度谷歌。。。这才是写代码应该有的模式呀。。。最近正好在看J2EE，就随手写了个约瑟夫问题，顺便试试语法高亮插件&gt;_&lt;
 <!--more --></p>
 
-<div class="language-c++ highlighter-rouge"><pre class="highlight"><code><span class="cm">/**
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
  * 	约瑟夫问题:设编号为1，2，。。。n的n个人围坐一圈，约定编号为k(1&lt;=k&lt;=n)的人从1开始报数，数到m的那个人出列，
  * 	他的下一位又从1开始报数，数到m的人又出列，以此类推，直到所有人出列为止，由此产生一个出队编号的序列。求最
  *      后剩下人的编号。
@@ -141,8 +141,8 @@
 <span class="p">{</span>
 	<span class="k">public</span> <span class="k">static</span> <span class="kt">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> 
 	<span class="p">{</span>
-		<span class="c1">//测试用例
-</span>		<span class="n">Link</span> <span class="n">link</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="p">();</span>
+		<span class="c1">//测试用例</span>
+		<span class="n">Link</span> <span class="n">link</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Link</span><span class="p">();</span>
 		<span class="n">link</span><span class="p">.</span><span class="n">setLen</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 		<span class="n">link</span><span class="p">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 		<span class="n">link</span><span class="p">.</span><span class="n">setM</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
@@ -152,8 +152,8 @@
 	<span class="p">}</span>
 
 <span class="p">}</span>
-<span class="c1">//节点类
-</span><span class="k">class</span> <span class="nc">Node</span>
+<span class="c1">//节点类</span>
+<span class="k">class</span> <span class="nc">Node</span>
 <span class="p">{</span>
 	<span class="kt">int</span> <span class="n">num</span><span class="p">;</span>
 	<span class="n">Node</span> <span class="n">pre</span><span class="p">;</span>
@@ -164,13 +164,13 @@
 		<span class="k">this</span><span class="p">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">num</span><span class="p">;</span>
 	<span class="p">}</span>
 <span class="p">}</span>
-<span class="c1">//链表类
-</span><span class="k">class</span> <span class="nc">Link</span>
+<span class="c1">//链表类</span>
+<span class="k">class</span> <span class="nc">Link</span>
 <span class="p">{</span>
 	<span class="n">Node</span> <span class="n">h</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
 	<span class="n">Node</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">null</span><span class="p">;</span>
-	<span class="c1">//链表大小
-</span>	<span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="c1">//链表大小</span>
+	<span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 	<span class="k">public</span> <span class="kt">void</span> <span class="nf">setLen</span><span class="p">(</span><span class="kt">int</span> <span class="n">len</span><span class="p">)</span>
 	<span class="p">{</span>
 		<span class="k">this</span><span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
@@ -183,8 +183,8 @@
 	<span class="k">public</span> <span class="kt">void</span> <span class="nf">setM</span><span class="p">(</span><span class="kt">int</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
 		<span class="k">this</span><span class="p">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="p">;</span>
 	<span class="p">}</span>
-	<span class="c1">//初始化链表
-</span>	<span class="k">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="p">()</span>
+	<span class="c1">//初始化链表</span>
+	<span class="k">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="p">()</span>
 	<span class="p">{</span>
 		<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">len</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
 		<span class="p">{</span>
@@ -215,24 +215,24 @@
 	<span class="k">public</span> <span class="kt">void</span> <span class="nf">play</span><span class="p">()</span>
 	<span class="p">{</span>
 		<span class="n">Node</span> <span class="n">temp</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="n">h</span><span class="p">;</span>
-		<span class="c1">//1。先找到开始数数的第k个人
-</span>		<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">k</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+		<span class="c1">//1。先找到开始数数的第k个人</span>
+		<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">k</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
 		<span class="p">{</span>
 			<span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">;</span>
 		<span class="p">}</span>
 		<span class="k">while</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="n">len</span> <span class="o">!=</span><span class="mi">1</span><span class="p">)</span>
 		<span class="p">{</span>
-			<span class="c1">//2。数m下
-</span>			<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+			<span class="c1">//2。数m下</span>
+			<span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
 			<span class="p">{</span>
 				<span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">;</span>
 			<span class="p">}</span>
 
-			<span class="c1">//打出出列人的编号
-</span>			<span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"出列人的编号:"</span><span class="o">+</span><span class="n">temp</span><span class="p">.</span><span class="n">num</span><span class="p">);</span>
+			<span class="c1">//打出出列人的编号</span>
+			<span class="n">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"出列人的编号:"</span><span class="o">+</span><span class="n">temp</span><span class="p">.</span><span class="n">num</span><span class="p">);</span>
 
-			<span class="c1">//3。将数到m的人，踢出链表
-</span>			<span class="n">temp</span><span class="p">.</span><span class="n">pre</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">;</span>
+			<span class="c1">//3。将数到m的人，踢出链表</span>
+			<span class="n">temp</span><span class="p">.</span><span class="n">pre</span><span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">;</span>
 			<span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">.</span><span class="n">pre</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">pre</span><span class="p">;</span>
 			<span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="p">.</span><span class="n">next</span><span class="p">;</span>
 			<span class="k">this</span><span class="p">.</span><span class="n">len</span><span class="o">--</span><span class="p">;</span>
@@ -252,8 +252,7 @@
 	<span class="p">}</span>
 
 <span class="p">}</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
           </article>
           <hr class="boundary">

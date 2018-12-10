@@ -122,7 +122,7 @@ pipeline{
                     npm install
                     npm run lint --force
                     '''
-
+                    checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'eslint.xml', unHealthy: ''
                     hygieiaCodeQualityPublishStep checkstyleFilePattern: '**/*/eslint.xml', findbugsFilePattern: '', jacocoFilePattern: '', junitFilePattern: '', pmdFilePattern: ''
                 }
             }

@@ -5,9 +5,62 @@
     <description>shurrik`s blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 28 Jan 2019 13:00:16 +0800</pubDate>
-    <lastBuildDate>Mon, 28 Jan 2019 13:00:16 +0800</lastBuildDate>
+    <pubDate>Mon, 28 Jan 2019 16:59:56 +0800</pubDate>
+    <lastBuildDate>Mon, 28 Jan 2019 16:59:56 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>2018年终总结</title>
+        <description>&lt;p&gt;　　2018对我来说算是折腾的一年，回头一想才发现发生了很多重要的事情，可能是过去几年里最充满变数的一年了。&lt;/p&gt;
+
+&lt;p&gt;　　总的来说分为三个阶段：
+　　&lt;/p&gt;
+&lt;h3 id=&quot;ccn阶段1-8月&quot;&gt;CCN阶段1-8月&lt;/h3&gt;
+
+&lt;p&gt;　　在数通组工作五年，在系统组呆了一年，感觉最近一年的工作成果可能是前后几年最有成就感的了，同时推进了三个项目落地，当得知付出并没有得到任何回报的时候，不得不去面对一个事实，接下来几年如果一直在这个组待下去，可能真的没有任何机会了。最黄金的五年却没有换来自己预期目标，而且还相差甚远，没有几个五年可以浪费了，所以必须改变，然后就是换工作，思考接下来的发展方向。最近得知耀哥也准备离职，看来系统组还是比较锻炼人~~&lt;/p&gt;
+
+&lt;h3 id=&quot;9月的美帝之旅&quot;&gt;9月的美帝之旅&lt;/h3&gt;
+
+&lt;p&gt;　　一号公路的蜜月旅行，之前也写了游记开篇：&lt;a href=&quot;https://ixjx.github.io/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/&quot;&gt;2018-09-28-美帝游记——1.准备&lt;/a&gt;，这个坑有空慢慢填了。&lt;/p&gt;
+
+&lt;h3 id=&quot;华智阶段10-12月&quot;&gt;华智阶段10-12月&lt;/h3&gt;
+
+&lt;p&gt;　　一开始准备做大数据平台运维，想着顺便锻炼一下编码能力。奈何项目黄了，被转到测试组做DevOps。当然我不是说测试不重要，恰恰相反，测试比开发更重要，而且微服务更需要大量的测试。&lt;/p&gt;
+
+&lt;p&gt;　　一切从头开始对我来说是一个不小的挑战，天天加班学习新知识，希望尽快上手，因为没有太多时间可以用来耽误了。然而这个想法也在不知不觉中影响了自己的工作方式，导致了一些急功近利最容易出现的后果，也间接导致了再次离职。
+　　&lt;/p&gt;
+&lt;h3 id=&quot;cmiot阶段-1月&quot;&gt;CMIOT阶段 1月&lt;/h3&gt;
+
+&lt;p&gt;　　兜兜转转，还是回来干老本行，工作更细分，能够学的深入一些，多花一点时间在学习上。
+　　
+　　工作仍在挣扎，心态也在起起伏伏，希望新的一年能变得平和，多思考，多总结，期待一个新的突破。&lt;/p&gt;
+
+&lt;h3 id=&quot;我的2018&quot;&gt;我的2018&lt;/h3&gt;
+
+&lt;p&gt;　　回头看，这五年来，我从来都只是“短暂地胜任”自己的工作。每当我觉得能够驾轻就熟地处理目前的日常，就会迎来新的挑战。&lt;/p&gt;
+
+&lt;p&gt;　　想到这一点，我突然悟到一种“佛系”的工作哲学：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;每当你能胜任当前的工作，就会迎来更高难度的挑战。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　每一个能胜任当前工作岗位的人，都会被提拔。继续胜任，那就继续提拔，直到不能胜任。&lt;/p&gt;
+
+&lt;p&gt;　　因此，不用特别在意自己的头衔、权限和职级，外部的认可是你能力的反馈。你没有被提拔，大概率是因为还不胜任当前工作。如果完全胜任还没有被安排更有挑战的工作，要么自己找事情做，要么跳槽转岗。&lt;/p&gt;
+
+&lt;p&gt;　　反过来说，自知自己能力还达不到岗位要求也不用担心，不胜任是常态，以胜任为目标就好啦。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        
+        <category>年终总结</category>
+        
+        
+        <category>水</category>
+        
+      </item>
     
       <item>
         <title>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</title>
@@ -1016,16 +1069,16 @@ docker run \
 
 &lt;ul&gt;
   &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://ixjx.github.io/blog/2014-01-14/2013%E8%83%A1%E4%B9%B1%E6%80%BB%E7%BB%93/&quot;&gt;2013胡乱总结&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://ixjx.github.io/blog/2014-01-14/2013%E8%83%A1%E4%B9%B1%E6%80%BB%E7%BB%93/&quot;&gt;2013胡乱总结&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://ixjx.github.io/blog/2014-12-30/2014%E5%B8%9D%E9%83%BD%E6%B8%B8/&quot;&gt;2014帝都游&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://ixjx.github.io/blog/2014-12-30/2014%E5%B8%9D%E9%83%BD%E6%B8%B8/&quot;&gt;2014帝都游&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://ixjx.github.io/blog/2015-12-19/2015%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/&quot;&gt;2015年终总结&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://ixjx.github.io/blog/2015-12-19/2015%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/&quot;&gt;2015年终总结&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;&lt;a href=&quot;http://ixjx.github.io/blog/2016-12-21/%E5%8A%A0%E9%80%9F%E4%B8%96%E7%95%8C/&quot;&gt;加速世界（2016年终总结）&lt;/a&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;a href=&quot;https://ixjx.github.io/blog/2016-12-21/%E5%8A%A0%E9%80%9F%E4%B8%96%E7%95%8C/&quot;&gt;加速世界（2016年终总结）&lt;/a&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -1068,120 +1121,6 @@ docker run \
         
         
         <category>水</category>
-        
-      </item>
-    
-      <item>
-        <title>动手实践Linux VLAN-每天5分钟的OpenStack(13)</title>
-        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
-  &lt;li&gt;&lt;a href=&quot;#配置-vlan&quot; id=&quot;markdown-toc-配置-vlan&quot;&gt;配置 VLAN&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#配置-vm1&quot; id=&quot;markdown-toc-配置-vm1&quot;&gt;配置 VM1&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#配置vm2&quot; id=&quot;markdown-toc-配置vm2&quot;&gt;配置VM2&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#验证-vlan-的隔离性&quot; id=&quot;markdown-toc-验证-vlan-的隔离性&quot;&gt;验证 VLAN 的隔离性&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/lwev186yhy5sif09q7cikg7hqi.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;本节我们来看如何在实验环境中实施和配置如下 VLAN 网络&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/c2whl6a6g7nfjgqov1b5uqln5e.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;配置-vlan&quot;&gt;配置 VLAN&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;编辑 /etc/network/interfaces，配置 eth0.10、brvlan10、eth0.20 和 brvlan20。&lt;/p&gt;
-
-&lt;p&gt;下面用 vmdiff 展示了对 /etc/network/interfaces 的修改&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/iydr52hykap83a27ze458gxw53.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;重启宿主机网络，ifconfig 各个网络接口&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/62wq3giwpztwqc2umaylv0b6xy.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;用 brctl show 查看当前 Linux Bridge 的配置。&lt;/p&gt;
-
-&lt;p&gt;eth0.10 和 eth0.20 分别挂在 brvlan10 和 brvlan20上了&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/kklzr79otpvz3gknejfuwi3rz4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在宿主机中已经提前创建好了虚机 VM1 和 VM2，现在都处于关机状态&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;配置-vm1&quot;&gt;配置 VM1&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在 virt-manager 中将 VM1 的虚拟网卡挂到 brvlan10 上。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/oinakjnekfls1dldpus6ryxf20.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;启动 VM1&lt;/p&gt;
-
-&lt;p&gt;查看 Bridge，发现 brvlan10 已经连接了一个 vnet0 设备&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/7gdg4qcde9g4xpanztw4738up7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;通过 virsh 确认这就是 VM1 的虚拟网卡。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/5atvxy96wlakmscboiiwyndrc0.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;配置vm2&quot;&gt;配置VM2&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;类似的，将 VM2 的网卡挂在 brvlan20 上&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h3 id=&quot;验证-vlan-的隔离性&quot;&gt;验证 VLAN 的隔离性&lt;/h3&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Ping 测试结果： VM1 与 VM2 是不通的&lt;/p&gt;
-
-&lt;p&gt;原因如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;VM2 向 VM1 发 Ping 包之前，需要知道 VM1 的 IP 192.168.100.10 所对应的 MAC 地址。VM2 会在网络上广播 ARP 包，其作用就是问 “谁知道 192.168.100.10 的 MAC 地址是多少？”&lt;/li&gt;
-  &lt;li&gt;ARP 是二层协议，VLAN 的隔离作用使得 ARP 只能在 VLAN20 范围内广播，只有 brvlan20 和 eth0.20 能收到，VLAN10 里的设备是收不到的。VM1 无法应答 VM2 发出的ARP包。&lt;/li&gt;
-  &lt;li&gt;VM2 拿不到 VM1 vnet0 的 MAC 地址，也就 Ping 不到 VM1。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Linux Bridge + VLAN = 虚拟交换机&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;现在对 KVM 的网络虚拟化做个总结：&lt;/p&gt;
-
-&lt;p&gt;物理交换机存在多个 VLAN，每个 VLAN 拥有多个端口。&lt;/p&gt;
-
-&lt;p&gt;同一 VLAN 端口之间可以交换转发，不同 VLAN 端口之间隔离。&lt;/p&gt;
-
-&lt;p&gt;所以交换机其包含两层功能：交换与隔离。&lt;/p&gt;
-
-&lt;p&gt;Linux 的 VLAN 设备实现的是隔离功能，但没有交换功能。&lt;/p&gt;
-
-&lt;p&gt;一个 VLAN 母设备（比如 eth0）不能拥有两个相同 ID 的 VLAN 子设备，因此也就不可能出现数据交换情况。&lt;/p&gt;
-
-&lt;p&gt;Linux Bridge 专门实现交换功能。&lt;/p&gt;
-
-&lt;p&gt;将同一 VLAN 的子设备都挂载到一个 Bridge 上，设备之间就可以交换数据了。&lt;/p&gt;
-
-&lt;p&gt;总结起来，Linux Bridge 加 VLAN 在功能层面完整模拟现实世界里的二层交换机。&lt;/p&gt;
-
-&lt;p&gt;eth0 相当于虚拟交换机上的 trunk 口，允许 vlan10 和 vlan20 的数据通过&lt;/p&gt;
-
-&lt;p&gt;eth0.10，vent0 和 brvlan10 都可以看着 vlan10 的 access 口&lt;/p&gt;
-
-&lt;p&gt;eth0.20，vent1 和 brvlan20 都可以看着 vlan20 的 access 口&lt;/p&gt;
-</description>
-        <pubDate>Wed, 08 Nov 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</link>
-        <guid isPermaLink="true">http://localhost:4000/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/</guid>
-        
-        <category>虚拟化</category>
-        
-        
-        <category>Linux</category>
         
       </item>
     

@@ -3,10 +3,10 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 Feb 2019 17:02:07 +0800</pubDate>
-    <lastBuildDate>Mon, 11 Feb 2019 17:02:07 +0800</lastBuildDate>
+    <link>/blog/</link>
+    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 05 Mar 2019 16:27:06 +0800</pubDate>
+    <lastBuildDate>Tue, 05 Mar 2019 16:27:06 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -243,9 +243,9 @@
 
 &lt;p&gt;　　如果想在生产中使用 prometheus 和 grafana，请参考 &lt;a href=&quot;https://prometheus.io/docs/introduction/overview/&quot;&gt;官方文档&lt;/a&gt; 。&lt;/p&gt;
 </description>
-        <pubDate>Tue, 29 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-01-29/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-01-29/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
+        <pubDate>Tue, 05 Mar 2019 00:00:00 +0800</pubDate>
+        <link>/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
+        <guid isPermaLink="true">/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
         
         <category>容器</category>
         
@@ -297,8 +297,8 @@
 &lt;p&gt;　　反过来说，自知自己能力还达不到岗位要求也不用担心，不胜任是常态，以胜任为目标就好啦。&lt;/p&gt;
 </description>
         <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -702,8 +702,8 @@ u.save!
 &lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        <link>/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <guid isPermaLink="true">/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
         
         <category>容器</category>
         
@@ -906,8 +906,8 @@ u.save!
 &lt;p&gt;共计: 花了4W多，如果不买东西的话，其实全程花费不算贵。&lt;/p&gt;
 </description>
         <pubDate>Fri, 28 Sep 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
+        <link>/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
+        <guid isPermaLink="true">/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
         
         <category>游记</category>
         
@@ -1074,8 +1074,8 @@ u.save!
 &lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
 </description>
         <pubDate>Fri, 24 Aug 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+        <link>/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+        <guid isPermaLink="true">/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
         
         <category>python</category>
         
@@ -1099,8 +1099,8 @@ u.save!
 &lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-11/77399485.jpg&quot; alt=&quot;这是译文&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 10 Jul 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
+        <link>/blog/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
+        <guid isPermaLink="true">/blog/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
         
         <category>容器</category>
         
@@ -1130,8 +1130,8 @@ u.save!
 &lt;p&gt;　　所以，我的一个感悟是，这个世界正在以你难以想象的速度在向前发展，不管你看得见还是看不见。所以你一定要保持前进，不然等你回过神来，会发现已经被远远的抛在后面。前进是很困难的，只有努力，才能保持原地不动。&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 May 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
+        <link>/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
+        <guid isPermaLink="true">/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
         
         <category>负能量</category>
         
@@ -1186,8 +1186,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;/ol&gt;
 </description>
         <pubDate>Mon, 26 Mar 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
+        <link>/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
+        <guid isPermaLink="true">/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
         
         <category>Linux</category>
         
@@ -1225,8 +1225,8 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;p&gt;　　然后就可以访问本地 80 端口看到最新的blog了 &lt;del&gt;说得好像有人看一样&lt;/del&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
+        <link>/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
+        <guid isPermaLink="true">/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
         
         <category>容器</category>
         
@@ -1298,8 +1298,8 @@ docker run \
 &lt;p&gt;　　只需要把上面的PASSWORD换成你自己的密码就可以了，注意，上面创建的shadowsocks端口为1984， 加密方式为aes-256-cfb，在客户端设置时要设置成相同的值。&lt;/p&gt;
 </description>
         <pubDate>Tue, 16 Jan 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
+        <link>/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</link>
+        <guid isPermaLink="true">/blog/2018-01-16/%E4%BD%BF%E7%94%A8docker%E7%A7%91%E5%AD%A6%E4%B8%8A%E7%BD%91/</guid>
         
         <category>翻墙</category>
         

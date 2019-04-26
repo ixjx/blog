@@ -10,7 +10,7 @@ tags: 容器
 
 　　随着DevOps理念和敏捷理念的发展，我们希望通过自动化技术，加快项目的迭代。尤其是当使用微服务方案后，面临在大量的项目构建和部署工作，借助于jenkins的持续集成，可以快速把应用打包成docker镜像，实现自动部署。
 
-![](https://ixjx.github.io/blog/static/img/jenkins.png)
+![jenkins](https://user-images.githubusercontent.com/4729226/56795878-f2f8cd00-6843-11e9-9188-214621243639.png)
 
 如图演示了以下的场景：
 

@@ -10,7 +10,9 @@ tags: 容器
 {:toc}
 
 　　Prometheus 是一个非常优秀的监控工具。准确的说，应该是监控方案。Prometheus 提供了监控数据搜集、存储、处理、可视化和告警一套完整的解决方案。让我们先来看看 Prometheus 的架构。
-![](https://ixjx.github.io/blog/static/img/prometheus1.jpg)
+
+![prometheus1](https://user-images.githubusercontent.com/4729226/56795946-2a677980-6844-11e9-9cfd-5bc9be82b2e0.jpg)
+
 
 * prometheus server 位于中心，负责时序数据的收集、存储和查询
 
@@ -72,7 +74,8 @@ scrape_configs:
 　　这个配置文件一共分为两个部分：`global`和`scrape_configs`，前者是全局的配置，如果后面的任务没有对特定配置项进行覆盖，这里的选项会生效。这里有两个配置项，`scrape_interval`表示 prometheus server 抓取的周期，如果太频繁会导致 prometheus 压力比较大，如果太久，可能会导致某些关键数据漏掉，推荐根据每个任务的重要性和集群规模分别进行配置。
 
 　　`scrape_configs`配置了每个抓取任务，因此是一个列表，这里我们只有一个任务，那就是抓取 prometheus 本身的 metrics 。配置里面最重要的是`static_configs.targets`，表示要抓取任务的 HTTP 地址，默认会在`/metrics` url 处进行抓取，比如这里就是 http://localhost:9090/metrics。 这是 prometheus 本身提供的监控数据，可以在浏览器中直接查看。
-![](https://ixjx.github.io/blog/static/img/prometheus2.png)
+
+![prometheus2](https://user-images.githubusercontent.com/4729226/56795973-38b59580-6844-11e9-8a1a-809a313c4bab.png)
 
 　　每个数据都是有一个名字和一系列称为 label 的键值对组成的，prometheus 在抓取数据的时候还会自动添加上`instance`（节点的 host:port 标识）和`job`（任务名称）两个 label 作为任务之间的区分。
 
@@ -162,15 +165,18 @@ volumes:
 　　这里使用 docker 的 volumes 来保存 grafana 和 prometheus 运行过程中产生的数据来保证持久化，而且使用`GF_SECURITY_ADMIN_PASSWORD=pass`环境变量设置 admin 的密码。
 
 　　grafana 本身只是一个 dashboard，它可以从多个数据源中获取数据进行展示，比如我们这里使用的 prometheus。所以在正式配置界面之前，需要先添加数据源，点击 grafana 左上角按钮找到 Data Sources ，进入对应页面。按照下面的内容进行填写，主要是 Type 要选择 prometheus，URL 添加 grafana 服务能访问的 prometheus 地址；Name 字段随便填写一个用来标记来源的名字即可。
-![](https://ixjx.github.io/blog/static/img/prometheus3.png)
+
+![prometheus3](https://user-images.githubusercontent.com/4729226/56796031-5256dd00-6844-11e9-8097-633f55fd1c24.png)
 
 　　然后创建一个 dashboard，并里面添加 graph，在 graph 中添加一个 panel，我们用这个 panel 展示系统的 load 数据。编辑 panel 数据，选择 data source 为之前添加的 prometheus，然后填写 query，系统 node 比较简单，一共是`node_load1`、`node_load5`和 `node_load15`，分别是系统最近一分钟、五分钟和十五分钟的 load 数值。输入完成后点击输入框之外，grafana 会自动更新上面的图表：
-![](https://ixjx.github.io/blog/static/img/prometheus4.png)
+
+![prometheus4](https://user-images.githubusercontent.com/4729226/56796069-61d62600-6844-11e9-9562-067c6a075ea7.png)
 
 　　类似的，可以添加其他的 panel，展示系统方方面的监控数据，比如 CPU、memory、IO、网络等。手动通过界面对 grafana 可以很灵活地创建出很强大的图表，但是这无疑会耗费很多时间，而且 node exporter 这种监控数据是通用的，如果所有人都手动创建一遍无疑是很多重复工作。为此，grafana 支持导入和导出配置，并且提供 [官方社区](https://grafana.com/dashboards) 供大家分享 dashboard 配置。
 
 　　每个 dashboard 都有一个编号，比如 [编号 22 的 dashboard ](https://grafana.com/dashboards/22) 就是专门为 node-exporter 设计的展示图表。在 grafana 中点击导入 dashboard，添加编号选择数据源，就能得到已经配置完整的图表：
-![](https://ixjx.github.io/blog/static/img/prometheus5.png)
+
+![prometheus5](https://user-images.githubusercontent.com/4729226/56796100-6e5a7e80-6844-11e9-9a75-32b6b44fd2b0.png)
 
 　　如果对 dashboard 有什么不满，可以直接在页面进行添加和编辑，然后可以导出 json 文件，以便重复使用。
 

@@ -5,8 +5,8 @@
     <description>shurrik`s blog</description>
     <link>/blog/</link>
     <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 18 Apr 2019 08:26:45 +0800</pubDate>
-    <lastBuildDate>Thu, 18 Apr 2019 08:26:45 +0800</lastBuildDate>
+    <pubDate>Fri, 26 Apr 2019 16:59:30 +0800</pubDate>
+    <lastBuildDate>Fri, 26 Apr 2019 16:59:30 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     
       <item>
@@ -108,8 +108,9 @@
   &lt;li&gt;&lt;a href=&quot;#总结&quot; id=&quot;markdown-toc-总结&quot;&gt;总结&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;　　Prometheus 是一个非常优秀的监控工具。准确的说，应该是监控方案。Prometheus 提供了监控数据搜集、存储、处理、可视化和告警一套完整的解决方案。让我们先来看看 Prometheus 的架构。
-&lt;img src=&quot;https://ixjx.github.io/blog/static/img/prometheus1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　Prometheus 是一个非常优秀的监控工具。准确的说，应该是监控方案。Prometheus 提供了监控数据搜集、存储、处理、可视化和告警一套完整的解决方案。让我们先来看看 Prometheus 的架构。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56795946-2a677980-6844-11e9-9cfd-5bc9be82b2e0.jpg&quot; alt=&quot;prometheus1&quot; /&gt;&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -186,8 +187,9 @@
 
 &lt;p&gt;　　这个配置文件一共分为两个部分：&lt;code class=&quot;highlighter-rouge&quot;&gt;global&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;scrape_configs&lt;/code&gt;，前者是全局的配置，如果后面的任务没有对特定配置项进行覆盖，这里的选项会生效。这里有两个配置项，&lt;code class=&quot;highlighter-rouge&quot;&gt;scrape_interval&lt;/code&gt;表示 prometheus server 抓取的周期，如果太频繁会导致 prometheus 压力比较大，如果太久，可能会导致某些关键数据漏掉，推荐根据每个任务的重要性和集群规模分别进行配置。&lt;/p&gt;
 
-&lt;p&gt;　　&lt;code class=&quot;highlighter-rouge&quot;&gt;scrape_configs&lt;/code&gt;配置了每个抓取任务，因此是一个列表，这里我们只有一个任务，那就是抓取 prometheus 本身的 metrics 。配置里面最重要的是&lt;code class=&quot;highlighter-rouge&quot;&gt;static_configs.targets&lt;/code&gt;，表示要抓取任务的 HTTP 地址，默认会在&lt;code class=&quot;highlighter-rouge&quot;&gt;/metrics&lt;/code&gt; url 处进行抓取，比如这里就是 http://localhost:9090/metrics。 这是 prometheus 本身提供的监控数据，可以在浏览器中直接查看。
-&lt;img src=&quot;https://ixjx.github.io/blog/static/img/prometheus2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　&lt;code class=&quot;highlighter-rouge&quot;&gt;scrape_configs&lt;/code&gt;配置了每个抓取任务，因此是一个列表，这里我们只有一个任务，那就是抓取 prometheus 本身的 metrics 。配置里面最重要的是&lt;code class=&quot;highlighter-rouge&quot;&gt;static_configs.targets&lt;/code&gt;，表示要抓取任务的 HTTP 地址，默认会在&lt;code class=&quot;highlighter-rouge&quot;&gt;/metrics&lt;/code&gt; url 处进行抓取，比如这里就是 http://localhost:9090/metrics。 这是 prometheus 本身提供的监控数据，可以在浏览器中直接查看。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56795973-38b59580-6844-11e9-8a1a-809a313c4bab.png&quot; alt=&quot;prometheus2&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;　　每个数据都是有一个名字和一系列称为 label 的键值对组成的，prometheus 在抓取数据的时候还会自动添加上&lt;code class=&quot;highlighter-rouge&quot;&gt;instance&lt;/code&gt;（节点的 host:port 标识）和&lt;code class=&quot;highlighter-rouge&quot;&gt;job&lt;/code&gt;（任务名称）两个 label 作为任务之间的区分。&lt;/p&gt;
 
@@ -273,16 +275,19 @@
 
 &lt;p&gt;　　这里使用 docker 的 volumes 来保存 grafana 和 prometheus 运行过程中产生的数据来保证持久化，而且使用&lt;code class=&quot;highlighter-rouge&quot;&gt;GF_SECURITY_ADMIN_PASSWORD=pass&lt;/code&gt;环境变量设置 admin 的密码。&lt;/p&gt;
 
-&lt;p&gt;　　grafana 本身只是一个 dashboard，它可以从多个数据源中获取数据进行展示，比如我们这里使用的 prometheus。所以在正式配置界面之前，需要先添加数据源，点击 grafana 左上角按钮找到 Data Sources ，进入对应页面。按照下面的内容进行填写，主要是 Type 要选择 prometheus，URL 添加 grafana 服务能访问的 prometheus 地址；Name 字段随便填写一个用来标记来源的名字即可。
-&lt;img src=&quot;https://ixjx.github.io/blog/static/img/prometheus3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　grafana 本身只是一个 dashboard，它可以从多个数据源中获取数据进行展示，比如我们这里使用的 prometheus。所以在正式配置界面之前，需要先添加数据源，点击 grafana 左上角按钮找到 Data Sources ，进入对应页面。按照下面的内容进行填写，主要是 Type 要选择 prometheus，URL 添加 grafana 服务能访问的 prometheus 地址；Name 字段随便填写一个用来标记来源的名字即可。&lt;/p&gt;
 
-&lt;p&gt;　　然后创建一个 dashboard，并里面添加 graph，在 graph 中添加一个 panel，我们用这个 panel 展示系统的 load 数据。编辑 panel 数据，选择 data source 为之前添加的 prometheus，然后填写 query，系统 node 比较简单，一共是&lt;code class=&quot;highlighter-rouge&quot;&gt;node_load1&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;node_load5&lt;/code&gt;和 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_load15&lt;/code&gt;，分别是系统最近一分钟、五分钟和十五分钟的 load 数值。输入完成后点击输入框之外，grafana 会自动更新上面的图表：
-&lt;img src=&quot;https://ixjx.github.io/blog/static/img/prometheus4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56796031-5256dd00-6844-11e9-8097-633f55fd1c24.png&quot; alt=&quot;prometheus3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;　　然后创建一个 dashboard，并里面添加 graph，在 graph 中添加一个 panel，我们用这个 panel 展示系统的 load 数据。编辑 panel 数据，选择 data source 为之前添加的 prometheus，然后填写 query，系统 node 比较简单，一共是&lt;code class=&quot;highlighter-rouge&quot;&gt;node_load1&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;node_load5&lt;/code&gt;和 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_load15&lt;/code&gt;，分别是系统最近一分钟、五分钟和十五分钟的 load 数值。输入完成后点击输入框之外，grafana 会自动更新上面的图表：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56796069-61d62600-6844-11e9-9562-067c6a075ea7.png&quot; alt=&quot;prometheus4&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;　　类似的，可以添加其他的 panel，展示系统方方面的监控数据，比如 CPU、memory、IO、网络等。手动通过界面对 grafana 可以很灵活地创建出很强大的图表，但是这无疑会耗费很多时间，而且 node exporter 这种监控数据是通用的，如果所有人都手动创建一遍无疑是很多重复工作。为此，grafana 支持导入和导出配置，并且提供 &lt;a href=&quot;https://grafana.com/dashboards&quot;&gt;官方社区&lt;/a&gt; 供大家分享 dashboard 配置。&lt;/p&gt;
 
-&lt;p&gt;　　每个 dashboard 都有一个编号，比如 &lt;a href=&quot;https://grafana.com/dashboards/22&quot;&gt;编号 22 的 dashboard &lt;/a&gt; 就是专门为 node-exporter 设计的展示图表。在 grafana 中点击导入 dashboard，添加编号选择数据源，就能得到已经配置完整的图表：
-&lt;img src=&quot;https://ixjx.github.io/blog/static/img/prometheus5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;　　每个 dashboard 都有一个编号，比如 &lt;a href=&quot;https://grafana.com/dashboards/22&quot;&gt;编号 22 的 dashboard &lt;/a&gt; 就是专门为 node-exporter 设计的展示图表。在 grafana 中点击导入 dashboard，添加编号选择数据源，就能得到已经配置完整的图表：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56796100-6e5a7e80-6844-11e9-9a75-32b6b44fd2b0.png&quot; alt=&quot;prometheus5&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;　　如果对 dashboard 有什么不满，可以直接在页面进行添加和编辑，然后可以导出 json 文件，以便重复使用。&lt;/p&gt;
 
@@ -402,7 +407,7 @@
 
 &lt;p&gt;　　随着DevOps理念和敏捷理念的发展，我们希望通过自动化技术，加快项目的迭代。尤其是当使用微服务方案后，面临在大量的项目构建和部署工作，借助于jenkins的持续集成，可以快速把应用打包成docker镜像，实现自动部署。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://ixjx.github.io/blog/static/img/jenkins.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56795878-f2f8cd00-6843-11e9-9188-214621243639.png&quot; alt=&quot;jenkins&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;如图演示了以下的场景：&lt;/p&gt;
 

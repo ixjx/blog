@@ -3,11 +3,287 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>/blog/</link>
-    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 26 Apr 2019 16:59:30 +0800</pubDate>
-    <lastBuildDate>Fri, 26 Apr 2019 16:59:30 +0800</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 06 Jun 2019 16:43:53 +0800</pubDate>
+    <lastBuildDate>Thu, 06 Jun 2019 16:43:53 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Docker部署Calico网络</title>
+        <description>&lt;p&gt;　　今天交流了NSX-T和K8S的集成，赶紧了解了一下原生的Calico网络。&lt;/p&gt;
+
+&lt;p&gt;　　Calico是一个纯三层的虚拟网络方案，Calico为每个容器分配一个IP，每个host都是router，host之间采用了BGP协议发布路由，把不同host的容器连接起来。与VxLAN不同的是，Calico不对数据包做额外封装，不需要NAT和端口映射，扩展性和性能都很好。&lt;/p&gt;
+
+&lt;h2 id=&quot;实验环境&quot;&gt;实验环境&lt;/h2&gt;
+
+&lt;p&gt;Calico依赖etcd在不同主机间共享和交换信息，存储Calico网络状态。我们将在host 192.168.33.10上运行etcd。&lt;/p&gt;
+
+&lt;p&gt;Calico网络中的每个主机都需要运行Calico组件，提供容器interface管理、动态路由、动态ACL、报告状态等功能。&lt;/p&gt;
+
+&lt;p&gt;将就了之前搭的vagrant，实验环境如下图所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/59015243-1f572e80-8871-11e9-9c7b-e5493bb6cb16.jpg&quot; alt=&quot;calico1&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;首先安装etcd&quot;&gt;首先安装etcd&lt;/h2&gt;
+
+&lt;p&gt;在192.168.33.10主机上安装etcd:&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;yum install -y etcd&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;修改etcd配置文件：&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@master etc]# &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/etcd/etcd.conf 
+&lt;span class=&quot;c&quot;&gt;#[Member]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#ETCD_CORS=&quot;&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ETCD_DATA_DIR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/var/lib/etcd/default.etcd&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#ETCD_WAL_DIR=&quot;&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#ETCD_LISTEN_PEER_URLS=&quot;http://localhost:2380&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ETCD_LISTEN_CLIENT_URLS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://192.168.33.10:2379&quot;&lt;/span&gt;
+...
+&lt;span class=&quot;c&quot;&gt;#[Clustering]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#ETCD_INITIAL_ADVERTISE_PEER_URLS=&quot;http://localhost:2380&quot;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ETCD_ADVERTISE_CLIENT_URLS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;http://192.168.33.10:2379&quot;&lt;/span&gt;
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;启动etcd服务&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl start etcd &amp;amp;&amp;amp; systemctl enable etcd&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;修改docker配置文件连接etcd:&lt;/p&gt;
+
+&lt;p&gt;修改 node1 和 node2 的 Docker daemon 配置文件/etc/docker/daemon.json&lt;/p&gt;
+
+&lt;p&gt;连接 etcd：–cluster-store=etcd://192.168.33.10:2379&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/docker/daemon.json 
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;registry-mirrors&quot;&lt;/span&gt;: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://x3h8v36l.mirror.aliyuncs.com&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;,
+  &lt;span class=&quot;s2&quot;&gt;&quot;cluster-store&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;etcd://192.168.33.10:2379&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;重启 Docker daemon&lt;code class=&quot;highlighter-rouge&quot;&gt; systemctl daemon-reload &amp;amp;&amp;amp; systemctl restart docker.service&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;部署calicoctl&quot;&gt;部署calicoctl&lt;/h2&gt;
+
+&lt;p&gt;官方参考文档： https://docs.projectcalico.org/v2.6/getting-started/docker/installation/manual&lt;/p&gt;
+
+&lt;p&gt;在node1和node2上下载calicoctl并运行calico容器:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# wget &lt;span class=&quot;nt&quot;&gt;-O&lt;/span&gt; /usr/local/bin/calicoctl https://github.com/projectcalico/calicoctl/releases/download/v1.6.5/calicoctl
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# &lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x /usr/local/bin/calicoctl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;创建calico配置文件:&lt;/p&gt;
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# &lt;span class=&quot;nb&quot;&gt;mkdir&lt;/span&gt; /etc/calico/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# vim /etc/calico/calicoctl.cfg
+apiVersion: v1
+kind: calicoApiConfig
+metadata:
+spec:
+  datastoreType: &lt;span class=&quot;s2&quot;&gt;&quot;etcdv2&quot;&lt;/span&gt;
+  etcdEndpoints: &lt;span class=&quot;s2&quot;&gt;&quot;http://192.168.33.10:2379&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;分别在两个节点上创建calico容器，执行后会自动下载calico镜像并运行容器:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# calicoctl node run &lt;span class=&quot;nt&quot;&gt;--node-image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;quay.io/calico/node:v2.6.12 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /etc/calico/calicoctl.cfg
+Running &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to load modules: modprobe &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; xt_set ip6_tables
+Enabling IPv4 forwarding
+Enabling IPv6 forwarding
+Increasing conntrack limit
+Removing old calico-node container &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;running&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Running the following &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to start calico-node:
+
+docker run &lt;span class=&quot;nt&quot;&gt;--net&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;host &lt;span class=&quot;nt&quot;&gt;--privileged&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;calico-node &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;always &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;NODENAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;node1 &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;CALICO_NETWORKING_BACKEND&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;bird &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;CALICO_LIBNETWORK_ENABLED&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ETCD_ENDPOINTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;http://192.168.33.10:2379 &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/log/calico:/var/log/calico &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/run/calico:/var/run/calico &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /lib/modules:/lib/modules &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /run:/run &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /run/docker/plugins:/run/docker/plugins &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; /var/run/docker.sock:/var/run/docker.sock quay.io/calico/node:v2.6.12
+
+Image may take a short &lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;to download &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;it is not available locally.
+Container started, checking progress logs.
+
+2019-06-06 07:16:41.433 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 173: Early log level &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;to info
+2019-06-06 07:16:41.433 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] client.go 202: Loading config from environment
+2019-06-06 07:16:41.434 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 83: Skipping datastore connection &lt;span class=&quot;nb&quot;&gt;test
+&lt;/span&gt;2019-06-06 07:16:41.439 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 259: Building new node resource &lt;span class=&quot;nv&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;node1&quot;&lt;/span&gt;
+2019-06-06 07:16:41.439 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 273: Initialise BGP data
+2019-06-06 07:16:41.441 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 467: Using autodetected IPv4 address on interface eth1: 192.168.33.11/24
+2019-06-06 07:16:41.441 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 338: Node IPv4 changed, will check &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;conflicts
+2019-06-06 07:16:41.444 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] etcd.go 430: Error enumerating host directories &lt;span class=&quot;nv&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;100: Key not found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/calico&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;11]
+2019-06-06 07:16:41.444 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 530: No AS number configured on node resource, using global value
+2019-06-06 07:16:41.448 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] etcd.go 105: Ready flag is now &lt;span class=&quot;nb&quot;&gt;set
+&lt;/span&gt;2019-06-06 07:16:41.452 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] client.go 133: Assigned cluster GUID &lt;span class=&quot;nv&quot;&gt;ClusterGUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;05d43659a30f4f08a15f9515fcd0278f&quot;&lt;/span&gt;
+2019-06-06 07:16:41.471 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 419: CALICO_IPV4POOL_NAT_OUTGOING is &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;defaulted&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; through environment variable
+2019-06-06 07:16:41.471 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 659: Ensure default IPv4 pool is created. IPIP mode: off
+2019-06-06 07:16:41.473 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 670: Created default IPv4 pool &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.0.0/16&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; with NAT outgoing true. IPIP mode: off
+2019-06-06 07:16:41.473 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 419: FELIX_IPV6SUPPORT is &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;defaulted&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; through environment variable
+2019-06-06 07:16:41.473 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 626: IPv6 supported on this platform: &lt;span class=&quot;nb&quot;&gt;true
+&lt;/span&gt;2019-06-06 07:16:41.473 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 419: CALICO_IPV6POOL_NAT_OUTGOING is &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;defaulted&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; through environment variable
+2019-06-06 07:16:41.473 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 659: Ensure default IPv6 pool is created. IPIP mode: off
+2019-06-06 07:16:41.475 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 670: Created default IPv6 pool &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fd80:24e2:f998:72d6::/64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; with NAT outgoing false. IPIP mode: off
+2019-06-06 07:16:41.514 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][8] startup.go 131: Using node name: node1
+2019-06-06 07:16:41.814 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;INFO][12] client.go 202: Loading config from environment
+Starting libnetwork service
+Calico node started successfully
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;设置主机网络，例如 enable IP forwarding。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;下载并启动 calico-node 容器，calico 会以容器的形式运行（与 weave 类似）。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;连接 etcd。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;calico 启动成功。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;查看calico运行状态:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+----------+--------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |  SINCE   |  INFO  |
++---------------+-------------------+-------+----------+--------+
+| 192.168.33.12 | node-to-node mesh | start | 07:17:09 | Active |
++---------------+-------------------+-------+----------+--------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+----------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |  SINCE   |    INFO     |
++---------------+-------------------+-------+----------+-------------+
+| 192.168.33.12 | node-to-node mesh | up    | 07:17:13 | Established |
++---------------+-------------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;创建calico网络：&lt;/p&gt;
+
+&lt;p&gt;在 node1 或 node2 上执行如下命令创建 calico 网络 cal_ent1：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;docker network create --driver calico --ipam-driver calico-ipam cal_net1&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;–driver calico 指定使用 calico 的 libnetwork CNM driver。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;–ipam-driver calico-ipam 指定使用 calico 的 IPAM driver 管理 IP。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;calico 为 global 网络，etcd 会将 cal_net 同步到所有主机。&lt;/p&gt;
+
+&lt;h2 id=&quot;calico网络结构&quot;&gt;Calico网络结构&lt;/h2&gt;
+
+&lt;p&gt;在 node1 中运行容器 bbox1 并连接到 cal_net1：&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;docker container run --net cal_net1 --name bbox1 -tid busybox&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;查看 bbox1 的网络配置:&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;bbox1 ip a
+1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu 65536 qdisc noqueue qlen 1
+    &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+5: cali0@if6: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN&amp;gt; mtu 1500 qdisc noqueue 
+    &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;/ether ee:ee:ee:ee:ee:ee brd ff:ff:ff:ff:ff:ff
+    inet 192.168.166.128/32 brd 192.168.166.128 scope global cali0
+       valid_lft forever preferred_lft forever
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;cali0 是 calico interface，分配的 IP 为 192.168.166.128。cali0 对应 node1 编号 6 的 interface calicce21fc3677@if5&lt;/p&gt;
+
+&lt;p&gt;node1 将作为 router 负责转发目的地址为 bbox1 的数据包&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# ip r
+default via 10.0.2.2 dev eth0 proto static metric 100 
+10.0.2.0/24 dev eth0 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 10.0.2.15 metric 100 
+172.17.0.0/16 dev docker0 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 172.17.0.1 
+192.168.33.0/24 dev eth1 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 192.168.33.11 metric 100 
+192.168.104.0/26 via 192.168.33.12 dev eth1 proto bird 
+192.168.166.128 dev calicce21fc3677 scope &lt;span class=&quot;nb&quot;&gt;link 
+&lt;/span&gt;blackhole 192.168.166.128/26 proto bird 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;所有发送到 bbox1 的数据都会发给calicce21fc3677，因为calicce21fc3677 与 cali0 是一对 veth pair，bbox1 能够接收到数据。&lt;/p&gt;
+
+&lt;p&gt;接下来我们在 host2 中运行容器 bbox2，也连接到 cal_net1：&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node2 ~]# docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;bbox2 ip a
+1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu 65536 qdisc noqueue qlen 1
+    &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+5: cali0@if6: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN&amp;gt; mtu 1500 qdisc noqueue 
+    &lt;span class=&quot;nb&quot;&gt;link&lt;/span&gt;/ether ee:ee:ee:ee:ee:ee brd ff:ff:ff:ff:ff:ff
+    inet 192.168.104.0/32 brd 192.168.104.0 scope global cali0
+       valid_lft forever preferred_lft forever
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;IP 为192.168.104.0&lt;/p&gt;
+
+&lt;p&gt;node2 添加了两条路由：&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node2 ~]# ip r
+default via 10.0.2.2 dev eth0 proto static metric 100 
+10.0.2.0/24 dev eth0 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 10.0.2.15 metric 100 
+172.17.0.0/16 dev docker0 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 172.17.0.1 
+192.168.33.0/24 dev eth1 proto kernel scope &lt;span class=&quot;nb&quot;&gt;link &lt;/span&gt;src 192.168.33.12 metric 100 
+192.168.104.0 dev calib5228fd5fcd scope &lt;span class=&quot;nb&quot;&gt;link 
+&lt;/span&gt;blackhole 192.168.104.0/26 proto bird 
+192.168.166.128/26 via 192.168.33.11 dev eth1 proto bird 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;目的地址为 node1 容器 subnet 192.168.166.128/26 的路由。&lt;/li&gt;
+  &lt;li&gt;目的地址为本地 bbox2 容器 192.168.104.0 的路由。&lt;/li&gt;
+  &lt;li&gt;注意到node1的路由表，同样的，node1 也自动添加了到 192.168.104.0/26 的路由。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;calico-的默认连通性&quot;&gt;Calico 的默认连通性&lt;/h2&gt;
+
+&lt;p&gt;测试一下 bbox1 与 bbox2 的连通性：&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@node1 ~]# docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;bbox1 ping bbox2
+PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: 56 data bytes
+64 bytes from 192.168.104.0: &lt;span class=&quot;nb&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0 &lt;span class=&quot;nv&quot;&gt;ttl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;62 &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.996 ms
+64 bytes from 192.168.104.0: &lt;span class=&quot;nb&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1 &lt;span class=&quot;nv&quot;&gt;ttl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;62 &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.568 ms
+64 bytes from 192.168.104.0: &lt;span class=&quot;nb&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;2 &lt;span class=&quot;nv&quot;&gt;ttl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;62 &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.498 ms
+64 bytes from 192.168.104.0: &lt;span class=&quot;nb&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3 &lt;span class=&quot;nv&quot;&gt;ttl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;62 &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0.539 ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;calico 默认的 policy 规则是：容器只能与同一个 calico 网络中的容器通信。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;既然这是默认 policy，那就有方法定制 policy，这也是 calico 较其他网络方案最大的特性。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Thu, 06 Jun 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</guid>
+        
+        <category>容器</category>
+        
+        
+        <category>网络</category>
+        
+      </item>
     
       <item>
         <title>美帝游记——2.开车</title>
@@ -88,8 +364,8 @@
 &lt;p&gt;　　因为那些人从来不顾别人的感受，野蛮、粗暴、横冲直撞，无时不刻的置自己与别人于危险之中浑然不觉甚至洋洋自得。我们没有文化的人就是这样的？.jpg&lt;/p&gt;
 </description>
         <pubDate>Wed, 17 Apr 2019 00:00:00 +0800</pubDate>
-        <link>/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
-        <guid isPermaLink="true">/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
+        <link>http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
         
         <category>游记</category>
         
@@ -338,8 +614,8 @@
 &lt;p&gt;　　如果想在生产中使用 prometheus 和 grafana，请参考 &lt;a href=&quot;https://prometheus.io/docs/introduction/overview/&quot;&gt;官方文档&lt;/a&gt; 。&lt;/p&gt;
 </description>
         <pubDate>Tue, 05 Mar 2019 00:00:00 +0800</pubDate>
-        <link>/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
-        <guid isPermaLink="true">/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
+        <link>http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
         
         <category>容器</category>
         
@@ -391,8 +667,8 @@
 &lt;p&gt;　　反过来说，自知自己能力还达不到岗位要求也不用担心，不胜任是常态，以胜任为目标就好啦。&lt;/p&gt;
 </description>
         <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
-        <link>/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -796,8 +1072,8 @@ u.save!
 &lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
-        <guid isPermaLink="true">/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        <link>http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
         
         <category>容器</category>
         
@@ -998,8 +1274,8 @@ u.save!
 &lt;p&gt;共计: 花了4W多，如果不买东西的话，其实全程花费不算贵。&lt;/p&gt;
 </description>
         <pubDate>Fri, 28 Sep 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
-        <guid isPermaLink="true">/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
+        <link>http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
         
         <category>游记</category>
         
@@ -1166,8 +1442,8 @@ u.save!
 &lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
 </description>
         <pubDate>Fri, 24 Aug 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
-        <guid isPermaLink="true">/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+        <link>http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
         
         <category>python</category>
         
@@ -1191,8 +1467,8 @@ u.save!
 &lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-11/77399485.jpg&quot; alt=&quot;这是译文&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 10 Jul 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
-        <guid isPermaLink="true">/blog/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
+        <link>http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
         
         <category>容器</category>
         
@@ -1222,8 +1498,8 @@ u.save!
 &lt;p&gt;　　所以，我的一个感悟是，这个世界正在以你难以想象的速度在向前发展，不管你看得见还是看不见。所以你一定要保持前进，不然等你回过神来，会发现已经被远远的抛在后面。前进是很困难的，只有努力，才能保持原地不动。&lt;/p&gt;
 </description>
         <pubDate>Tue, 15 May 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
-        <guid isPermaLink="true">/blog/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
+        <link>http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-05-15/%E7%A2%8E%E7%A2%8E%E5%BF%B5/</guid>
         
         <category>负能量</category>
         
@@ -1278,52 +1554,13 @@ python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&
 &lt;/ol&gt;
 </description>
         <pubDate>Mon, 26 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
-        <guid isPermaLink="true">/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
+        <link>http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/</guid>
         
         <category>Linux</category>
         
         
         <category>Linux</category>
-        
-      </item>
-    
-      <item>
-        <title>制作网站docker镜像</title>
-        <description>&lt;p&gt;　　看docker官方文档的时候，官网总被墙，怎么办呢？&lt;/p&gt;
-
-&lt;p&gt;　　首先 &lt;em&gt;感谢&lt;/em&gt; 伟大的墙及其先祖。&lt;/p&gt;
-
-&lt;p&gt;　　然后，我们可以本地运行 Docker 官方文档的网站，以 docker 的方式：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ docker run -d -p 80:4000 docs/docker.github.io&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;　　这样访问docker宿主机的 80 端口，如&lt;a href=&quot;http://localhost&quot;&gt;http://localhost&lt;/a&gt;，就会看到官网文档了。&lt;/p&gt;
-
-&lt;p&gt;　　最近有朋友说我的blog被墙了打不开，我大惊，定睛一看发现是github pages改成了https，也就是说网址要改成&lt;a href=&quot;https://ixjx.github.io/blog&quot;&gt;https://ixjx.github.io/blog&lt;/a&gt; 。&lt;/p&gt;
-
-&lt;p&gt;　　想到同样可以用docker的方式来本地运行网站，说干就干。依然是利用docker cloud的automated build，在blog的github里写Dockerfile，Dockerfile很简单，一共就5行~~&lt;/p&gt;
-
-&lt;p&gt;　　因为使用了caddy作为web服务器，同时还要写一个Caddyfile。&lt;/p&gt;
-
-&lt;p&gt;　　然后就可以通过:&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;$ docker run -d -p 80:80 ixjx/ixjx.github.io&lt;/code&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;　　然后就可以访问本地 80 端口看到最新的blog了 &lt;del&gt;说得好像有人看一样&lt;/del&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 01 Mar 2018 00:00:00 +0800</pubDate>
-        <link>/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</link>
-        <guid isPermaLink="true">/blog/2018-03-01/%E5%88%B6%E4%BD%9C%E7%BD%91%E7%AB%99docker%E9%95%9C%E5%83%8F/</guid>
-        
-        <category>容器</category>
-        
-        
-        <category>网络</category>
         
       </item>
     

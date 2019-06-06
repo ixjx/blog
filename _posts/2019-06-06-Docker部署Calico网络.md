@@ -6,7 +6,7 @@ tags: 容器
 
 ---
 
-　　今天交流了NSX-T和K8S的集成，赶紧了解了一下原生的Calico网络。
+　　今天交流了NSX-T和K8S的集成，赶紧了解了一下原生开源的Calico网络。
 
 　　Calico是一个纯三层的虚拟网络方案，Calico为每个容器分配一个IP，每个host都是router，host之间采用了BGP协议发布路由，把不同host的容器连接起来。与VxLAN不同的是，Calico不对数据包做额外封装，不需要NAT和端口映射，扩展性和性能都很好。
 

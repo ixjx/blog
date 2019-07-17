@@ -404,13 +404,13 @@ deploy_new_container<span class="o">(){</span>
     <span class="c"># $2 : $OLD_IMAGE_NAME </span>
     <span class="c"># $3 : $IMAGE_NAME </span>
     <span class="c"># $4 : $PORT </span>
-    <span class="nv">cid</span><span class="o">=</span><span class="k">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="k">)</span>
+    <span class="nv">cid</span><span class="o">=</span><span class="si">$(</span>docker ps <span class="nt">-a</span> | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $1}'</span><span class="si">)</span>
     <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$cid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
         </span>docker <span class="nb">rm</span> <span class="nt">-f</span> <span class="nv">$cid</span>
     <span class="k">fi
     </span><span class="nb">echo</span> <span class="s2">"******删除旧容器完成******"</span>
 
-    <span class="nv">iid</span><span class="o">=</span><span class="k">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="k">)</span>
+    <span class="nv">iid</span><span class="o">=</span><span class="si">$(</span>docker images | <span class="nb">grep</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> | <span class="nb">awk</span> <span class="s1">'{print $3}'</span><span class="si">)</span>
     <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$iid</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
         </span>docker rmi <span class="nt">-f</span> <span class="nv">$iid</span>
     <span class="k">fi
@@ -578,6 +578,10 @@ u.save!
                     
                         
                             <li>
+                                <a href="http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/">深入理解UDP</a>
+                            </li>
+                        
+                            <li>
                                 <a href="http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/">Docker部署Calico网络</a>
                             </li>
                         
@@ -631,10 +635,6 @@ u.save!
                         
                             <li>
                                 <a href="http://localhost:4000/2014-01-11/F2E_2CSS%E4%B8%89%E8%A7%92%E5%BD%A2/">F2E_2CSS三角形</a>
-                            </li>
-                        
-                            <li>
-                                <a href="http://localhost:4000/2013-12-01/F2E_1CSS%E8%87%AA%E5%AE%9A%E4%B9%89%E6%BB%9A%E5%8A%A8%E6%9D%A1%E6%A0%B7%E5%BC%8F/">F2E_1CSS自定义滚动条样式</a>
                             </li>
                         
                     

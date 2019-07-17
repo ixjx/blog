@@ -177,10 +177,10 @@
 <p><strong>如何使用Docker加速器</strong></p>
 
 <p>　　在伟大的GWF下，访问官方Docker网站速度感人，针对Docker客户端版本大于1.10的用户，可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速器：</p>
-<div class="language-perl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">sudo</span> <span class="sr">mkdir -p /etc/dock</span><span class="nv">er</span>
-<span class="nv">sudo</span> <span class="nv">tee</span> <span class="sr">/etc/doc</span><span class="nv">ker</span><span class="o">/</span><span class="nv">daemon</span><span class="o">.</span><span class="nv">json</span> <span class="o">&lt;&lt;-</span><span class="s">'EOF'</span>
+<div class="language-perl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">sudo</span> <span class="nb">mkdir</span> <span class="o">-</span><span class="nv">p</span> <span class="sr">/etc/doc</span><span class="nv">ker</span>
+<span class="nv">sudo</span> <span class="nv">tee</span> <span class="sr">/etc/doc</span><span class="nv">ker</span><span class="o">/</span><span class="nv">daemon</span><span class="o">.</span><span class="nv">json</span> <span class="o">&lt;&lt;-</span><span class="p">'</span><span class="s1">EOF</span><span class="p">'</span>
 <span class="p">{</span>
-  <span class="s">"registry-mirrors"</span><span class="p">:</span> <span class="p">[</span><span class="s">"your own url"</span><span class="p">]</span>
+  <span class="p">"</span><span class="s2">registry-mirrors</span><span class="p">":</span> <span class="p">["</span><span class="s2">your own url</span><span class="p">"]</span>
 <span class="p">}</span>
 <span class="nv">EOF</span>
 <span class="nv">sudo</span> <span class="nv">systemctl</span> <span class="nv">daemon</span><span class="o">-</span><span class="nv">reload</span>
@@ -313,6 +313,10 @@
                     
                         
                             <li>
+                                <a href="http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/">深入理解UDP</a>
+                            </li>
+                        
+                            <li>
                                 <a href="http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/">Docker部署Calico网络</a>
                             </li>
                         
@@ -366,10 +370,6 @@
                         
                             <li>
                                 <a href="http://localhost:4000/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/">CPU和内存虚拟化原理-每天5分钟的OpenStack(6)</a>
-                            </li>
-                        
-                            <li>
-                                <a href="http://localhost:4000/2017-11-02/%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86KVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(5)/">远程管理KVM虚机-每天5分钟的OpenStack(5)</a>
                             </li>
                         
                     

@@ -198,7 +198,7 @@
   </li>
 </ol>
 
-<p>抓包的结果如下，可以发现第一个报文发送出去没有任何问题（因为 UDP 是没有 ACK 报文的，所以客户端无法知道对方有没有收到，这里说的没有问题是指没有对应的 ICMP 报文），但是第二个报文从服务端发送的报文，对方会返回一个 ICMP 告诉端口 38908 不可达；第三个报文从客户端发送的报文也是如此。以后的报文情况类似，双方再也无法进行通信了。</p>
+<p>抓包的结果如下，可以发现第一个报文发送出去没有任何问题（因为 UDP 是没有 ACK 报文的，所以客户端无法知道对方有没有收到，这里说的没有问题是指没有对应的 ICMP 报文），但是第二个报文从服务端发送的报文，对方会返回一个 ICMP 告诉端口 44182 不可达；第三个报文从客户端发送的报文也是如此。以后的报文情况类似，双方再也无法进行通信了。</p>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>tcpdump: verbose output suppressed, use <span class="nt">-v</span> or <span class="nt">-vv</span> <span class="k">for </span>full protocol decode
 listening on docker0, link-type EN10MB <span class="o">(</span>Ethernet<span class="o">)</span>, capture size 262144 bytes
 14:48:42.514345 IP 172.17.0.2.44182 <span class="o">&gt;</span> 192.168.106.242.rrac: UDP, length 6

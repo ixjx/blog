@@ -5,8 +5,8 @@
     <description>shurrik`s blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 17 Jul 2019 18:44:31 +0800</pubDate>
-    <lastBuildDate>Wed, 17 Jul 2019 18:44:31 +0800</lastBuildDate>
+    <pubDate>Thu, 18 Jul 2019 09:44:34 +0800</pubDate>
+    <lastBuildDate>Thu, 18 Jul 2019 09:44:34 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
     
       <item>
@@ -49,7 +49,7 @@
 
 &lt;p&gt;nc 的通信是双方的，不管对方输入什么字符，回车后对方就能立即收到。但是在这个模式下，客户端第一次输入对方能够收到，后续的报文对方都收不到。&lt;/p&gt;
 
-&lt;p&gt;在这个实验中，容器使用的是 docker 的默认网络，容器的 ip 是 172.17.0.2，通过 veth pair（图中没有显示）连接到虚拟网桥 docker0（ip 地址为 172.17.0.1），主机本身的网络为 eth0，其 ip 地址为 192.168.106.241&lt;/p&gt;
+&lt;p&gt;在这个实验中，容器使用的是 docker 的默认网络，容器的 ip 是 172.17.0.2，通过 veth pair（图中没有显示）连接到虚拟网桥 docker0（ip 地址为 172.17.0.1），主机本身的网络为 eth0，其 ip 地址为 192.168.106.242&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 172.17.0.2
 +----------+
  |   eth0   |
@@ -61,7 +61,7 @@
 +----+-----+          +----------+
  | docker0  |           |  eth0    |
 +----------+          +----------+
-172.17.0.1            192.168.106.241
+172.17.0.1            192.168.106.242
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;tcpdump-抓包&quot;&gt;tcpdump 抓包&lt;/h2&gt;

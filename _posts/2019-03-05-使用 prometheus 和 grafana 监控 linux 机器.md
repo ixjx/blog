@@ -135,7 +135,7 @@ scrape_configs:
 version: '2'
 services:
   prometheus:
-    image: prom/prometheus:v2.0.0
+    image: prom/prometheus:v2.11.0
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -144,11 +144,11 @@ services:
     ports:
       - '9090:9090'
   node-exporter:
-    image: prom/node-exporter:v0.15.2
+    image: prom/node-exporter:v0.16.0
     ports:
       - '9100:9100'
   grafana:
-    image: grafana/grafana:4.6.2
+    image: grafana/grafana:6.2.5
     volumes:
         - grafana_data:/var/lib/grafana
     environment:

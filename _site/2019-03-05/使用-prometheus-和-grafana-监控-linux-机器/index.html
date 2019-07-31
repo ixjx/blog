@@ -271,7 +271,7 @@
 <div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">2'</span>
 <span class="na">services</span><span class="pi">:</span>
   <span class="na">prometheus</span><span class="pi">:</span>
-    <span class="na">image</span><span class="pi">:</span> <span class="s">prom/prometheus:v2.0.0</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">prom/prometheus:v2.11.0</span>
     <span class="na">volumes</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="s">./prometheus.yml:/etc/prometheus/prometheus.yml</span>
       <span class="pi">-</span> <span class="s">prometheus_data:/prometheus</span>
@@ -280,11 +280,11 @@
     <span class="na">ports</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="s1">'</span><span class="s">9090:9090'</span>
   <span class="na">node-exporter</span><span class="pi">:</span>
-    <span class="na">image</span><span class="pi">:</span> <span class="s">prom/node-exporter:v0.15.2</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">prom/node-exporter:v0.16.0</span>
     <span class="na">ports</span><span class="pi">:</span>
       <span class="pi">-</span> <span class="s1">'</span><span class="s">9100:9100'</span>
   <span class="na">grafana</span><span class="pi">:</span>
-    <span class="na">image</span><span class="pi">:</span> <span class="s">grafana/grafana:4.6.2</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">grafana/grafana:6.2.5</span>
     <span class="na">volumes</span><span class="pi">:</span>
         <span class="pi">-</span> <span class="s">grafana_data:/var/lib/grafana</span>
     <span class="na">environment</span><span class="pi">:</span>

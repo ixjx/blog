@@ -5,8 +5,8 @@
     <description>shurrik`s blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 20 Aug 2019 15:39:07 +0800</pubDate>
-    <lastBuildDate>Tue, 20 Aug 2019 15:39:07 +0800</lastBuildDate>
+    <pubDate>Tue, 20 Aug 2019 16:02:46 +0800</pubDate>
+    <lastBuildDate>Tue, 20 Aug 2019 16:02:46 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
     
       <item>
@@ -140,7 +140,7 @@ ip &lt;span class=&quot;nb&quot;&gt;link set &lt;/span&gt;dev veth0 up
 
 &lt;p&gt;给 mybridge0 设置 IP：&lt;/p&gt;
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ip &lt;span class=&quot;nb&quot;&gt;link set &lt;/span&gt;dev mybridge0 down
-ip addr add 10.0.1.0/24 dev mybridge0
+ip addr add 10.0.1.254/24 dev mybridge0
 ip &lt;span class=&quot;nb&quot;&gt;link set &lt;/span&gt;dev mybridge0 up
 ip addr
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -151,7 +151,7 @@ ip addr
 
 &lt;p&gt;这时就可以在不同的 network namespace 之间通信了：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/63327177-4c8b8700-c360-11e9-8d74-551e47d993fc.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/63329053-d38e2e80-c363-11e9-9ef5-02199d26cd5a.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;我们创建的网络拓扑结构如下所示：&lt;/p&gt;
 

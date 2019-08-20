@@ -145,7 +145,7 @@ ip link set dev veth0 up
 给 mybridge0 设置 IP：
 ```sh
 ip link set dev mybridge0 down
-ip addr add 10.0.1.0/24 dev mybridge0
+ip addr add 10.0.1.254/24 dev mybridge0
 ip link set dev mybridge0 up
 ip addr
 ```
@@ -156,7 +156,7 @@ ip addr
 
 这时就可以在不同的 network namespace 之间通信了：
 
-![image](https://user-images.githubusercontent.com/4729226/63327177-4c8b8700-c360-11e9-8d74-551e47d993fc.png)
+![image](https://user-images.githubusercontent.com/4729226/63329053-d38e2e80-c363-11e9-9ef5-02199d26cd5a.png)
 
 我们创建的网络拓扑结构如下所示：
 

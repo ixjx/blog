@@ -1,0 +1,37 @@
+<p>最近写了个服务器程序，需要在终端启动跑起来，但我是用ssh远程到服务器上操作的，断开连接程序也就中断了，网上查了查，实现了让命令后台运行并在前后台切换。</p>
+
+<p>在命令结尾加”&amp;”符号可以让命令在后台运行,</p>
+
+<p>这时可以看到一个命令号和命令,后面是PID,表示正在运行,
+<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806220343/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806220343.jpg" alt="" title="20140806220343" /></a></p>
+
+<p>输入<code class="highlighter-rouge">fg</code>即可将后台命令调回前台,
+<!--more-->
+但如果有多个命令在后台运行,就需要<code class="highlighter-rouge">jobs</code>命令,</p>
+
+<p>jobs命令可以列出所有在后台运行的命令及运行状态,
+<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806220544/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806220544.jpg" alt="" title="20140806220544" /></a></p>
+
+<p>这时使用<code class="highlighter-rouge">fg空格后接命令号</code>即可将对应的命令调回前台,</p>
+
+<p>如果一个命令已经在前台运行,又不想结束他,</p>
+
+<p>按Ctrl+Z即可将命令移至后台,</p>
+
+<p>但这时可以看到该命令的状态是Stopped,
+<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806221100/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806221100.jpg" alt="" title="20140806221100" /></a></p>
+
+<p>这时可以使用<code class="highlighter-rouge">bg空格后接命令号</code>将命令置于Runing状态.</p>
+
+<p>上面的方法虽然可以让命令在后台运行,</p>
+
+<p>但是退出登录或者关闭终端,后台的命令也会结束,</p>
+
+<p>如果不想让命令结束就需要nohup了,</p>
+
+<p>在退出后仍想继续运行的命令前面加上<code class="highlighter-rouge">nohop空格接命令+&amp;</code>即可。
+<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806222143/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806222143.jpg" alt="" title="20140806222143" /></a></p>
+
+<p>至于终止当然是kill^_^。</p>
+
+<p>然后用crontab -e加定时任务就OK了。</p>

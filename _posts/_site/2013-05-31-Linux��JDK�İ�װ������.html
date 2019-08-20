@@ -1,0 +1,89 @@
+<p>1.安装</p>
+
+<p>从sun公司网站www.sun .com下载linux版本的jdk</p>
+
+<p>打开终端，用cd命令进入jdk所在目录，执行复制命令</p>
+
+<p><code class="highlighter-rouge">sudo cp jdk-6u7-linux-i586.bin /usr</code></p>
+
+<p>即将jdk复制到/usr目录下</p>
+
+<!--more-->
+
+<p>然后进入/usr目录</p>
+
+<p><code class="highlighter-rouge">cd /usr</code></p>
+
+<p>执行权限</p>
+
+<p><code class="highlighter-rouge">chmod +x jdk-6u7-linux-i586.bin</code></p>
+
+<p>执行安装命令</p>
+
+<p><code class="highlighter-rouge">./jdk-6u21-linux-i586.bin</code></p>
+
+<p>(文件名)</p>
+
+<p>如遇错误，可先切换至root用户下，su root，再执行安装命令</p>
+
+<p>安装成功会在/usr目录下生成jdk1.6.0_07目录，就是jdk的安装目录</p>
+
+<p>重启电脑，打开终端，输入java -version</p>
+
+<p>如若有显示java的版本信息，则表示安装成功，</p>
+
+<p>2.配置</p>
+
+<p>安装成功后需要配置jdk环境变量</p>
+
+<p>用cd命令进入/etc目录</p>
+
+<p><code class="highlighter-rouge">sudo vi profile</code></p>
+
+<p>即执行编辑profile文件命令</p>
+
+<p>在前添加如下内容:</p>
+
+<p>export JAVA_HOME=/usr/jdk1.6.0_21</p>
+
+<p>export JRE_HOME=/usr/jdk1.6.0_21/jre</p>
+
+<p>export PATH=$PATH:/usr/jdk1.6.0_21/bin</p>
+
+<p>export CLASSPATH=./:/usr/jdk1.6.0_21/lib:/usr/jdk1.6.0_21/jre/lib</p>
+
+<p>保存退出，重启电脑</p>
+
+<p>3.测试
+(注意文件名与类名一致)
+新建Test.java</p>
+
+<p><code class="highlighter-rouge">public class Test</code></p>
+
+<p>{</p>
+
+<p>public static void main(String[] args)</p>
+
+<p>{</p>
+
+<p>System.out.println(“Hello，Welcome to Linux World!”);</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>在终端用cd命令进入Test.java目录，然后输入</p>
+
+<p><code class="highlighter-rouge">javac Test.java</code></p>
+
+<p>java Test</p>
+
+<p>若输出</p>
+
+<p>Hello，Welcome to Linux World!</p>
+
+<p>则表明配置成功!</p>
+
+<p>如不能通过编译，可通过重新启动系统试试</p>
+
+<p>至此，Linux jdk环境变量配置完成</p>

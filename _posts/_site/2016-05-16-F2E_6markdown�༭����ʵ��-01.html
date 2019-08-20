@@ -1,0 +1,163 @@
+<p>　　这个前端系列算个天坑了，自己坑自己。最近炉石也冲上传说了，没啥好玩的事，和朋友聊天时安利我看一部叫《IT狂人》的剧，于是想到把这个坑给填一填。</p>
+
+<p>　　自从用hexo构筑个人博客后就开始用markdown，但是用了好几个编辑器都没有一个适合自己使用的。于是前段时间就照着教程自己动手敲了一个，从这篇开始，我会把整个开发过程记录成系列随笔。其实nodejs已经不能算前端了，勉强和javascript搭上点关系，但是实在不想再开新坑，将就这个标题继续用吧0v0，这样我的blog也有干货持续更新了。
+<!--more --></p>
+
+<blockquote>
+  <p>简介</p>
+</blockquote>
+
+<p>　　先介绍下开发过程中用到的一些开源项目：</p>
+<ol>
+  <li><a href="http://nwjs.io/">nw.js</a>，用webkit和node做基于web技术的跨平台客户端软件</li>
+  <li><a href="http://codemirror.net/">CodeMirror</a>，基于web技术实现的文本编辑器，实现了大部分的IDE功能</li>
+  <li><a href="http://angularjs.cn/">angularjs</a>，google的mvvm框架，这个相信不用我多做介绍。我用得不熟，觉得好用就开袋即食，没有深入的了解</li>
+</ol>
+
+<blockquote>
+  <p>项目结构</p>
+</blockquote>
+
+<p><img src="http://shurriklab.qiniudn.com/ehazzoh3uqlzyi28qn20gcpi4q.png" alt="" /></p>
+
+<p>大概讲一下目录和文件的用途：</p>
+<ol>
+  <li><code class="highlighter-rouge">incudtl.dat</code>,<code class="highlighter-rouge">nw.exe</code>,<code class="highlighter-rouge">nw.pak</code>这3个是nw.js在windows运行所必须的文件。</li>
+  <li><code class="highlighter-rouge">package.json</code>nw.js的配置文件</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "name": "HexoMD",
+  "description": "Markdown for hexo",
+  "main": "app/index.html", //程序入口页面
+  "author": "shurrik",
+  "license": "MIT",
+  "directories": {
+    "test": "no"
+  },
+  "devDependencies": {},
+  "window": {
+    "title": "HexoMD",
+    "icon": "app/img/logo.png",
+    "toolbar": false, //是否显示地址栏工具条(很重要)
+    "frame": false, //是否显示程序边框
+    "width": 1000,
+    "height": 700,
+    "position": "center",
+    "min_width": 600,
+    "min_height": 400
+  }
+  
+}
+</code></pre></div></div>
+
+<ol>
+  <li><code class="highlighter-rouge">app目录</code> 程序的所有源代码的根目录</li>
+  <li><code class="highlighter-rouge">app/lib</code> 存放angular,jquery,codemirror等开源库/框架的源代码</li>
+  <li><code class="highlighter-rouge">app/helpers</code> 存放一些nodejs的工具函数</li>
+  <li><code class="highlighter-rouge">app/modules</code> 程序代码在这个目录,按功能模块分成不同的子目录</li>
+  <li><code class="highlighter-rouge">app/package.json</code> node模块配置，注意与上层的package.json不同</li>
+</ol>
+
+<blockquote>
+  <p>主界面</p>
+</blockquote>
+
+<p>　　代码都在github上，我这里只贴出部分。
+  <img src="http://shurriklab.qiniudn.com/75m2b6vni01f9sr0gap251vtv5.png" alt="" /></p>
+
+<p>　　界面采用三栏布局，分别为<code class="highlighter-rouge">导航栏</code>、<code class="highlighter-rouge">内容区</code>，<code class="highlighter-rouge">工具条</code>。为了美观，我在配置里去掉了系统自带的边框，因此要实现自定义的拖动窗口功能还需要增加一些设置。所谓的设置，其实只要加上对应的样式即可，功能都由nw.js实现了。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  .navbar{
+  	-webkit-app-region: drag;
+  }
+</code></pre></div></div>
+
+<p>　　另外为了让编辑器看起来更像客户端一点，我禁用掉了文本选择，防止一些被作为按钮的a标签被选中。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html{
+	height: 100%;
+    -webkit-user-select: none;
+}
+</code></pre></div></div>
+
+<blockquote>
+  <p>app.js</p>
+</blockquote>
+
+<p>　　app.js作为程序的入口点，定义了整个项目的结构，需要特别拿出来说一下。
+<code class="highlighter-rouge">angular.module('hmd', ['ui.router','hmd.studio'])</code></p>
+
+<p>　　定义angular模块，<code class="highlighter-rouge">modules</code>所有的业务模块都会放到单独的子目录里，如这里注册的<code class="highlighter-rouge">hmd.studio</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> //模块根目录
+  var baseModuleDir = './app/modules/';
+  //引入模块,模块内js文件会被自动加载到页面中
+  hmd.regModule = function (name, reqModule) {
+    hmd[name] = angular.module('hmd.' + name, reqModule || []);
+    hmd[name].moduleName = name;
+    //模块存储数据的目录
+    hmd[name].dataPath = hmd.storeDir + '\\' + hmd[name].moduleName;
+    fs.readdirSync(baseModuleDir + name)
+    .forEach(function (file) {
+      if (~file.indexOf('.js')) {
+        document.write('&lt;script src="modules/' + name + '/' + file + '"&gt;&lt;/script&gt;');
+      }
+    });
+  };
+</code></pre></div></div>
+<blockquote>
+  <p>导航栏按钮</p>
+</blockquote>
+
+<p>　　导航栏右边有3个按钮，分别为最小化、最大化、关闭，在modules根目录的<code class="highlighter-rouge">directives.js</code>用于实现。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(function () {
+  var gui = require('nw.gui'), win = gui.Window.get(),winMaximize = false;
+  angular.module('hmd.directives', [])
+  //最小化窗口
+  .directive('hmdMinisize', [function () {
+    return function (scope, elem) {
+      $(elem[0]).on('click', function () {
+        win.minimize();
+      });
+    };
+  }])
+  //最大化与还原窗口
+  .directive('hmdMaxToggle', [function () {
+    return function (scope, elem) {
+      //窗口最大化和还原时会触发对应的事件,在事件里去控制按钮样式.
+      //TODO:这里的实现应该可以更优雅一点,以后再说
+      win.on('maximize', function () {
+        winMaximize = true;
+        $(elem[0]).find('i').removeClass('glyphicon-fullscreen').addClass('glyphicon-resize-small');
+      });
+      win.on('unmaximize', function () {
+        winMaximize = false;
+        $(elem[0]).find('i').removeClass('glyphicon-resize-small').addClass('glyphicon-fullscreen');
+      });
+            //切换窗口状态
+      $(elem[0]).on('click', function () {
+        if (winMaximize) {
+          win.unmaximize();
+        }
+        else {
+          win.maximize();
+        }
+      });
+    };
+  }])
+  //关闭应用程序
+  .directive('hmdClose', [function () {
+    return function (scope, elem) {
+      $(elem[0]).on('click', function () {
+        require('nw.gui').Window.get().close();
+      });
+    };
+  }]);
+})();
+</code></pre></div></div>
+<p>　　定义了全局directive模块<code class="highlighter-rouge">angular.module('hmd.directives', [])</code>，接下来将directive应用到按钮上，将script添加到index.html的app.js之后。
+　　app.js里的angular模块注册里增加hmd.directives模块<code class="highlighter-rouge">angular.module('hmd', ['ui.router','hmd.directives','hmd.studio'])</code></p>
+
+<blockquote>
+  <p>总结</p>
+</blockquote>
+
+<p>　　到此页面布局方面基本完成，编辑器功能的实现放在后面继续写。还有我对<code class="highlighter-rouge">angularjs</code>了解并不深，很多用法总感觉有问题，有空再深入看看angularjs吧。</p>

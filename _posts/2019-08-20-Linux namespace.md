@@ -56,7 +56,7 @@ ip netns 命令用来管理 network namespace。本文将使用 ip netns 命令�
 
 ### 在两个 network namespace 之间通信
 
-network namespace 之间是相互隔离的，我们可以使用 veth 设备把两个 network namespace 连接起来进行通信。veth 设备是虚拟的以太网设备。它们可以充当 network namespace 之间的通道，也可以作为独立的网络设备使用。**veth 设备总是被成对的创建，并且这一对设备总是连接在一起的，所以一般把称之为 veth pair。**需要注意的是，veth pair 无法单独存在，删除其中一个，另一个也会自动消失。接下来的示例我们就演示如何使用 veth pair 在两个 network namespace 直接通信。示例中我们使用 ip link 命令来创建和管理 veth pair。
+network namespace 之间是相互隔离的，我们可以使用 veth 设备把两个 network namespace 连接起来进行通信。veth 设备是虚拟的以太网设备。它们可以充当 network namespace 之间的通道，也可以作为独立的网络设备使用。**veth 设备总是被成对的创建，并且这一对设备总是连接在一起的，所以一般称之为 veth pair。**需要注意的是，veth pair 无法单独存在，删除其中一个，另一个也会自动消失。接下来的示例我们就演示如何使用 veth pair 在两个 network namespace 直接通信。示例中我们使用 ip link 命令来创建和管理 veth pair。
 
 **第一步，先创建两个 network namespace net0 和 net1**
 ```sh

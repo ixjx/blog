@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>Docker从入门到出门</title>
+    <title>Linux namespace</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="Docker从入门到出门, Linux, 容器, CodeShurrik" />
-    <meta name="description" content="Docker从入门到出门, Linux, 容器, " />
+    <meta name="keywords" content="Linux namespace, Linux, 容器, CodeShurrik" />
+    <meta name="description" content="Linux namespace, Linux, 容器, 之前做过一段时间 docker 相关的工作，只能算熟悉相关命令，很多原理都似是而非。面试的时候被问过一个简单的问题：容器间资源的隔离是怎么实现的？当时只知道是靠 namespace ，但是具体实现不清楚。" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="http://localhost:4000/favicon.ico" />
-    <link rel="canonical" href="http://localhost:4000/2017-08-24/Docker%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%87%BA%E9%97%A8/" />
+    <link rel="canonical" href="http://localhost:4000/2019-08-20/Linux-namespace/" />
     <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="http://localhost:4000/feed.xml"  />
 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
@@ -111,9 +111,9 @@
     <div class="content col-lg-9">
         <div class="sheet post">
           <header>
-            <h2>Docker从入门到出门</h2>
+            <h2>Linux namespace</h2>
             <p class="post-meta">
-                <span class="octicon octicon-clock"></span> Aug 24, 2017
+                <span class="octicon octicon-clock"></span> Aug 20, 2019
             </p>
             <p class="post-tag">
                 <span><a href="http://localhost:4000/category/#Linux"><span class="octicon octicon-list-unordered"></span>&nbsp;Linux</a></span>
@@ -125,132 +125,155 @@
           </header>
           <hr class="boundary">
           <article>
-            <ul id="markdown-toc">
-  <li><a href="#什么是docker" id="markdown-toc-什么是docker">什么是Docker</a></li>
-  <li><a href="#准备" id="markdown-toc-准备">准备</a></li>
-  <li><a href="#安装docker" id="markdown-toc-安装docker">安装Docker</a></li>
-  <li><a href="#搜索docker镜像" id="markdown-toc-搜索docker镜像">搜索Docker镜像</a></li>
-  <li><a href="#下载docker镜像" id="markdown-toc-下载docker镜像">下载Docker镜像</a></li>
-  <li><a href="#在容器中运行hello-world" id="markdown-toc-在容器中运行hello-world">在容器中运行hello world</a></li>
-  <li><a href="#在容器中安装新的程序" id="markdown-toc-在容器中安装新的程序">在容器中安装新的程序</a></li>
-  <li><a href="#运行新的镜像" id="markdown-toc-运行新的镜像">运行新的镜像</a></li>
-</ul>
+            <p>之前做过一段时间 docker 相关的工作，只能算熟悉相关命令，很多原理都似是而非。面试的时候被问过一个简单的问题：容器间资源的隔离是怎么实现的？当时只知道是靠 namespace ，但是具体实现不清楚。</p>
 
-<p>　　最近测试NFV时接触了Docker，不禁惊为天人。相比虚拟机，Docker真是太方便了，那么就再来一个入门系列吧^-^。</p>
+<p>最近深入看了下 Linux namespace ，通过 network namespace 实验了 docker 的 bridge 网络。</p>
 
-<p><img src="http://shurriklab.qiniudn.com/la0rjhdjx6t4vynv58bahkz4fs.png" alt="" /></p>
+<p>在每个容器中，我们都可以看到文件系统，网卡等资源，这些资源看上去是容器自己的。拿网卡来说，每个容器都会认为自己有一块独立的网卡，即使 host 上只有一块物理网卡。</p>
 
-<blockquote>
-  <h3 id="什么是docker">什么是Docker</h3>
-</blockquote>
+<p><strong>namespace 就是 Linux 内核用来隔离内核资源的方式。</strong>通过 namespace 可以让一些进程只能看到与自己相关的一部分资源，而另外一些进程也只能看到与它们自己相关的资源，这两拨进程根本就感觉不到对方的存在。具体的实现方式是把一个或多个进程的相关资源指定在同一个 namespace 中。</p>
 
-<p>　　Docker是一个开源的引擎，可以轻松的为任何应用创建一个轻量级的、可移植的、自给自足的容器。开发者在自己电脑上编译测试通过的容器可以批量地在生产环境中部署，包括VMs（虚拟机）、bare metal、OpenStack 集群和其他的基础应用平台。</p>
+<p>Linux namespaces 是对全局系统资源的一种封装隔离，使得处于不同 namespace 的进程拥有独立的全局系统资源，改变一个 namespace 中的系统资源只会影响当前 namespace 里的进程，对其他 namespace 中的进程没有影响。</p>
 
-<p>　　<strong>Docker通常用于如下场景：</strong></p>
-<ul>
-  <li>web应用的自动化打包和发布</li>
-  <li>自动化测试和持续集成、发布</li>
-  <li>在服务型环境中部署和调整数据库或其他的后台应用</li>
-  <li>从头编译或者扩展现有的OpenShift或Cloud Foundry平台来搭建自己的PaaS环境</li>
-</ul>
+<p>我们可以从 docker 实现者的角度考虑该如何实现一个资源隔离的容器。比如是不是可以通过 chroot 命令切换根目录的挂载点，从而隔离文件系统。为了在分布式的环境下进行通信和定位，容器必须要有独立的 IP、端口和路由等，这就需要对网络进行隔离。同时容器还需要一个独立的主机名以便在网络中标识自己。接下来还需要进程间的通信、用户权限等的隔离。最后，运行在容器中的应用需要有进程号(PID)，自然也需要与宿主机中的 PID 进行隔离。也就是说这六种隔离能力是实现一个容器的基础，让我们看看 linux 内核的 namespace 特性为我们提供了什么样的隔离能力：</p>
 
-<blockquote>
-  <h3 id="准备">准备</h3>
-</blockquote>
+<p><img src="https://user-images.githubusercontent.com/4729226/63321909-b0a84e00-c354-11e9-8179-ee7aca298e6e.png" alt="image" /></p>
 
-<p>　　Docker系统有两个程序：docker服务端和docker客户端。其中docker服务端是一个服务进程，管理着所有的容器。docker客户端则扮演着docker服务端的远程控制器，可以用来控制docker的服务端进程。大部分情况下，docker服务端和客户端运行在一台机器上。</p>
+<p>这里我们就深入了解下network namespace：</p>
 
-<p>　　Docker的核心是镜像(image)，和容器(container)。image 里面是一层层文件系统，叫做 Union FS，可以将几层目录挂载到一起，成为同一个虚拟文件系统。文件系统的目录结构就像普通 linux 的目录结构一样，docker 通过这些文件与宿主机的内核提供了一个 linux 的虚拟环境。每一层文件系统我们叫做一层 layer，联合文件系统可以对每一层文件系统设置三种权限，只读（readonly）、读写（readwrite）和写出（whiteout-able），但是 docker 镜像中每一层文件系统都是只读的。</p>
+<p><strong>Network namespace 在逻辑上是网络堆栈的一个副本，它有自己的路由、防火墙规则和网络设备。</strong> 默认情况下，子进程继承其父进程的 network namespace。也就是说，如果不显式创建新的 network namespace，所有进程都从 init 进程继承相同的默认 network namespace。</p>
 
-<p>　　构建镜像的时候，从一个最基本的操作系统开始，每个构建的操作都相当于做一层修改，增加了一层文件系统，一层层往上叠加，上层的修改会覆盖底层该位置的可见性，这也很容易理解，就像上层把底层遮住了一样。当你使用的时候，你只会看到一个完全的整体，你不知道里面有几层，也不清楚每一层所做的修改是什么。结构类似这样：</p>
+<p>每个新创建的 network namespace 默认有一个本地环回接口 lo，除此之外，所有的其他网络设备(物理/虚拟网络接口，网桥等)只能属于一个 network namespace。每个 socket 也只能属于一个 network namespace。</p>
 
-<p><img src="http://shurriklab.qiniudn.com/96s3f8ipoqci8uridcw6sbfixj.png" alt="" /></p>
+<h3 id="ip-netns-命令">ip netns 命令</h3>
+<p>ip netns 命令用来管理 network namespace。本文将使用 ip netns 命令来创建和操作 network namespace。(最近发现<code class="highlighter-rouge">ip</code>比<code class="highlighter-rouge">ifconfig</code>好用多了)</p>
 
-<blockquote>
-  <h3 id="安装docker">安装Docker</h3>
-</blockquote>
+<h3 id="创建-network-namespace">创建 network namespace</h3>
 
-<p>　　推荐安装1.10.0以上版本的Docker客户端。可以通过阿里云的镜像仓库下载：<a href="http://mirrors.aliyun.com/help/docker-engine">docker-engine</a>、<a href="http://mirrors.aliyun.com/help/docker-ce">docker-ce</a> 或执行以下命令：</p>
+<p>先查看一下默认的 network namespace 的 ID：</p>
 
-<p><code class="highlighter-rouge">curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -</code></p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63323053-683e5f80-c357-11e9-9f1d-d382e7f39ea7.png" alt="image" /></p>
 
-<p><strong>如何使用Docker加速器</strong></p>
+<p>然后通过 ip netns add 命令创建名为 mynet 的 network namespace：</p>
 
-<p>　　在伟大的GWF下，访问官方Docker网站速度感人，针对Docker客户端版本大于1.10的用户，可以通过修改daemon配置文件/etc/docker/daemon.json来使用加速器：</p>
-<div class="language-perl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">sudo</span> <span class="nb">mkdir</span> <span class="o">-</span><span class="nv">p</span> <span class="sr">/etc/doc</span><span class="nv">ker</span>
-<span class="nv">sudo</span> <span class="nv">tee</span> <span class="sr">/etc/doc</span><span class="nv">ker</span><span class="o">/</span><span class="nv">daemon</span><span class="o">.</span><span class="nv">json</span> <span class="o">&lt;&lt;-</span><span class="p">'</span><span class="s1">EOF</span><span class="p">'</span>
-<span class="p">{</span>
-  <span class="p">"</span><span class="s2">registry-mirrors</span><span class="p">":</span> <span class="p">["</span><span class="s2">your own url</span><span class="p">"]</span>
-<span class="p">}</span>
-<span class="nv">EOF</span>
-<span class="nv">sudo</span> <span class="nv">systemctl</span> <span class="nv">daemon</span><span class="o">-</span><span class="nv">reload</span>
-<span class="nv">sudo</span> <span class="nv">systemctl</span> <span class="nv">restart</span> <span class="nv">docker</span>
+<p><img src="https://user-images.githubusercontent.com/4729226/63323179-ba7f8080-c357-11e9-8642-60d728246a39.png" alt="image" /></p>
+
+<p>从上图可以看出，在名为 mynet 的 network namespace 创建成功后，/var/run/netns 目录下多了一个名为 mynet 文件。ip netns exec 子命令可以在对应的 network namespace 中执行命令，下面我们就通过它在 mynet network namespace 中创建一个 bash 进程，并查看 network namespace 的 ID：</p>
+
+<p><img src="https://user-images.githubusercontent.com/4729226/63324843-7f7f4c00-c35b-11e9-9e91-91fd2fa52841.png" alt="image" /></p>
+
+<p>这是一个完全不同的 network namespace ID，而且默认shell也变了，说明当前的 bash 进程运行在一个隔离的 network 环境中。接下来让我们看看新的 network namespace 中都有什么：</p>
+
+<p><img src="https://user-images.githubusercontent.com/4729226/63324922-ac336380-c35b-11e9-9767-308b536ef4ec.png" alt="image" /></p>
+
+<p>每个新创建的 network namespace 默认有一个本地环回接口 lo，并且这个接口是处于关闭状态的。下面我们就启动这个接口：</p>
+
+<p><img src="https://user-images.githubusercontent.com/4729226/63324996-d6852100-c35b-11e9-981f-d95726142cec.png" alt="image" /></p>
+
+<p>启动 lo 接口后我们可以看到其 IP 地址，并且能够 ping 通。</p>
+
+<h3 id="在两个-network-namespace-之间通信">在两个 network namespace 之间通信</h3>
+
+<p>network namespace 之间是相互隔离的，我们可以使用 veth 设备把两个 network namespace 连接起来进行通信。veth 设备是虚拟的以太网设备。它们可以充当 network namespace 之间的通道，也可以作为独立的网络设备使用。<strong>veth 设备总是被成对的创建，并且这一对设备总是连接在一起的，所以一般把称之为 veth pair。</strong>需要注意的是，veth pair 无法单独存在，删除其中一个，另一个也会自动消失。接下来的示例我们就演示如何使用 veth pair 在两个 network namespace 直接通信。示例中我们使用 ip link 命令来创建和管理 veth pair。</p>
+
+<p><strong>第一步，先创建两个 network namespace net0 和 net1</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip netns add net0
+ip netns add net1
 </code></pre></div></div>
 
-<blockquote>
-  <h3 id="搜索docker镜像">搜索Docker镜像</h3>
-</blockquote>
+<p><strong>第二步，创建一对命名的 veth 设备</strong></p>
 
-<p>　　使用docker最简单的方式莫过于从现有的容器镜像开始。Docker官方网站专门有一个页面来存储所有可用的镜像，网址是：<a href="https://hub.docker.com/">https://hub.docker.com</a>。你可以通过浏览这个网页来查找你想要使用的镜像，或者使用命令行的工具来检索。</p>
+<p>默认情况下会自动为 veth pair 生成名称，这里为了易于辨识，我们在创建时指定 veth pair 的名称：</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip <span class="nb">link </span>add vethmother <span class="nb">type </span>veth peer name vethfather
+</code></pre></div></div>
 
-<p>　　就像这样：</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63325674-34fecf00-c35d-11e9-8a1e-09443031db75.png" alt="image" /></p>
 
-<p><img src="http://shurriklab.qiniudn.com/nxlupg71j1sgurgegp00y6zkyy.png" alt="" /></p>
+<p>如图所示，veth pair 在主机上表现为两个网卡。</p>
 
-<blockquote>
-  <h3 id="下载docker镜像">下载Docker镜像</h3>
-</blockquote>
+<p><strong>第三步，把这一对 veth pair 分别放到 network namespace net0 和 net1中</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip <span class="nb">link set </span>vethmother netns net0
+ip <span class="nb">link set </span>vethfather netns net1
+ip netns <span class="nb">exec </span>net0 ip addr
+ip netns <span class="nb">exec </span>net1 ip addr
+</code></pre></div></div>
 
-<p>　　下载镜像的命令非常简单，使用docker pull命令即可。(docker命令和git有许多类似的地方，如果你会git，那么上手会很快）。在docker的镜像索引网站上面，镜像都是按照用户名/镜像名的方式来存储的。有一组比较特殊的镜像，比如ubuntu这类基础镜像，经过官方的验证，值得信任，可以直接用镜像名来检索到。</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63325799-71322f80-c35d-11e9-9403-4b6ab5d95c77.png" alt="image" /></p>
 
-<p><img src="http://shurriklab.qiniudn.com/r58j4ff1miwqxc9762k5kpe6d2.png" alt="" /></p>
+<p>查看 net0 和 net1 中的网络资源，发现各自多了一个网卡，也就是 veth 设备的两个端点。注意，当我们把 veth pair 分配到 network namespace 中后，在主机上就看不到它们了。</p>
 
-<p>　　能看到主流的应用/系统都有镜像，都有10M+的PULL量。那么现在把我之前做的镜像ixjx/ping 下载下来。(PS:务必使用加速器)</p>
+<p><strong>第四步，给这些 veth pair 分配 IP 并启用它们</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip netns <span class="nb">exec </span>net0 ip <span class="nb">link set </span>vethmother up
+ip netns <span class="nb">exec </span>net0 ip addr add 10.0.1.1/24 dev vethmother
+ip netns <span class="nb">exec </span>net0 ip route
+ip netns <span class="nb">exec </span>net1 ip <span class="nb">link set </span>vethfather up
+ip netns <span class="nb">exec </span>net1 ip addr add 10.0.1.2/24 dev vethfather
+ip netns <span class="nb">exec </span>net1 ip route
+</code></pre></div></div>
+<p>下面通过 ping 命令来验证两个 network namespace 是否可以通信：</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip netns <span class="nb">exec </span>net0 ping <span class="nt">-c</span> 3 10.0.1.2
+</code></pre></div></div>
 
-<p><img src="http://shurriklab.qiniudn.com/1lw9a6r6wa2x1cw3ncrjam7ca0.png" alt="" /></p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63326000-e998f080-c35d-11e9-816b-03b39bff47b2.png" alt="image" /></p>
 
-<blockquote>
-  <h3 id="在容器中运行hello-world">在容器中运行hello world</h3>
-</blockquote>
+<p>至此，我们构建了一个如下结构的虚拟网络：</p>
 
-<p>　　docker容器可以理解为在沙盒中运行的进程，类似于虚拟机。这个沙盒包含了该进程运行所必须的资源，包括文件系统、系统类库、shell 环境等等。但这个沙盒默认是不会运行任何程序的。你需要在沙盒中运行一个进程来启动某一个容器。这个进程是该容器的唯一进程，所以当该进程结束的时候，容器也会完全的停止。</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63326036-f9b0d000-c35d-11e9-9b76-2670ab5c18f2.png" alt="image" /></p>
 
-<p>　　老规矩，先来一个hello world：(–rm是为了在container结束时自动删除)</p>
+<h3 id="通过-bridge-连接-network-namespace">通过 bridge 连接 network namespace</h3>
 
-<p><img src="http://shurriklab.qiniudn.com/fm7cwjc3ob8lrdbyaewn280rda.png" alt="" /></p>
+<p>虽然 veth pair 可以实现两个 network namespace 之间的通信，但是当需要在多个 network namespace 之间通信的时候，光靠 veth pair 就不行了。我们可以使用 Linux 提供的虚拟交换机，来完成这样的功能。下面的示例演示如何通过虚拟交换机(这里就是一个虚拟网桥)连接多个 network namespace。</p>
 
-<blockquote>
-  <h3 id="在容器中安装新的程序">在容器中安装新的程序</h3>
-</blockquote>
+<p><strong>第一步，先添加一个叫 mybridge0 的网桥</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip <span class="nb">link </span>add mybridge0 <span class="nb">type </span>bridge
+ip <span class="nb">link set </span>dev mybridge0 up
+ip addr
+</code></pre></div></div>
 
-<p>　　下一步要做的事情是在容器里面安装一个简单的程序(ping)。之前下载的镜像是基于ubuntu的，所以你可以使用ubuntu的apt-get命令来安装ping程序：<code class="highlighter-rouge">apt-get install -y ping</code></p>
+<p>对主机来说其实就是新添加了一个网络接口。</p>
 
-<p>备注：apt-get 命令执行完毕之后，容器就会停止，但对容器的改动不会丢失。</p>
+<p><strong>第二步，创建 network namespace 和 veth 设备</strong></p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip netns add net0
+ip <span class="nb">link </span>add veth0 <span class="nb">type </span>veth peer name veth0p 
 
-<p>　　另外在执行apt-get 命令的时候，要带上-y参数。如果不指定-y参数的话，apt-get命令会进入交互模式，需要用户输入命令来进行确认，但在docker环境中是无法响应这种交互的。(除非进入docker run -i -t  /bash/bin模式)</p>
+ip <span class="nb">link set </span>dev veth0p netns net0
+ip netns <span class="nb">exec </span>net0 ip <span class="nb">link set </span>dev veth0p name eth0
+ip netns <span class="nb">exec </span>net0 ip addr add 10.0.1.1/24 dev eth0
+ip netns <span class="nb">exec </span>net0 ip <span class="nb">link set </span>dev eth0 up
+ip netns <span class="nb">exec </span>net0 ip addr
+</code></pre></div></div>
 
-<p>　　当你对某一个容器做了修改之后（通过在容器中运行某一个命令），可以把对容器的修改保存下来，这样下次可以从保存后的最新状态运行该容器。docker中保存状态的过程称之为committing，它保存的新旧状态之间的区别，从而产生一个新的版本。</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63326429-cfabdd80-c35e-11e9-90a8-a41327b7c57a.png" alt="image" /></p>
 
-<p>　　首先使用<code class="highlighter-rouge">docker ps -l</code>命令获得安装完ping命令之后容器的id，然后把这个镜像保存为ixjx/pingtest。(是不是和git一样?)
-　　
-<img src="http://shurriklab.qiniudn.com/6mafjouyrea02z2j7kytog4zbm.png" alt="" /></p>
+<p>上图显示 network namespace net0 中的 eth0 网卡已经启动了。下面把 veth 设备的另一端连接到网桥 mybridge0 上：</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip <span class="nb">link set </span>dev veth0 master mybridge0
+ip <span class="nb">link set </span>dev veth0 up
+</code></pre></div></div>
 
-<p>　　执行完docker commit命令之后，会返回新版本镜像的id号。</p>
+<p><strong>第三步，重复第二步创建 net1 和 net2，并连接到网桥</strong></p>
 
-<blockquote>
-  <h3 id="运行新的镜像">运行新的镜像</h3>
-</blockquote>
+<p>给 mybridge0 设置 IP：</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ip <span class="nb">link set </span>dev mybridge0 down
+ip addr add 10.0.1.0/24 dev mybridge0
+ip <span class="nb">link set </span>dev mybridge0 up
+ip addr
+</code></pre></div></div>
 
-<p>　　ok，到现在为止，你已经建立了一个完整的、自成体系的docker环境，并且安装了ping命令在里面。它可以在任何支持docker环境的系统中运行啦！</p>
+<p>通过 bridge link 命令查看网桥的信息如下：</p>
 
-<p>　　一定要使用新的镜像名learn/pingtest来运行ping命令。(最开始下载的镜像中是没有ping命令的)</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63326917-c8390400-c35f-11e9-8b5c-3700bab628b5.png" alt="image" /></p>
 
-<p><img src="http://shurriklab.qiniudn.com/a1w3rf73m41dzw1pintksn8psn.png" alt="" /></p>
+<p>这时就可以在不同的 network namespace 之间通信了：</p>
 
-<p>　　以上操作都是在CentOS7下完成，Docker目前也有for Windows版本，不过推荐在ubuntu下安装，因为docker是在ubuntu下面开发的，安装包测试比较充分，可以保证软件包的可用性。</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/63327177-4c8b8700-c360-11e9-8d74-551e47d993fc.png" alt="image" /></p>
 
-<p>　　到此，入门阶段完毕。Docker原理、架构、常用命令这些就可以出门到官网或者社区去看，网上docker资料也多如牛毛。
-　　</p>
+<p>我们创建的网络拓扑结构如下所示：</p>
+
+<p><img src="https://user-images.githubusercontent.com/4729226/63327204-57461c00-c360-11e9-8340-7d948ff3d0d8.png" alt="image" /></p>
+
+<h3 id="总结">总结</h3>
+
+<p>通过 network namespace 可以创建相互独立的网络栈，从而实现网络的隔离。其中 network namespace 之间通过 bridge 通信的方式已经与 docker 网络的 bridge 模式非常类似了，剩下的不过就是开启ip.forward，添加NAT规则等等。</p>
 
           </article>
           <hr class="boundary">
@@ -313,10 +336,6 @@
                     
                         
                             <li>
-                                <a href="http://localhost:4000/2019-08-20/Linux-namespace/">Linux namespace</a>
-                            </li>
-                        
-                            <li>
                                 <a href="http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/">深入理解UDP</a>
                             </li>
                         
@@ -370,6 +389,10 @@
                         
                             <li>
                                 <a href="http://localhost:4000/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/">KVM存储虚拟化-每天5分钟的OpenStack(7)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="http://localhost:4000/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/">CPU和内存虚拟化原理-每天5分钟的OpenStack(6)</a>
                             </li>
                         
                     

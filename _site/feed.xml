@@ -3,11 +3,67 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik`s blog</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 20 Aug 2019 16:02:46 +0800</pubDate>
-    <lastBuildDate>Tue, 20 Aug 2019 16:02:46 +0800</lastBuildDate>
+    <link>/blog/</link>
+    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 10 Sep 2019 17:01:35 +0800</pubDate>
+    <lastBuildDate>Tue, 10 Sep 2019 17:01:35 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>Anycast实现DNS高可用</title>
+        <description>&lt;p&gt;最近在内网里搭建了一套 DNS 系统，2个节点在本地，2个节点在异地，采用的是 OSPF + Anycast 。&lt;/p&gt;
+
+&lt;p&gt;一般来说 Anycast 是搭配 BGP的，路由层面来说 BGP 也比 OSPF 更好控制，但是我们的网络架构 CE 与 PE 之间采用的 OSPF 路由协议（MPLS-VPN），更改起来动作太大。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;来康康什么是 Anycast ：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;先说结论：&lt;code class=&quot;highlighter-rouge&quot;&gt;Anycast 就是不同服务器用了相同的 ip 地址&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Anycast 本身是指 IPv6 中一个发送方和最近的一组接收方之间的通信。众所周知，IPv6 中是没有广播的，只有单播(Unicast)、组播(Multicast)和任播(Anycast)，Anycast 在 IPv4 中也同样适用。Anycast 本身就是多个主机使用同一个 ip 地址（该地址是这一组主机的共享单播地址）的一种技术，当发送方发送报文给这个共享单播地址时，报文会根据路由协议路由到这一组主机中离发送方最近的一台，所以这个技术也可以用来做负载均衡。&lt;/p&gt;
+
+&lt;p&gt;在企业网络环境中，Anycast 不太常见，其主要应用于大范围的 DNS 部署，CDN，数据中心等。&lt;/p&gt;
+
+&lt;p&gt;可能会有做企业网的朋友会有疑问，怎么能让互联网的多个主机用同一个 ip，这岂不是 ip 地址冲突了？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;回答：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;首先，每一个服务器主机处在不同的地理位置，他们之间不在同一个广播域内。所以把所有主机配置成相同的 ip 地址并不会引起我们日常所见的 ip 地址冲突。&lt;/p&gt;
+
+&lt;p&gt;其次，光靠配置相同的地址是不够的，我们还需要借助路由协议帮忙。&lt;/p&gt;
+
+&lt;p&gt;通过路由协议，各个站点向外宣告相同的 Anycast IP 地址。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;举个栗子：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;通过配置4个 DNS 节点服务器的 Loopback 地址为相同 IP，例如1.1.1.1/32。然后服务器直接与CE路由器建立 OSPF 邻居，对外宣告1.1.1.0/27网段，这样PE就会学习到1.1.1.0/27。&lt;/p&gt;
+
+&lt;p&gt;（注：为什么要宣告/27，而不是/32？那是因为上面有规定，为了减小VPN路由表，PE设备规定了只接受大于/8，小于等于/27的网段宣告进入骨干网。Internet 里也有类似规定）&lt;/p&gt;
+
+&lt;p&gt;以上步骤完成后，骨干网里对1.1.1.1/27会有4个不同的出口路由器，客户端使用1.1.1.1作为DNS服务器，根据 OSPF 选择到最优路径。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;万一出故障怎么办：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;如果 DNS 服务器中某几台出现故障，例如重庆的2台 DNS 服务器宕机，OSPF 协议会立即停止宣告此1.1.1.0/27的网段，路由表中只有异地的 DNS 可供选择，但是客户端是不会感知到，从而达到业务的平滑迁移和服务的高可用性，完全不需要人工干预。&lt;/p&gt;
+
+&lt;p&gt;半夜12点，老王正在酣睡。突然一阵清脆的手机铃声响起，把老王从睡梦中拉回现实。&lt;/p&gt;
+
+&lt;p&gt;“喂，谁啊？”&lt;/p&gt;
+
+&lt;p&gt;“王工，我是监控中心的，公司的XXX服务器挂了，你赶紧看一下吧。”&lt;/p&gt;
+
+&lt;p&gt;“不要慌，能自动切换的，该睡觉睡觉，该休息休息，明天上班再来处理！”&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 10 Sep 2019 00:00:00 +0800</pubDate>
+        <link>/blog/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
+        <guid isPermaLink="true">/blog/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</guid>
+        
+        <category>DNS</category>
+        
+        
+        <category>网络</category>
+        
+      </item>
     
       <item>
         <title>Linux namespace</title>
@@ -60,7 +116,7 @@
 
 &lt;h3 id=&quot;在两个-network-namespace-之间通信&quot;&gt;在两个 network namespace 之间通信&lt;/h3&gt;
 
-&lt;p&gt;network namespace 之间是相互隔离的，我们可以使用 veth 设备把两个 network namespace 连接起来进行通信。veth 设备是虚拟的以太网设备。它们可以充当 network namespace 之间的通道，也可以作为独立的网络设备使用。&lt;strong&gt;veth 设备总是被成对的创建，并且这一对设备总是连接在一起的，所以一般把称之为 veth pair。&lt;/strong&gt;需要注意的是，veth pair 无法单独存在，删除其中一个，另一个也会自动消失。接下来的示例我们就演示如何使用 veth pair 在两个 network namespace 直接通信。示例中我们使用 ip link 命令来创建和管理 veth pair。&lt;/p&gt;
+&lt;p&gt;network namespace 之间是相互隔离的，我们可以使用 veth 设备把两个 network namespace 连接起来进行通信。veth 设备是虚拟的以太网设备。它们可以充当 network namespace 之间的通道，也可以作为独立的网络设备使用。&lt;strong&gt;veth 设备总是被成对的创建，并且这一对设备总是连接在一起的，所以一般称之为 veth pair。&lt;/strong&gt;需要注意的是，veth pair 无法单独存在，删除其中一个，另一个也会自动消失。接下来的示例我们就演示如何使用 veth pair 在两个 network namespace 直接通信。示例中我们使用 ip link 命令来创建和管理 veth pair。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;第一步，先创建两个 network namespace net0 和 net1&lt;/strong&gt;&lt;/p&gt;
 &lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ip netns add net0
@@ -162,8 +218,8 @@ ip addr
 &lt;p&gt;通过 network namespace 可以创建相互独立的网络栈，从而实现网络的隔离。其中 network namespace 之间通过 bridge 通信的方式已经与 docker 网络的 bridge 模式非常类似了，剩下的不过就是开启ip.forward，添加NAT规则等等。&lt;/p&gt;
 </description>
         <pubDate>Tue, 20 Aug 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-08-20/Linux-namespace/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-08-20/Linux-namespace/</guid>
+        <link>/blog/2019-08-20/Linux-namespace/</link>
+        <guid isPermaLink="true">/blog/2019-08-20/Linux-namespace/</guid>
         
         <category>容器</category>
         
@@ -314,8 +370,8 @@ listening on docker0, link-type EN10MB &lt;span class=&quot;o&quot;&gt;(&lt;/spa
 &lt;/ol&gt;
 </description>
         <pubDate>Wed, 17 Jul 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</guid>
+        <link>/blog/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</link>
+        <guid isPermaLink="true">/blog/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</guid>
         
         <category>容器</category>
         
@@ -590,8 +646,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;/blockquote&gt;
 </description>
         <pubDate>Thu, 06 Jun 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</guid>
+        <link>/blog/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</link>
+        <guid isPermaLink="true">/blog/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</guid>
         
         <category>容器</category>
         
@@ -679,8 +735,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　因为那些人从来不顾别人的感受，野蛮、粗暴、横冲直撞，无时不刻的置自己与别人于危险之中浑然不觉甚至洋洋自得。我们没有文化的人就是这样的？.jpg&lt;/p&gt;
 </description>
         <pubDate>Wed, 17 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
+        <link>/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
+        <guid isPermaLink="true">/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
         
         <category>游记</category>
         
@@ -929,8 +985,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　如果想在生产中使用 prometheus 和 grafana，请参考 &lt;a href=&quot;https://prometheus.io/docs/introduction/overview/&quot;&gt;官方文档&lt;/a&gt; 。&lt;/p&gt;
 </description>
         <pubDate>Tue, 05 Mar 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
+        <link>/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
+        <guid isPermaLink="true">/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
         
         <category>容器</category>
         
@@ -982,8 +1038,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　反过来说，自知自己能力还达不到岗位要求也不用担心，不胜任是常态，以胜任为目标就好啦。&lt;/p&gt;
 </description>
         <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -1387,8 +1443,8 @@ u.save!
 &lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        <link>/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <guid isPermaLink="true">/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
         
         <category>容器</category>
         
@@ -1589,8 +1645,8 @@ u.save!
 &lt;p&gt;共计: 花了4W多，如果不买东西的话，其实全程花费不算贵。&lt;/p&gt;
 </description>
         <pubDate>Fri, 28 Sep 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
+        <link>/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
+        <guid isPermaLink="true">/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
         
         <category>游记</category>
         
@@ -1757,38 +1813,13 @@ u.save!
 &lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
 </description>
         <pubDate>Fri, 24 Aug 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
+        <link>/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
+        <guid isPermaLink="true">/blog/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
         
         <category>python</category>
         
         
         <category>随编</category>
-        
-      </item>
-    
-      <item>
-        <title>ELK Docker image中文文档</title>
-        <description>&lt;p&gt;　　又有两个月没写东西了，主要是最近在看&lt;a href=&quot;https://hub.docker.com/r/sebp/elk/&quot;&gt;ELK&lt;/a&gt;，网上资料一大堆（大多数都是过时的），我发现还是看英文文档比较舒服。&lt;/p&gt;
-
-&lt;p&gt;　　同时为了锻炼一下自己毕业后就没怎么提升的英语水平，免得提Issue时都表达不清楚自己的意思，毕竟还想着去美帝自由行呢，几句Hello I`m fine Thank you 还是要会的吧。脑子一热就决定翻译&lt;a href=&quot;http://elk-docker.readthedocs.io/&quot;&gt;这个文档&lt;/a&gt;，当然翻译过程中没少用翻译软件…&lt;/p&gt;
-
-&lt;p&gt;　　看的时候没觉得什么，真翻译起来才觉得头大，有时明明知道是什么意思，但就是没法很好的用中文表达出来，有些技术上的名词用英文原文比较好，有时候翻译出来又改了回去，所以花了不少时间才做完。&lt;/p&gt;
-
-&lt;p&gt;　　尝试了&lt;a href=&quot;https://www.gitbook.com&quot;&gt;gitbook&lt;/a&gt;写作，写好 &lt;code class=&quot;highlighter-rouge&quot;&gt;README.md&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;SUMMARY.md&lt;/code&gt; ，再 &lt;code class=&quot;highlighter-rouge&quot;&gt;gitbook init&lt;/code&gt; 就生成了大纲，然后上传到&lt;a href=&quot;https://github.com/ixjx/docker-elk-doc&quot;&gt;github repo&lt;/a&gt;，然后再和&lt;a href=&quot;https://ixjx.gitbooks.io/docker-elk-doc&quot;&gt;gitbooks.com&lt;/a&gt;关联一下就自动生成了文档，确实方便。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-10/46528275.jpg&quot; alt=&quot;这是原文&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-7-11/77399485.jpg&quot; alt=&quot;这是译文&quot; /&gt;&lt;/p&gt;
-</description>
-        <pubDate>Tue, 10 Jul 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-07-10/ELK-Docker-image%E4%B8%AD%E6%96%87%E6%96%87%E6%A1%A3/</guid>
-        
-        <category>容器</category>
-        
-        
-        <category>随读</category>
         
       </item>
     

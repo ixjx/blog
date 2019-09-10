@@ -100,7 +100,7 @@ html{
     margin: 0px 0px 0px 0px;
 }
 body {
-    background-image: url(http://localhost:4000/static/bg.jpg);
+    background-image: url(/blog/static/bg.jpg);
     height: 100%;
     padding: 0px 0px 0px 0px;
     margin: 0px 0px 0px 0px;
@@ -112,7 +112,7 @@ body,code,pre{
 }
 
 body,.sheet,pre,code{
-    line-height: 1.5;
+    line-height: 2;
     font-size: 16px;
 }
 

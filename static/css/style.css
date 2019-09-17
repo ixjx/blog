@@ -116,7 +116,6 @@ body,code,pre{
 }
 
 body,.sheet,pre,code{
-    line-height: 2;
     font-size: 16px;
 }
 
@@ -127,6 +126,7 @@ a:hover {text-decoration: none}	/* 鼠标移动到链接上 */
 a:active {text-decoration: none}	/* 选定的链接 */
 
 .main{
+    line-height: 2;
     min-height: 100%;
     padding-bottom: 130px;
 }

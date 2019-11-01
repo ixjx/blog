@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="keywords" content=",   CodeShurrik" />
-    <meta name="description" content=",   shurrik`s blog" />
+    <meta name="description" content=",   The quieter you become, the more you are able to hear" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="/blog/favicon.ico" />
     <link rel="canonical" href="/blog/page15/" />
@@ -33,7 +33,20 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="/blog/">CodeShurrik</a>
-                    <p class="navbar-text">shurrik`s blog</p>
+                    <p class="navbar-text">
+                        <span id="typed"></span>
+                        <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+                        <script>
+                            var typed = new Typed("#typed", {
+                                strings: ['The quieter you become, the more you are able to hear'],
+                                startDelay: 300,
+                                typeSpeed: 100,
+                                loop: false,
+                                backSpeed: 50,
+                                showCursor: true
+                            });
+                        </script>
+                    </p>
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">

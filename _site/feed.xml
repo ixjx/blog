@@ -5,9 +5,139 @@
     <description>shurrik blog</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 13 Feb 2020 11:16:09 +0800</pubDate>
-    <lastBuildDate>Thu, 13 Feb 2020 11:16:09 +0800</lastBuildDate>
+    <pubDate>Tue, 14 Apr 2020 14:29:26 +0800</pubDate>
+    <lastBuildDate>Tue, 14 Apr 2020 14:29:26 +0800</lastBuildDate>
     <generator>Jekyll v3.8.6</generator>
+    
+      <item>
+        <title>tmux + oh-my-tmux使用指北</title>
+        <description>&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#tmux是什么&quot; id=&quot;markdown-toc-tmux是什么&quot;&gt;tmux是什么&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tmux的session&quot; id=&quot;markdown-toc-tmux的session&quot;&gt;tmux的session&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tmux的window&quot; id=&quot;markdown-toc-tmux的window&quot;&gt;tmux的window&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tmux的pane&quot; id=&quot;markdown-toc-tmux的pane&quot;&gt;tmux的pane&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tmux-window中的历史输出查看&quot; id=&quot;markdown-toc-tmux-window中的历史输出查看&quot;&gt;tmux window中的历史输出查看&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;tmux是什么&quot;&gt;tmux是什么&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　我们在linux服务器上的工作一般都是通过一个终端连接软件连接到远端系统进行操作，例如使用xshell或者SecureCRT工具通过ssh进行远程连接。&lt;/p&gt;
+
+&lt;p&gt;　　在使用过程中，如果要做比较耗时的操作，例如有时候进行编译，或者下载大文件需要比较长的时间，一般情况下是下班之后直接运行希望第二天早上过来运行完成，这样就不用耽误工作时间。但是网络有时候不稳定，或者timeout，可能在半夜会出现连接断掉的情况，一旦连接断掉，所执行的程序也就中断，当然可以写一个脚本后台运行，但是总不能每次都写脚本吧。&lt;/p&gt;
+
+&lt;p&gt;　　那么有没有一种工具可以解决这样的问题呢，当然是有的了，比如这里提到的tmux。其实类似tmux的工具还有很多。例如gnu screen等。&lt;/p&gt;
+
+&lt;p&gt;　　tmux使用更简单，功能也更强大，当在tmux中工作的时候，即使关掉CRT的连接窗口，再次连接，进入tmux的会话之前的工作仍然在继续。&lt;/p&gt;
+
+&lt;p&gt;　　tmux是一个linux下面的工具，在使用之前需要安装，配置使用&lt;a href=&quot;https://github.com/gpakosz/.tmux&quot;&gt;oh-my-tmux&lt;/a&gt;（取名类似oh-my-zsh）。&lt;/p&gt;
+
+&lt;p&gt;　　tmux中有3种概念，会话(session)，窗口(window)，窗格(pane)。会话有点像是tmux的服务，在后端运行，可以通过tmux命令创建这种服务，并且可以通过tmux命令查看。一个session可以包含多个window，一个window可以被分割成多个pane。首先来看一下tmux的会话。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;tmux的session&quot;&gt;tmux的session&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux new -s mysession1&lt;/code&gt; 新建名为mysession1的会话&lt;br /&gt;
+&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/79189057-57e17480-7e53-11ea-911a-126c3fefd1a8.png&quot; alt=&quot;1&quot; /&gt;
+可以看到进入session之后的显示，在下面有一条状态栏。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b d&lt;/code&gt; 退出会话，回到shell的终端环境&lt;br /&gt;
+当前在tmux的会话环境中，使用一个快捷键&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b d&lt;/code&gt;。&lt;br /&gt;
+这里提一下，tmux 窗口有大量的快捷键。所有快捷键都要通过前缀键唤起。默认的前缀键是&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+b&lt;/code&gt;，oh-my-tmux新增了&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+a&lt;/code&gt;。举例来说，帮助命令的快捷键是&lt;code class=&quot;highlighter-rouge&quot;&gt;Ctrl+b ?&lt;/code&gt;。在后面的描述中，我们说的终端环境是指使用SecureCRT进入远程linux之后但是没有进入tmux的会话环境的状态。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux ls&lt;/code&gt; 终端环境查看会话列表&lt;br /&gt;
+在终端环境中执行&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux ls&lt;/code&gt;&lt;br /&gt;
+可以看到在列出的列表中，只有1行，说明只有一个session。 
+&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/79189704-0803ad00-7e55-11ea-9b5d-bf6ca1c5a138.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b s&lt;/code&gt; 会话环境查看会话列表&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux a -t mysession1&lt;/code&gt; 终端环境进入会话&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux kill-session -t mysession1&lt;/code&gt;终端环境销毁会话&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;tmux rename -t old_session_name  new_session_name&lt;/code&gt; 终端环境重命名会话 
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl + b $&lt;/code&gt;会话环境重命名会话&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;tmux的window&quot;&gt;tmux的window&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　一个tmux的会话(session)中可以有多个窗口(window)，每个窗口又可以分割成多个pane(窗格)。工作的最小单位其实是窗格。默认情况下在一个window中，只有一个大窗格，占满整个窗口区域。&lt;/p&gt;
+
+&lt;p&gt;　　参考之前新创建的会话中会默认创建一个窗口，名字是zsh，可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;crtl+b ,&lt;/code&gt; (前缀键之后按一个逗号)来修改当前窗口的名字。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b c&lt;/code&gt; 创建window&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;切换window&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b 1&lt;/code&gt; 切换到1号window，依次类推&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b w&lt;/code&gt; (windows的首字母) 列出当前session所有window，通过上、下键切换窗口&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b &amp;amp; &lt;/code&gt; 关闭window 或者直接exit&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;tmux的pane&quot;&gt;tmux的pane&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　这个是最好玩的了，tmux的一个window可以被分成多个pane(窗格)，可以做出分屏的效果。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/79191375-fe7c4400-7e58-11ea-8d45-81c4cb98ff68.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b %&lt;/code&gt; 垂直分屏&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b &quot;&lt;/code&gt; 水平分屏&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;切换pane&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b o &lt;/code&gt; 依次切换当前窗口下的各个pane&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b 上下左右&lt;/code&gt; 根据按箭方向选择切换到某个pane&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b Space(空格键)&lt;/code&gt; 对当前窗口下的所有pane重新排列布局，每按一次，换一种样式&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b z&lt;/code&gt; 最大化当前pane，再按一次后恢复&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl+b x&lt;/code&gt; 关闭pane  或者直接exit&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+  &lt;h3 id=&quot;tmux-window中的历史输出查看&quot;&gt;tmux window中的历史输出查看&lt;/h3&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　在tmux里面，因为每个窗口的历史内容已经被tmux接管了。&lt;/p&gt;
+
+&lt;p&gt;　　当我们在每 个tmux的window之间进行来回切换，来回操作，没有办法看到一个window里面屏幕上的历史输出，没办法使用鼠标滚动(例如在CRT中)查看之前的内容。&lt;/p&gt;
+
+&lt;p&gt;　　如果要看当前窗口的历史内容，通过在当前的tmux window 按 &lt;code class=&quot;highlighter-rouge&quot;&gt;ctrl-b&lt;/code&gt;，然后就可以用PgUp/PgDn来浏览历史输出了，按q退出。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 14 Apr 2020 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2020-04-14/tmux-+-oh-my-tmux%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/</link>
+        <guid isPermaLink="true">http://localhost:4000/2020-04-14/tmux-+-oh-my-tmux%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/</guid>
+        
+        <category>tmux</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
     
       <item>
         <title>2019年终总结</title>
@@ -1180,411 +1310,6 @@ PING bbox2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;192.168.104.0&lt;span c
         
         
         <category>水</category>
-        
-      </item>
-    
-      <item>
-        <title>基于Docker+Jenkins+Gitlab搭建持续集成测试环境</title>
-        <description>&lt;p&gt;　　七牛云的测试域名到期了，所有图片的图床都崩了，早知如此不该图方便，自己做静态资源算了。进入今天的正题，到新公司一个月，项目开发前后端分离，差不多拉通了开发到测试的流程，在此记录一下。&lt;/p&gt;
-
-&lt;p&gt;　　随着DevOps理念和敏捷理念的发展，我们希望通过自动化技术，加快项目的迭代。尤其是当使用微服务方案后，面临在大量的项目构建和部署工作，借助于jenkins的持续集成，可以快速把应用打包成docker镜像，实现自动部署。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/4729226/56795878-f2f8cd00-6843-11e9-9188-214621243639.png&quot; alt=&quot;jenkins&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;如图演示了以下的场景：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;开发者向自己的gitlab提交了代码&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;jenkins通过定时任务检测到了代码有变成，执行自动化构建过程&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;jenkins在自动化构建脚本中调用docker命令将构建好的镜像push到私有镜像中心harbor&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;同时，jenkins也可以直接执行remote shell启动构建好的容器&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;构建失败或者成功，可以及时将结果推送给相关人员，比如测试人员，安排测试&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;服务端可以手动通过docker命令，从镜像仓库中心拉取镜像，进行手动部署&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;环境如下:&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;192.168.110.202&lt;/td&gt;
-      &lt;td&gt;harbor&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;192.168.110.203&lt;/td&gt;
-      &lt;td&gt;gitlab jenkins&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;　　除了jenkins均采用docker部署。&lt;/p&gt;
-
-&lt;h2 id=&quot;1-搭建harbor&quot;&gt;1. 搭建harbor&lt;/h2&gt;
-
-&lt;p&gt;&lt;del&gt;docker run -d -p 5000:5000 -v /opt/docker-registry:/var/lib/registry registry&lt;/del&gt; 一开始用的registry，连个UI都没有，使用不便，弃了&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/goharbor/harbor/blob/master/docs/installation_guide.md&quot;&gt;harbor官方安装文档&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;采用offline安装包,在执行./prepare的时候抛出如下异常：&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root@ubuntu:~/harbor# ./prepare 
-Fail to generate key file: ./common/config/ui/private_key.pem, cert file: ./common/config/registry/root.crt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;需要修改prepare文件，将第498行：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;empty_subj = &quot;/C=/ST=/L=/O=/CN=/&quot;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;修改如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;empty_subj = &quot;/C=US/ST=California/L=Palo Alto/O=VMware, Inc./OU=Harbor/CN=notarysigner&quot;&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;配置daemon.json，去掉docker(每个docker client都需要配置)默认的https的访问&lt;code class=&quot;highlighter-rouge&quot;&gt;vim /etc/docker/daemon.json&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;里面的内容是一个json对象,加上一项insecure-registries，地址自己更改：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
-    &quot;insecure-registries&quot;:[&quot;192.168.1.78&quot;]
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后重启docker,执行&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl daemon-reload&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;systemctl restart docker&lt;/code&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;2-搭建gitlab&quot;&gt;2. 搭建gitlab&lt;/h2&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker run &lt;span class=&quot;nt&quot;&gt;--detach&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--hostname&lt;/span&gt; localhost &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 443:443 &lt;span class=&quot;nt&quot;&gt;--publish&lt;/span&gt; 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/config:/etc/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/logs:/var/log/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;--volume&lt;/span&gt; /opt/gitlab/data:/var/opt/gitlab &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-gitlab/gitlab-ce:latest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;　　之后push demo代码。&lt;/p&gt;
-
-&lt;h2 id=&quot;3-jenkins安装&quot;&gt;3. jenkins安装&lt;/h2&gt;
-
-&lt;p&gt;　　这一块比较复杂，不讲了&lt;/p&gt;
-
-&lt;h2 id=&quot;4-流水线demo&quot;&gt;4. 流水线demo&lt;/h2&gt;
-
-&lt;p&gt;　　前端用npm打包，后端用的maven。&lt;/p&gt;
-
-&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;agent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'master'&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;stages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'拉取代码'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;branch:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'alarm_system_v2'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                &lt;span class=&quot;nl&quot;&gt;credentialsId:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'5d7cb03e-66df-4002-a2d5-70f8aa196ac1'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                &lt;span class=&quot;nl&quot;&gt;url:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://192.168.110.8:10080/fehz/react-garden-system.git'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'安装依赖，进行前端代码鉴定'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;nodejs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'node-v10.6.0'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'''
-                    npm -v
-                    node -v
-                    npm install react-tree-module-web --registry=http://192.168.110.26:8088/repository/npm/
-                    npm install react-common-module-web --registry=http://192.168.110.26:8088/repository/npm/
-                    npm install
-                    npm run lint --force
-                    '''&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;checkstyle&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;canComputeNew:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;defaultEncoding:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;healthy:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;pattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'eslint.xml'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;unHealthy:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;hygieiaCodeQualityPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;checkstyleFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'**/*/eslint.xml'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;findbugsFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;jacocoFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;junitFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;pmdFilePattern:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'npm打包'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;nodejs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'node-v10.6.0'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;hygieiaBuildPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'InProgress'&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'''
-                    npm run build:test
-                    cp /var/lib/jenkins/workspace/build_prj/*.js $WORKSPACE/node_modules/connect-cas2/lib/
-                    '''&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;hygieiaBuildPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Success'&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'构建docker镜像'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'''
-                ###根据git库设置包名
-                jar_name=192.168.110.202/isp/react-garden-alarm-system
-                echo &quot;包名:$jar_name&quot;
-                docker build -t $jar_name .
-                '''&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'将docker镜像上传到镜像仓库'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'docker push 192.168.110.202/isp/react-garden-alarm-system:latest'&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'docker image prune -f'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'测试环境部署'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'''
-                echo &quot;登录到192.168.110.211服务器执行部署脚本&quot;
-                ssh root@192.168.110.211 &quot;sh /opt/jenkins/deploy.sh react_garden_alarm_system&quot;
-                '''&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;hygieiaDeployPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;applicationName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'react-garden-system-alarm-dev'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactDirectory:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactGroup:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactVersion:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Success'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;environmentName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'TEST'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-groovy highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;agent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'master'&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;stages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'拉取代码'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;branch:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'develop-isp'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                &lt;span class=&quot;nl&quot;&gt;credentialsId:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'5d7cb03e-66df-4002-a2d5-70f8aa196ac1'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                &lt;span class=&quot;nl&quot;&gt;url:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://192.168.110.8:10080/liuran/framework-alarm.git/'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'后端代码鉴定'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;build&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;job:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'garden-sonar-dev'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-                &lt;span class=&quot;nl&quot;&gt;parameters:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;name:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'choose_service'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;value:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'framework-alarm-log-sonar'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;hygieiaSonarPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;ceQueryIntervalInSeconds:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'10'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;ceQueryMaxAttempts:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'30'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'构建并打包成docker镜像'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;withMaven&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;jdk:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'jdk'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;maven:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'apache-maven-3.5.4'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;hygieiaBuildPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'InProgress'&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'mvn clean package docker:build'&lt;/span&gt;
-                    &lt;span class=&quot;n&quot;&gt;hygieiaBuildPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Success'&lt;/span&gt;
-                &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'将docker镜像上传到镜像仓库'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'docker push 192.168.110.202/isp/java/framework-alarm-log:latest'&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'docker image prune -f'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;stage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'测试环境部署'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sh&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'''
-                echo &quot;登录到192.168.110.211服务器执行脚本&quot;
-                ssh root@192.168.110.211 &quot;sh /opt/jenkins/deploy.sh java_framework_alarm_log&quot;
-                echo &quot;登录到192.168.110.212部署自动化测试环境&quot;
-                ssh root@192.168.110.212 &quot;sh /root/isp-alarm.sh&quot;
-                '''&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;hygieiaDeployPublishStep&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;applicationName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'garden-framework-alarm-log-dev'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactDirectory:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'target'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactGroup:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'com.letv.dashboard'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'*.jar'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;artifactVersion:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;buildStatus:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'Success'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;environmentName:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'TEST'&lt;/span&gt;
-            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-    &lt;span class=&quot;cm&quot;&gt;/*post {
-        always {
-            
-            echo 'One way or another, I have finished'
-  
-        }
-        success {
-            echo 'I succeeeded!'
-			hygieiaBuildPublishStep buildStatus: 'Success'
-        }
-        unstable {
-            echo 'I am unstable :/'
-			hygieiaBuildPublishStep buildStatus: 'Unstable'
-        }
-        failure {
-            echo 'I failed :('
-			hygieiaBuildPublishStep buildStatus: 'Failure'
-			
-        }
-        changed {
-            echo 'Things were different before...'
-        }
-    }*/&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;后面可以加个post阶段给老大发邮件。。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;deploy.sh&lt;/code&gt;参考&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
-
-login_harbor&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-
-    &lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;admin&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Harbor12345&quot;&lt;/span&gt;
-
-    docker login &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_USER&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;HARBOR_PASSWD&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;REGISTRY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-deploy_new_container&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# $1 : $CONTAINER_NAME&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# $2 : $OLD_IMAGE_NAME &lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# $3 : $IMAGE_NAME &lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;# $4 : $PORT &lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;cid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker ps &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $1}'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cid&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;fi
-    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧容器完成******&quot;&lt;/span&gt;
-
-    &lt;span class=&quot;nv&quot;&gt;iid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;docker images | &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{print $3}'&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-n&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker rmi &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$iid&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;fi
-    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******删除旧镜像完成******&quot;&lt;/span&gt;
-
-    docker pull &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******拉取新镜像完成******&quot;&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;java&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;JAVA_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;-Denv=UAT&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******远程部署后端容器完成******&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&quot;react&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;then
-        &lt;/span&gt;docker run &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--restart&lt;/span&gt; always &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--name&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ENV_OPTS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;--env test&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;******远程部署前端容器完成******&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;else
-        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;镜像名字不合法，请确认!&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 后端微服务&lt;/span&gt;
-java_framework_alarm_log&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;java-alarm-test&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;OLD_IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/java/framework-alarm-log&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/java/framework-alarm-log:latest&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;8086&quot;&lt;/span&gt;
-
-    deploy_new_container &lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$OLD_IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-java_isp_ias&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;java-ias-test&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;OLD_IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/java/isp-ias&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/java/isp-ias:latest&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;8089&quot;&lt;/span&gt;
-
-    deploy_new_container &lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$OLD_IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 前端&lt;/span&gt;
-react_garden_alarm_system&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;react-alarm-test&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;OLD_IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/react-garden-alarm-system&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/react-garden-alarm-system:latest&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;8003&quot;&lt;/span&gt;
-
-    deploy_new_container &lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$OLD_IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-react_garden_inbreak_system&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;CONTAINER_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;react-ias-test&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;OLD_IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/react-garden-inbreak-system&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;IMAGE_NAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;192.168.110.202/isp/react-garden-inbreak-system:latest&quot;&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;PORT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;8005&quot;&lt;/span&gt;
-
-    deploy_new_container &lt;span class=&quot;nv&quot;&gt;$CONTAINER_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$OLD_IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$IMAGE_NAME&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PORT&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-login_harbor
-
-&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in 
-    &lt;/span&gt;java_framework_alarm_log&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        java_framework_alarm_log
-    &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    java_isp_ias&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        java_isp_ias
-    &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    react_garden_alarm_system&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        react_garden_alarm_system
-    &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    react_garden_inbreak_system&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        react_garden_inbreak_system
-    &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;请输入正确参数!
-    java_framework_alarm_log
-    java_isp_ias
-    react_garden_alarm_system
-    react_garden_inbreak_system&quot;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;esac&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;5-问题&quot;&gt;5. 问题&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;gitlab需通过root账号登录，允许本地webhook。这是因为gitlab和jenkins在同一个节点部署，实际分开部署不会有这个问题&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gitlab-rails console production   &lt;span class=&quot;c&quot;&gt;#gitlab居然是用ruby写的&lt;/span&gt;
-u &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; User.where&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;email: &lt;span class=&quot;s1&quot;&gt;'admin@example.com'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.first
-u.password&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'new_password'&lt;/span&gt;
-u.save!
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;gitlab配置Admin area：&lt;/p&gt;
-
-&lt;p&gt;Setting-&amp;gt;Network-&amp;gt;Outbound requests&lt;/p&gt;
-
-&lt;p&gt;勾选Allow requests to the local network from hooks and services&lt;/p&gt;
-
-&lt;p&gt;jenkins配置：&lt;/p&gt;
-
-&lt;p&gt;Jenkins–&amp;gt;Jenkins Manages–&amp;gt;Configure System，找到GitLab配置，去掉勾选&lt;/p&gt;
-
-&lt;p&gt;系统管理–&amp;gt;全局安全配置，勾选匿名用户具有可读权限和去掉CSRF防止跨站点请求伪造&lt;/p&gt;
-</description>
-        <pubDate>Tue, 06 Nov 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018-11-06/%E5%9F%BA%E4%BA%8EDocker+Jenkins+Gitlab%E6%90%AD%E5%BB%BA%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83/</guid>
-        
-        <category>容器</category>
-        
-        
-        <category>随编</category>
         
       </item>
     

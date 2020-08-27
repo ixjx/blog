@@ -148,9 +148,9 @@
           <article>
             <p>　　最近有个需求，需要重复的对某几台防火墙进行某些操作，为了让不懂网络设备的同事也能一键操作，尝试了用python开发脚本，TODO：后续可以考虑弄个web界面，更友好。</p>
 
-<p>　　一开始使用netmiko模块，1台设备执行1条命令需要20-30秒，N台设备*N，况且命令条数也是动态的，这样操作怕不是还没有手动快。同步不行就异步吧，后来研究了下netdev模块，功能实现后发现一个致命问题，截止目前为止netdev不支持huawei的操作系统，没办法还是换回netmiko。</p>
+<p>　　一开始使用netmiko模块，1台设备执行1条命令需要20-30秒，N台设备*N，况且命令条数也是动态的，这样操作怕不是还没有手动快。同步不行就异步吧，后来研究了下netdev模块，功能实现后发现一个致命问题，截止目前为止netdev还不支持huawei的操作系统(<a href="https://github.com/selfuryon/netdev/issues/45">已经向作者提交issue</a>)，没办法还是换回netmiko。</p>
 
-<p>　　没法异步，要提高处理速度只有多线程，为了避免线程间数据同步以及复杂情况下线程锁的问题，最后用1个线程操作1台设备的方法，代码如下：</p>
+<p>　　没法异步，要提高处理速度只有多线程，<del>能异步当然还是异步快</del> 为了避免线程间数据同步以及复杂情况下线程锁的问题，最后用1个线程操作1台设备的方法，代码如下：</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">netmiko</span> <span class="kn">import</span> <span class="n">ConnectHandler</span>
 <span class="kn">import</span> <span class="nn">time</span>

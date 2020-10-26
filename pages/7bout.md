@@ -5,6 +5,8 @@ permalink: /about/
 icon: octicon-terminal
 isNavItem: true
 ---
+　　<a href="https://github.com/ixjx" target="_blank">
+　　<img src="https://ghchart.rshah.org/ixjx" alt="ixjx's Github chart" /></a>
 
 　　Code来源于我最喜欢的动漫Code Geass，Shurrik名字来源于WOW60年代的盗贼皇帝。2013年毕业于电子科技大学（UESTC）通信学院，对通信、计算机、互联网、动漫、美剧等等都有浓厚的兴趣。
 
